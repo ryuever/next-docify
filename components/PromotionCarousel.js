@@ -1,5 +1,6 @@
 import React from 'react';
 import { Carousel } from 'antd';
+import PromotionBanner from './PromotionBanner';
 
 export default class PromotionCarousel extends React.Component {
   render() {
@@ -11,17 +12,20 @@ export default class PromotionCarousel extends React.Component {
           <div></div>
           <div></div>
         </Carousel>
+
+        <PromotionBanner />
         <style jsx global>{`
           .promotion-carousel {
             height: 100%;
             overflow: hidden;
+            position: relative;
           }
 
           .promotion-carousel .ant-carousel .slick-slide {
             text-align: center;
             height: 705px !important;
             width: 100%;
-            background: rgba(41,44,54,1);
+            background: rgba(12, 12, 12, 0.7);
             overflow: hidden;
           }
 
