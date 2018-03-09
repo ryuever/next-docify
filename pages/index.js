@@ -1,8 +1,9 @@
 import React from 'react';
 import Head from 'next/head';
-
 import config from 'config';
+
 import Header from 'components/Header';
+import PromotionCarousel from 'components/PromotionCarousel';
 
 const { platformTitle } = config;
 
@@ -22,6 +23,10 @@ class App extends React.Component {
           <Header />
         </section>
 
+        <section className="promotion-carousel">
+          <PromotionCarousel />
+        </section>
+
         <style jsx>{`
           .np-header {
             position: absolute;
@@ -36,6 +41,11 @@ class App extends React.Component {
 
             display: flex;
             justify-content: center;
+          }
+
+          .promotion-carousel {
+            width: 100%;
+            height: 705px;
           }
         `}
         </style>
