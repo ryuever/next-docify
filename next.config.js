@@ -1,5 +1,7 @@
+const path = require('path');
+
 module.exports = {
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config) => {
     config.module.rules.unshift({
       test: /\.js$/,
       enforce: 'pre',
@@ -7,6 +9,14 @@ module.exports = {
       loader: 'eslint-loader',
     });
 
+    config.resolve.alias = {
+      config: path.resolve(__dirname, 'config'),
+    };
+
     return config;
   },
+
+  exportPathMap: () => ({
+    '/': { page: '/' },
+  })
 };
