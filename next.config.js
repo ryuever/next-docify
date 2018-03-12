@@ -20,5 +20,6 @@ module.exports = {
 
   exportPathMap: () => ({
     '/': { page: '/' },
+    '/template': { page: '/template'}
   })
 };
