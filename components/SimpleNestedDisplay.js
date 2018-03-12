@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 
 const SimpleNestedDisplay = (props) => {
   const { content } = props;
@@ -9,9 +8,7 @@ const SimpleNestedDisplay = (props) => {
 
     return (
       <li key={id} className="sub-item">
-        <Link href={href}>
-          <a>{title}</a>
-        </Link>
+        <a href={href}>{title}</a>
 
         <style jsx>{`
           .sub-item {

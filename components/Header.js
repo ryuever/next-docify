@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from 'next/router'
 import Link from 'next/link';
 import HeaderExtraAppender from 'components/HeaderExtraAppender';
 import dataSource from 'dataSource';
@@ -18,7 +19,11 @@ export default class Header extends React.Component {
   }
 
   onLeave() {
-    this.setState({ activeService: null });
+    this.setState({ activeService: 'docs' });
+  }
+
+  handleRedirect(href) {
+    Router.push(href);
   }
 
   createServiceItem({ title, id, children, display, href }) {
@@ -32,18 +37,16 @@ export default class Header extends React.Component {
         onMouseEnter={this.onEnter.bind(this, id)}
         onMouseLeave={this.onLeave.bind(this, id)}
       >
-        <Link href={href}>
-          <a>
-            {title}
-            {activeService === id && children && <div className="extra-appender">
-              <HeaderExtraAppender
-                content={children}
-                display={display}
-              />
-            </div>
-            }
-          </a>
-        </Link>
+        <div onClick={this.handleRedirect.bind(this, href)}>
+          {title}
+          {activeService === id && children && <div className="extra-appender">
+            <HeaderExtraAppender
+              content={children}
+              display={display}
+            />
+          </div>
+          }
+        </div>
 
         <style jsx>{`
           .item {

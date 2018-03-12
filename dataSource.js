@@ -5,6 +5,7 @@ export default [{
 }, {
   title: '功能和服务',
   id: 'services',
+  href: '/',
   header1: '地图六大功能和服务',
   display: 'default',
   children: [{
@@ -29,6 +30,7 @@ export default [{
 }, {
   title: '解决方案',
   id: 'solution',
+  href: '/',
   header1: '各行各业都在用图聚地图',
   header2: '提供丰富的行业解决方案，结合核心场景快速接入地图能力',
   display: 'default',
@@ -54,6 +56,7 @@ export default [{
 }, {
   title: '开发文档',
   id: 'docs',
+  href: '/',
   header1: '开发文档',
   header2: '查询开发文档',
   display: 'nested',
@@ -61,7 +64,7 @@ export default [{
     title: 'Web开发',
     children: [{
      title: 'JavaScript API',
-     href: 'template',
+     href: '/template',
     }, {
       title: '微信小程序JavaScript API',
       href: 'template',
@@ -130,7 +133,9 @@ export default [{
 }, {
   title: '合作咨询',
   id: 'consultance',
+  href: '/',
 }, {
   title: '控制台',
   id: 'console',
+  href: '/',
 }];
