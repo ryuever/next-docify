@@ -7,6 +7,20 @@ import DocBanner from 'components/DocBanner';
 import DocTemplate from 'components/DocTemplate';
 
 class Template extends React.Component {
+  updateDocContainerMinHeight() {
+    const min = `${window.innerHeight - 256 - 92}px`;
+    this.doc.style.minHeight = min;
+  }
+
+  updateFooterStyle() {
+    this.footer.style.position = 'relative';
+  }
+
+  componentDidMount() {
+    this.updateDocContainerMinHeight();
+    this.updateFooterStyle();
+  }
+
   render() {
     return (
       <article className="app">
@@ -22,11 +36,15 @@ class Template extends React.Component {
           <DocBanner />
         </section>
 
-        <section className="np-doc">
+        <section
+          ref={(ref) => this.doc = ref}
+          className="np-doc">
           <DocTemplate />
         </section>
 
-        <footer className="footer">
+        <footer
+          ref={(ref) => this.footer = ref}
+          className="footer">
           <Footer />
         </footer>
 
