@@ -21,6 +21,8 @@
     "plugin:react/recommended"
   ],
   "rules": {
-    "no-set-state": "off"
+    "no-set-state": "off",
+
+    "react/prop-types": 0
   }
 }
