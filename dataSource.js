@@ -62,7 +62,7 @@ export default [{
      title: 'JavaScript API',
      href: '#',
     }, {
-      title: 'JavaScript API',
+      title: '微信小程序JavaScript API',
       href: '#',
     }]
   }, {

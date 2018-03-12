@@ -18,7 +18,7 @@ export default class Header extends React.Component {
   }
 
   onLeave() {
-    this.setState({ activeService: 'services' });
+    this.setState({ activeService: null });
   }
 
   createServiceItem({ title, id, children, display }) {
@@ -55,8 +55,6 @@ export default class Header extends React.Component {
             border-bottom: 4px solid #f5533d;
             color: #fff;
           }
-
-          .extra
         `}
         </style>
       </li>
