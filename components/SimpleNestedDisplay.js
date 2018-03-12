@@ -1,4 +1,8 @@
 import React from 'react';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+import config from 'config';
+
+const { publicPath, shouldNormalizeWithIndex } = config;
 
 const SimpleNestedDisplay = (props) => {
   const { content } = props;
@@ -8,7 +12,7 @@ const SimpleNestedDisplay = (props) => {
 
     return (
       <li key={id} className="sub-item">
-        <a href={href}>{title}</a>
+        <a href={normalizeUrlPath(href, publicPath, shouldNormalizeWithIndex)}>{title}</a>
 
         <style jsx>{`
           .sub-item {

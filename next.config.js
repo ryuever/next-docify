@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   webpack: (config) => {
@@ -12,12 +13,20 @@ module.exports = {
     config.resolve.alias = {
       config: path.resolve(__dirname, 'config'),
       components: path.resolve(__dirname, 'components'),
-      dataSource: path.resolve(__dirname, 'dataSource')
+      dataSource: path.resolve(__dirname, 'dataSource'),
+      utils: path.resolve(__dirname, 'utils')
     };
+
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.RUN_ENV': JSON.stringify(process.env.RUN_ENV)
+      }),
+    )
 
     return config;
   },
 
+  assetPrefix: '/out',
   exportPathMap: () => ({
     '/': { page: '/' },
     '/template': { page: '/template'}

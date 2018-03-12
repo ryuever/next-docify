@@ -6,10 +6,10 @@
   "author": "youchao.liu",
   "license": "MIT",
   "scripts": {
-    "dev": "next",
+    "dev": "RUN_ENV=dev next",
     "build": "next build",
     "start": "next start",
-    "export": "next export",
+    "export": "RUN_ENV=publish next export",
     "lint": "eslint --ext .js pages components"
   },
   "dependencies": {

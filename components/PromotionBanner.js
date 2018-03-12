@@ -1,5 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+import config from 'config';
+
+const { publicPath } = config;
 
 const PromotionBanner = () => {
   const banners = [{
@@ -32,7 +36,12 @@ const PromotionBanner = () => {
     <li className="banner-item" key={id}>
       <Link href={href}>
         <a>
-          <div className={`banner-icon ${icon}`} />
+          <div
+            className={`banner-icon ${icon}`}
+            style={{
+              backgroundImage: `url('${normalizeUrlPath(`./static/assets/${icon}.png`, publicPath)}')`
+            }}
+          />
 
           <div className="content">
             <p className="title">
@@ -70,18 +79,6 @@ const PromotionBanner = () => {
           background-size: contain;
           margin-right: 11px;
           width: 45px;
-        }
-
-        .ic_android {
-          background-image: url('../static/assets/ic_android.png');
-        }
-
-        .ic_gongju {
-          background-image: url('../static/assets/ic_gongju.png');
-        }
-
-        .ic_ios {
-          background-image: url('../static/assets/ic_ios.png');
         }
 
         .content {
