@@ -35,7 +35,10 @@ const PromotionBanner = () => {
           <div className={`banner-icon ${icon}`} />
 
           <div className="content">
-            <p className="title">{title}</p>
+            <p className="title">
+              {title}
+              {isNew ? <span className="new-banner">NEW !</span> : null}
+            </p>
             <p className="sub-title">{subTitle}</p>
           </div>
         </a>
@@ -88,6 +91,17 @@ const PromotionBanner = () => {
         .title {
           font-size: 16px;
           line-height: 30px;
+        }
+
+        .new-banner {
+          width: 34px;
+          height: 14px;
+          font-style: italic;
+          color: #ff280b;
+          font-size: 12px;
+          position: relative;
+          top: -4px;
+          left: 6px;
         }
 
         .sub-title {
