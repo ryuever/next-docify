@@ -3,6 +3,7 @@ import Head from 'next/head';
 import config from 'config';
 
 import Header from 'components/Header';
+import Footer from 'components/Footer';
 import PromotionCarousel from 'components/PromotionCarousel';
 
 const { platformTitle } = config;
@@ -23,6 +24,10 @@ class App extends React.Component {
           <PromotionCarousel />
         </section>
 
+        <footer className="footer">
+          <Footer />
+        </footer>
+
         <style jsx>{`
           .np-header {
             position: absolute;
@@ -42,6 +47,13 @@ class App extends React.Component {
           .promotion-carousel {
             width: 100%;
             height: 705px;
+          }
+
+          .footer {
+            width: 100%;
+            background: #2A2C36;
+            position: fixed;
+            bottom: 0;
           }
         `}
         </style>

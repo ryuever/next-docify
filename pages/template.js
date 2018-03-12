@@ -1,8 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
 
-import DocBanner from 'components/DocBanner';
 import Header from 'components/Header';
+import Footer from 'components/Footer';
+import DocBanner from 'components/DocBanner';
+import DocTemplate from 'components/DocTemplate';
 
 class Template extends React.Component {
   render() {
@@ -19,6 +21,14 @@ class Template extends React.Component {
         <section className='np-doc-banner'>
           <DocBanner />
         </section>
+
+        <section className="np-doc">
+          <DocTemplate />
+        </section>
+
+        <footer className="footer">
+          <Footer />
+        </footer>
 
         <style jsx>{`
           .np-header {
@@ -39,6 +49,21 @@ class Template extends React.Component {
           .np-doc-banner {
             width: 100%;
             height: 256px;
+          }
+
+          .np-doc {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            background: #fff;
+          }
+
+          .footer {
+            width: 100%;
+            background: #2A2C36;
+            position: fixed;
+            bottom: 0;
           }
         `}
         </style>
