@@ -1,26 +1,23 @@
 import React from 'react';
 import Head from 'next/head';
-import config from 'config';
 
+import DocBanner from 'components/DocBanner';
 import Header from 'components/Header';
-import PromotionCarousel from 'components/PromotionCarousel';
 
-const { platformTitle } = config;
-
-class App extends React.Component {
+class Template extends React.Component {
   render() {
     return (
       <article className="app">
         <Head>
-          <title>{platformTitle}</title>
+          <title>SDK页面</title>
         </Head>
 
         <section className="np-header">
           <Header />
         </section>
 
-        <section className="promotion-carousel">
-          <PromotionCarousel />
+        <section className='np-doc-banner'>
+          <DocBanner />
         </section>
 
         <style jsx>{`
@@ -33,15 +30,15 @@ class App extends React.Component {
             z-index: 200;
             right: 0;
             {/* border-bottom: 1px solid transparent; */}
-            background: rgba(26,35,46,0.01) !important;
+            background: #292c2d;
 
             display: flex;
             justify-content: center;
           }
 
-          .promotion-carousel {
+          .np-doc-banner {
             width: 100%;
-            height: 705px;
+            height: 256px;
           }
         `}
         </style>
@@ -50,4 +47,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default Template;

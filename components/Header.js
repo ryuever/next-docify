@@ -21,7 +21,7 @@ export default class Header extends React.Component {
     this.setState({ activeService: null });
   }
 
-  createServiceItem({ title, id, children, display }) {
+  createServiceItem({ title, id, children, display, href }) {
     const { activeService } = this.state;
     let nextClassName = 'item' + (activeService === id ? ' active' : '');
 
@@ -32,15 +32,18 @@ export default class Header extends React.Component {
         onMouseEnter={this.onEnter.bind(this, id)}
         onMouseLeave={this.onLeave.bind(this, id)}
       >
-        {title}
-
-        {activeService === id && children && <div className="extra-appender">
-          <HeaderExtraAppender
-            content={children}
-            display={display}
-          />
-        </div>
-        }
+        <Link href={href}>
+          <a>
+            {title}
+            {activeService === id && children && <div className="extra-appender">
+              <HeaderExtraAppender
+                content={children}
+                display={display}
+              />
+            </div>
+            }
+          </a>
+        </Link>
 
         <style jsx>{`
           .item {
@@ -54,6 +57,16 @@ export default class Header extends React.Component {
             cursor: pointer;
             border-bottom: 4px solid #f5533d;
             color: #fff;
+          }
+
+          a {
+            display: inline-block;
+            color: #8890a4;
+          }
+
+          a:hover {
+            color: #fff;
+            corsor: pointer;
           }
         `}
         </style>
@@ -114,8 +127,7 @@ export default class Header extends React.Component {
           {this.renderAccountHolder()}
         </div>
 
-        <ul className="account-appender">
-        </ul>
+        <ul className="account-appender" />
 
         <style jsx>{`
           .header-container {
@@ -128,6 +140,10 @@ export default class Header extends React.Component {
           .logo-holder {
             width: 110px;
             margin-left: 48px;
+            background: url('../static/assets/logo.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
           }
 
           .service-items {

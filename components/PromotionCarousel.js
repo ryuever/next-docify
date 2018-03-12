@@ -25,7 +25,8 @@ export default class PromotionCarousel extends React.Component {
             text-align: center;
             height: 705px !important;
             width: 100%;
-            background: rgba(12, 12, 12, 0.7);
+            background: linear-gradient(135deg,#2b2525,#1b1515 60%,#02020e);
+            {/* background: rgba(12, 12, 12, 0.7); */}
             overflow: hidden;
           }
 
