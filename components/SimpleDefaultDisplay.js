@@ -13,9 +13,11 @@ const SimpleDefaultDisplay = (props) => {
 
     return (
       <li className="item" key={id}>
-        <Link href={nextHref}>
+        {/* <Link href={nextHref}>
           <a>{title}</a>
-        </Link>
+        </Link> */}
+
+        <a href={nextHref}>{title}</a>
 
         <style jsx>{`
           .item {

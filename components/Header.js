@@ -6,7 +6,7 @@ import dataSource from 'dataSource';
 import normalizeUrlPath from 'utils/normalizeUrlPath';
 import config from 'config';
 
-const { publicPath } = config;
+const { publicPath, shouldNormalizeWithIndex } = config;
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -33,6 +33,7 @@ export default class Header extends React.Component {
   createServiceItem({ title, id, children, display, href }) {
     const { activeService } = this.state;
     let nextClassName = 'item' + (activeService === id ? ' active' : '');
+    const nextHref = normalizeUrlPath(href, publicPath, shouldNormalizeWithIndex);
 
     return (
       <li
@@ -41,8 +42,11 @@ export default class Header extends React.Component {
         onMouseEnter={this.onEnter.bind(this, id)}
         onMouseLeave={this.onLeave.bind(this, id)}
       >
-        <div onClick={this.handleRedirect.bind(this, href)}>
-          {title}
+        <div>
+          {/* <Link href={nextHref}>
+            <a href={nextHref}>{title}</a>
+          </Link> */}
+          <a href={nextHref}>{title}</a>
           {activeService === id && children && <div className="extra-appender">
             <HeaderExtraAppender
               content={children}
