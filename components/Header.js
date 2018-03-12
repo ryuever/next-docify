@@ -19,7 +19,7 @@ export default class Header extends React.Component {
   }
 
   onLeave() {
-    this.setState({ activeService: 'docs' });
+    this.setState({ activeService: null });
   }
 
   handleRedirect(href) {
