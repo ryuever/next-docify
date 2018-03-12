@@ -3,6 +3,10 @@ import Router from 'next/router'
 import Link from 'next/link';
 import HeaderExtraAppender from 'components/HeaderExtraAppender';
 import dataSource from 'dataSource';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+import config from 'config';
+
+const { publicPath } = config;
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -23,7 +27,7 @@ export default class Header extends React.Component {
   }
 
   handleRedirect(href) {
-    Router.push(href);
+    Router.replace(href);
   }
 
   createServiceItem({ title, id, children, display, href }) {
@@ -118,7 +122,12 @@ export default class Header extends React.Component {
   render() {
     return (
       <section className="header-container">
-        <div className="logo-holder" />
+        <div
+          className="logo-holder"
+          style={{
+            backgroundImage: `url('${normalizeUrlPath('./static/assets/logo.png', publicPath)}')`
+          }}
+        />
 
         <div className="service-items">
           <ul className="service-list">
@@ -143,7 +152,6 @@ export default class Header extends React.Component {
           .logo-holder {
             width: 110px;
             margin-left: 48px;
-            background: url('../static/assets/logo.png');
             background-repeat: no-repeat;
             background-size: contain;
             background-position: center;

@@ -1,3 +1,4 @@
 export default {
-  publicPath: '/',
+  publicPath: '/out',
+  shouldNormalizeWithIndex: true,
 }

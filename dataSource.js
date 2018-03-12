@@ -64,70 +64,70 @@ export default [{
     title: 'Web开发',
     children: [{
      title: 'JavaScript API',
-     href: '/template',
+     href: './template',
     }, {
       title: '微信小程序JavaScript API',
-      href: 'template',
+      href: './template',
     }]
   }, {
     title: 'Android开发',
     children: [{
       title: 'Android地图开发',
-      href: 'template',
+      href: './template',
     }, {
       title: 'Android定位SDK',
-      href: 'template',
+      href: './template',
     }, {
       title: 'Android鹰眼轨迹SDK',
-      href: 'template',
+      href: './template',
     }, {
       title: 'Android导航SDK',
-      href: 'template',
+      href: './template',
     }, {
       title: 'Android全景SDK',
-      href: 'template',
+      href: './template',
     }]
   }, {
     title: 'iOS开发',
     children: [{
       title: 'iOS地图开发',
-      href: 'template',
+      href: './template',
     }, {
       title: 'iOS定位SDK',
-      href: 'template',
+      href: './template',
     }, {
       title: 'iOS鹰眼轨迹SDK',
-      href: 'template',
+      href: './template',
     }, {
       title: 'iOS导航SDK',
-      href: 'template',
+      href: './template',
     }, {
       title: 'iOS全景SDK',
-      href: 'template',
+      href: './template',
     }]
   }, {
     title: '服务接口',
     children: [{
       title: 'LBS云',
-      href: 'template',
+      href: './template',
     }, {
       title: '鹰眼轨迹服务',
-      href: 'template',
+      href: './template',
     }, {
       title: 'Web服务API',
-      href: 'template',
+      href: './template',
     }, {
       title: '地图调用API',
-      href: 'template',
+      href: './template',
     }]
   }, {
     title: '工具支持',
     children: [{
       title: '数据管理平台',
-      href: 'template',
+      href: './template',
     }, {
       title: '鹰眼轨迹管理台',
-      href: 'template',
+      href: './template',
     }]
   }]
 }, {
