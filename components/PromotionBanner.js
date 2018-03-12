@@ -28,8 +28,8 @@ const PromotionBanner = () => {
     href: '#',
   }];
 
-  const createBanner = ({ icon, title, subTitle, isNew, href }) => (
-    <li className="banner-item">
+  const createBanner = ({ icon, title, subTitle, isNew, href }, id) => (
+    <li className="banner-item" key={id}>
       <Link href={href}>
         <a>
           <div className={`banner-icon ${icon}`} />
@@ -117,7 +117,7 @@ const PromotionBanner = () => {
     <section className="promotion-banner">
 
       <ul className="banners">
-        {banners.map(banner => createBanner(banner))}
+        {banners.map((banner, id) => createBanner(banner, id))}
       </ul>
 
       <style jsx>{`

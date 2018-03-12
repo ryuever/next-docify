@@ -14,7 +14,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <article classNama="app">
+      <article className="app">
         <Head>
           <title>{platformTitle}</title>
         </Head>

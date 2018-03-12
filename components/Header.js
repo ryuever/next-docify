@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import HeaderExtraAppender from 'components/HeaderExtraAppender';
 import dataSource from 'dataSource';
 
 export default class Header extends React.Component {
@@ -17,19 +18,29 @@ export default class Header extends React.Component {
   }
 
   onLeave() {
-    this.setState({ activeService: null });
+    this.setState({ activeService: 'services' });
   }
 
-  createServiceItem({ title, id }) {
-    let nextClassName = 'item' + (this.state.activeService === id ? ' active' : '');
+  createServiceItem({ title, id, children, display }) {
+    const { activeService } = this.state;
+    let nextClassName = 'item' + (activeService === id ? ' active' : '');
 
     return (
       <li
+        key={id}
         className={nextClassName}
         onMouseEnter={this.onEnter.bind(this, id)}
         onMouseLeave={this.onLeave.bind(this, id)}
       >
         {title}
+
+        {activeService === id && children && <div className="extra-appender">
+          <HeaderExtraAppender
+            content={children}
+            display={display}
+          />
+        </div>
+        }
 
         <style jsx>{`
           .item {
@@ -44,6 +55,8 @@ export default class Header extends React.Component {
             border-bottom: 4px solid #f5533d;
             color: #fff;
           }
+
+          .extra
         `}
         </style>
       </li>
@@ -86,10 +99,6 @@ export default class Header extends React.Component {
         </div>
       )
     }
-  }
-
-  createAccountSettingItem() {
-
   }
 
   render() {
