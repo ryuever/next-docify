@@ -55,6 +55,10 @@ class App extends React.Component {
             position: fixed;
             bottom: 0;
           }
+
+          a:visited {
+            text-decoration: none;
+          }
         `}
         </style>
       </article>

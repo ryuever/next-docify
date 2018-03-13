@@ -26,7 +26,7 @@ module.exports = {
     return config;
   },
 
-  assetPrefix: '/out',
+  // assetPrefix: '/out',
   exportPathMap: () => ({
     '/': { page: '/' },
     '/template': { page: '/template'}
