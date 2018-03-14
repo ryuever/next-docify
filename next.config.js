@@ -14,7 +14,8 @@ module.exports = {
       config: path.resolve(__dirname, 'config'),
       components: path.resolve(__dirname, 'components'),
       dataSource: path.resolve(__dirname, 'dataSource'),
-      utils: path.resolve(__dirname, 'utils')
+      utils: path.resolve(__dirname, 'utils'),
+      fs: path.resolve(__dirname, 'core', 'fs')
     };
 
     config.plugins.push(
