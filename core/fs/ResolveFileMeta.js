@@ -1,5 +1,7 @@
 import glob from 'glob';
 import Stat from './Stat';
+import ResolvePostMeta from './ResolvePostMeta';
+import fs from 'fs';
 
 class ResolveFileMeta {
 
@@ -33,10 +35,14 @@ class ResolveFileMeta {
     };
 
     files.forEach(file => {
+      const cwd = `${docsPath}/${file}`;
       const stat = new Stat({
         file,
-        cwd: `${docsPath}/${file}`
+        cwd,
       });
+
+      ResolvePostMeta.parse(fs.readFileSync(cwd, 'utf8'));
+
       const rootCategory = stat.rootCategory;
       if (!mapKey || (mapKey.category !== rootCategory)) mapKey = createMapKey(rootCategory);
       if (!docsStatMap.get(mapKey)) docsStatMap.set(mapKey, []);

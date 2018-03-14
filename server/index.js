@@ -9,8 +9,8 @@ export default () => {
   const app = next({ dev })
   const handle = app.getRequestHandler()
 
-  const fileMetas = ResolveFileMeta.walk();
-  console.log('file metas : ', fileMetas);
+  let fileMetas = null;
+  fileMetas = ResolveFileMeta.walk();
 
   app.prepare()
   .then(() => {
