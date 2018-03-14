@@ -4,6 +4,7 @@ import Remarkable from 'remarkable';
 const md = new Remarkable();
 const stack = [];
 const nextStack = [];
+let depth = 0;
 
 class ResolveCategory {
   constructor() {
@@ -36,6 +37,81 @@ class ResolveCategory {
     lines.forEach((line, lineNumber) => {
       ResolveCategory.parseLine(line, lineNumber);
     })
+
+    // console.log('xxx : ', nextStack.filter(stack => stack.value));
+
+    const res = nextStack.filter(stack => stack.value).reduce((sum, cur) => {
+      const { prev, merge, accumulate } = sum;
+
+      let nextMerge = merge;
+      let nextAccumulate = accumulate;
+
+      const { depth: prevDepth } = prev;
+      const { depth } = cur;
+
+      if (!prevDepth || prevDepth === depth) {
+        nextMerge.push(cur);
+      }
+
+      if (prevDepth < depth) {
+        console.log('runing');
+        nextAccumulate.concat(nextMerge);
+        nextMerge = [];
+        nextMerge.push(cur);
+      }
+
+      if (prevDepth > depth) {
+        if (merge.length > 0) {
+          cur.children = merge.slice();
+          nextMerge = [];
+          nextAccumulate.push(cur);
+        } else {
+          const len = nextAccumulate.length;
+          let i = len - 1;
+          for (; i >= 0; i--) {
+            const token = nextAccumulate[i];
+            if (token.depth <= depth) break;
+          }
+
+          cur.children = nextAccumulate.slice(i + 1, len);
+          nextAccumulate = nextAccumulate.slice(0, i + 1);
+          nextAccumulate.push(cur);
+
+          // let pop = nextAccumulate.pop();
+
+          // do {
+          //   if (pop && pop.depth > depth) {
+          //     cur.children.unshift(pop);
+          //     nextAccumulate.push(cur);
+          //   } else {
+          //     nextAccumulate = nextAccumulate.concat([pop, cur]);
+          //     console.log('break;')
+          //     break;
+          //   }
+          // } while ((pop = nextAccumulate.pop()) !== null)
+        }
+      }
+
+      return {
+        prev: cur,
+        merge: nextMerge,
+        accumulate: nextAccumulate,
+      }
+    }, {
+      prev: {},
+      merge: [],
+      accumulate: [],
+    })
+
+    fs.writeFileSync(
+      process.cwd() + `/build/stats.js`,
+      '/**\n' +
+        ' * @generated\n' +
+        ' */\n' +
+        'module.exports = ' +
+        JSON.stringify(res.accumulate, null, 2) +
+        ';\n'
+    );
   }
 
   static tagsShouldProcess() {
@@ -53,6 +129,7 @@ class ResolveCategory {
 
       lineStack.push({
         tag,
+        itag: tag.replace(/[^a-zA-Z]/g, ''),
         depth: 0,
         parent: '',
         start: index,
@@ -60,6 +137,7 @@ class ResolveCategory {
         end: index + tag.length,
         line: lineNumber,
         isClosingBracket: tag.startsWith('</'),
+        children: [],
       });
     })
 
@@ -73,9 +151,10 @@ class ResolveCategory {
     for (let i = 0; i < length;) {
       if (lineStack.length > 0) {
         const token = lineStack[0];
-        const { start, end, isClosingBracket } = token;
+        const { start, end, isClosingBracket, itag } = token;
         if (i === start) {
           if (isClosingBracket) {
+            if (itag === 'ul') depth -= 1;
             if (content) {
               const len = stack.length;
               stack[len - 1].value = content;
@@ -83,7 +162,11 @@ class ResolveCategory {
             }
             nextStack.push(stack.pop());
           } else {
+            token.depth = depth;
             stack.push(token);
+            if (itag === 'ul') {
+              depth += 1;
+            }
           }
 
           lineStack.shift();

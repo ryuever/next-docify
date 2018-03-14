@@ -1,7 +1,7 @@
 import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
-import ResolveFileMeta from '../core/fs/ResolveFileMeta';
+import StoreProvider from '../core/store/Provider';
 
 export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
@@ -9,8 +9,7 @@ export default () => {
   const app = next({ dev })
   const handle = app.getRequestHandler()
 
-  let fileMetas = null;
-  fileMetas = ResolveFileMeta.walk();
+  StoreProvider.resolveMeta();
 
   app.prepare()
   .then(() => {
