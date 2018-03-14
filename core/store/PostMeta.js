@@ -1,6 +1,11 @@
-class PostMeta {
+import Meta from './Meta';
+
+class PostMeta extends Meta {
   constructor(opts = {}) {
-    this.id = opts.id || '';
+    super({
+      cwd: opts.cwd,
+    });
+
     this.title = opts.title || '';
     this.author = opts.author || '';
     this._createdAt = opts.createdAt || '';

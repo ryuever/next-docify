@@ -1,14 +1,17 @@
 import glob from 'glob';
 import Stat from './Stat';
-import ResolvePostMeta from './ResolvePostMeta';
 import fs from 'fs';
+
+import ResolveCategory from './ResolveCategory';
+import ResolvePostMeta from './ResolvePostMeta';
+import ResolveStat from './ResolveStat';
 
 const statsMap = new Map();
 const postMetasMap = new Map();
 
-class ResolveFileMeta {
+class Provider {
 
-  static getDocPath() {
+  static resolveDocPath() {
     const rootPath = process.cwd();
     return `${rootPath}/docs`;
   }
@@ -20,12 +23,33 @@ class ResolveFileMeta {
     return prevParentSlug === parentSlug ? order + 1 : 0;
   }
 
-  static resolveCategories(stats) {
-
+  static walk(pattern, opts) {
+    return glob.sync(pattern, opts);
   }
 
-  static walk() {
-    const docsPath = ResolveFileMeta.getDocPath();
+  static resolveMeta() {
+    // first resolve summary file first
+    const docsPath = Provider.resolveDocPath();
+    const globOpts = {
+      cwd: docsPath,
+    };
+
+    const pattern1 = '*/';
+    const directDirectories = Provider.walk(pattern1, globOpts);
+    directDirectories.forEach(directory => {
+      const cwd = `${docsPath}/${directory}`;
+      ResolveCategory.parseSummary(cwd)
+    })
+
+    const pattern2 = '**/*.md';
+    const files = Provider.walk(pattern2, globOpts);
+    files.forEach(file => {
+      console.log('file : ', file);
+    });
+  }
+
+  static walk2() {
+    const docsPath = Provider.resolveDocPath();
     const pattern = '**/*.md';
     const files = glob.sync(pattern, {
       cwd: docsPath,
@@ -58,7 +82,7 @@ class ResolveFileMeta {
       const len = stats.length;
 
       if (!len) stat.order = 0
-      else stat.order = ResolveFileMeta.tryCalNextOrder(stats[len -1], stat);
+      else stat.order = Provider.tryCalNextOrder(stats[len -1], stat);
 
       stats.push(stat);
     });
@@ -66,8 +90,8 @@ class ResolveFileMeta {
     console.log('statsMap : ', statsMap);
     console.log('postMetasMap : ', postMetasMap);
 
-    // ResolveFileMeta.outputPostMetas();
-    // ResolveFileMeta.outputStats();
+    // Provider.outputPostMetas();
+    // Provider.outputStats();
   }
 
   // toSlug(cwd) as key
@@ -124,4 +148,4 @@ class ResolveFileMeta {
   }
 }
 
-export default ResolveFileMeta;
+export default Provider;

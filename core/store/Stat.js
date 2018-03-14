@@ -1,8 +1,13 @@
 import path from 'path';
-import toSlug from './toSlug';
+import Meta from './Meta';
+import toSlug from '../utils/toSlug';
 
-class Stat {
+class Stat extends Meta {
   constructor(opts) {
+    super({
+      cwd: opts.cwd,
+    });
+
     const { file, source, cwd } = opts;
     if (!file) throw new Error('`file` is require');
 
