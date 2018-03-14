@@ -1,5 +1,7 @@
 import PostMeta from './PostMeta';
 
+let cachedPostMeta = {};
+
 class ResolvePostMeta {
   static resolveParts(source) {
     let header = null;
@@ -43,10 +45,12 @@ class ResolvePostMeta {
     const [header, content] = ResolvePostMeta.resolveParts(source)
     const headerMeta = ResolvePostMeta.parseHeader(header);
 
-    return new PostMeta({
+    cachedPostMeta[header.id] = {
       ...headerMeta,
       content,
-    })
+    }
+
+    return new PostMeta(cachedPostMeta[header.id]);
   }
 }
 
