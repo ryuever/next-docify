@@ -38,8 +38,6 @@ class ResolveCategory {
       ResolveCategory.parseLine(line, lineNumber);
     })
 
-    // console.log('xxx : ', nextStack.filter(stack => stack.value));
-
     const res = nextStack.filter(stack => stack.value).reduce((sum, cur) => {
       const { prev, merge, accumulate } = sum;
 
@@ -54,8 +52,7 @@ class ResolveCategory {
       }
 
       if (prevDepth < depth) {
-        console.log('runing');
-        nextAccumulate.concat(nextMerge);
+        nextAccumulate = nextAccumulate.concat(nextMerge);
         nextMerge = [];
         nextMerge.push(cur);
       }
@@ -76,19 +73,6 @@ class ResolveCategory {
           cur.children = nextAccumulate.slice(i + 1, len);
           nextAccumulate = nextAccumulate.slice(0, i + 1);
           nextAccumulate.push(cur);
-
-          // let pop = nextAccumulate.pop();
-
-          // do {
-          //   if (pop && pop.depth > depth) {
-          //     cur.children.unshift(pop);
-          //     nextAccumulate.push(cur);
-          //   } else {
-          //     nextAccumulate = nextAccumulate.concat([pop, cur]);
-          //     console.log('break;')
-          //     break;
-          //   }
-          // } while ((pop = nextAccumulate.pop()) !== null)
         }
       }
 
