@@ -15,6 +15,17 @@ class Meta {
   get _cwd()  {
     return this.cwd;
   }
+
+  toJson() {
+    const json = {};
+    for (const key in this) {
+      if (this.hasOwnProperty(key)) {
+        json[key] = this[key];
+      }
+    }
+
+    return json;
+  }
 }
 
 export default Meta;

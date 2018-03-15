@@ -1,4 +1,5 @@
 import PostMeta from './PostMeta';
+import fs from 'fs';
 
 let cachedPostMeta = {};
 
@@ -41,16 +42,18 @@ class ResolvePostMeta {
     return meta;
   }
 
-  static parse(source) {
+  static parse(opts) {
+    const { cwd } = opts;
+    const source = fs.readFileSync(cwd, 'utf8');
+
     const [header, content] = ResolvePostMeta.resolveParts(source)
     const headerMeta = ResolvePostMeta.parseHeader(header);
 
-    cachedPostMeta[header.id] = {
+    return new PostMeta({
+      ...opts,
       ...headerMeta,
       content,
-    }
-
-    return new PostMeta(cachedPostMeta[header.id]);
+    });
   }
 }
 

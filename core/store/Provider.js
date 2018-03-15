@@ -36,6 +36,19 @@ class Provider {
     return glob.sync(pattern, opts);
   }
 
+  groupFilesByRootDir(paths) {
+    // Path indicating a file will be ignored
+    return paths.reduce((prev, path) => {
+      const file = `${this.resolveDocPath()}/${path}`;
+      const stats = fs.statSync(file);
+      const parts = path.split('/');
+      if (parts.length === 1 && stats.isFile()) return prev;
+      const key = parts[0];
+      prev[key] = prev[key] ? prev[key].concat(path) : [path];
+      return prev;
+    }, Object.create(null));
+  }
+
   resolveMeta() {
     // first resolve summary file first
     const docsPath = this.resolveDocPath();
@@ -57,57 +70,29 @@ class Provider {
     const rootDirs = Object.keys(filesMap);
     rootDirs.reduce((prev, rootDir) => {
       const files = filesMap[rootDir];
-      files.reduce((prev, file) => {
+      const content = files.reduce((prev, file) => {
         const cwd = `${this.resolveDocPath()}/${file}`;
+
         const stat = ResolveStat.parse({
           cwd,
           rootDir,
         })
-        console.log('stat : ', stat);
-      }, null)
+        prev.stats[stat.id] = stat.toJson();
 
+        const postMeta = ResolvePostMeta.parse({
+          cwd,
+        });
+        prev.postMetas[postMeta.id] = postMeta.toJson();
+        return prev;
+      }, {
+        stats: {},
+        postMetas: {},
+      })
+
+      const { stats, postMetas } = content;
+      Output.getInstance().outputStats(rootDir, stats);
+      Output.getInstance().outputPostMeta(rootDir, postMetas);
     }, null)
-  }
-
-  groupFilesByRootDir(paths) {
-    // Path indicating a file will be ignored
-    return paths.reduce((prev, path) => {
-      const file = `${this.resolveDocPath()}/${path}`;
-      const stats = fs.statSync(file);
-      const parts = path.split('/');
-      if (parts.length === 1 && stats.isFile()) return prev;
-      const key = parts[0];
-      prev[key] = prev[key] ? prev[key].concat(path) : [path];
-      return prev;
-    }, Object.create(null));
-  }
-
-  static walk2() {
-    const docsPath = this.resolveDocPath();
-    const pattern = '**/*.md';
-    const files = glob.sync(pattern, {
-      cwd: docsPath,
-    });
-
-    let mapKey = null;
-
-    const createMapKey = rootCategory => {
-      return {
-        category: rootCategory,
-        order: 0,
-      };
-    };
-
-    files.forEach(file => {
-      const cwd = `${docsPath}/${file}`;
-      const stat = new Stat({
-        file,
-        cwd,
-      });
-
-      const postMeta = ResolvePostMeta.parse(fs.readFileSync(cwd, 'utf8'));
-      postMetasMap.set(cwd, postMeta);
-    });
   }
 }
 

@@ -56,17 +56,6 @@ class Stat extends Meta {
     this.createdAt = new Date(birthtime).toLocaleString();
     this.updatedAt = new Date(mtime).toLocaleString();
   }
-
-  toJson() {
-    const json = {};
-    for (const key in this) {
-      if (this.hasOwnProperty(key)) {
-        json[key] = this[key];
-      }
-    }
-
-    return json;
-  }
 }
 
 export default Stat;
