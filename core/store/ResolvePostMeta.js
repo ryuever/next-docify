@@ -1,8 +1,6 @@
 import PostMeta from './PostMeta';
 import fs from 'fs';
 
-let cachedPostMeta = {};
-
 class ResolvePostMeta {
   static resolveParts(source) {
     let header = null;

@@ -1,13 +1,10 @@
 import glob from 'glob';
-import Stat from './Stat';
 import fs from 'fs';
 
 import Output from './Output';
 import ResolveCategory from './ResolveCategory';
 import ResolvePostMeta from './ResolvePostMeta';
 import ResolveStat from './ResolveStat';
-
-const postMetasMap = new Map();
 
 class Provider {
   constructor(opts = {}) {
