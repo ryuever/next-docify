@@ -44,6 +44,15 @@ class Provider {
     const pattern2 = '**/*.md';
     const files = Provider.walk(pattern2, globOpts);
     files.forEach(file => {
+      // const cwd = `${docsPath}/${file}`;
+      // const stat = new Stat({
+      //   file,
+      //   cwd,
+      // });
+
+      // const postMeta = ResolvePostMeta.parse(fs.readFileSync(cwd, 'utf8'));
+      // postMetasMap.set(cwd, postMeta);
+
       console.log('file : ', file);
     });
   }

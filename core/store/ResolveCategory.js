@@ -88,7 +88,7 @@ class ResolveCategory {
     })
 
     fs.writeFileSync(
-      process.cwd() + `/build/stats.js`,
+      process.cwd() + `/build/manifest.js`,
       '/**\n' +
         ' * @generated\n' +
         ' */\n' +
