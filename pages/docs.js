@@ -1,12 +1,26 @@
 import React from 'react';
 import Head from 'next/head';
+import { parse as parseUrl } from 'url';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import DocBanner from '../components/DocBanner';
 import DocTemplate from '../components/DocTemplate';
 
-class Template extends React.Component {
+const env = process.env.NODE_ENV;
+
+class Doc extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      manifest: [],
+    }
+  }
+
+  componentWillMount() {
+
+  }
+
   updateDocContainerMinHeight() {
     const min = `${window.innerHeight - 256 - 92}px`;
     this.doc.style.minHeight = min;
@@ -19,9 +33,26 @@ class Template extends React.Component {
   componentDidMount() {
     this.updateDocContainerMinHeight();
     this.updateFooterStyle();
+
+    const location = window.location.href;
+    const { query } = parseUrl(location);
+    const parts = query.split('&');
+    const options = {};
+
+    parts.forEach(part => {
+      const [key, value] = part.split('=');
+      options[key] = value;
+    })
+
+    import('../build/AndroidSDK/manifest.js').then((content) => {
+      this.setState({
+        manifest: content,
+      })
+    })
   }
 
   render() {
+
     return (
       <article className="app">
         <Head>
@@ -39,7 +70,9 @@ class Template extends React.Component {
         <section
           ref={(ref) => this.doc = ref}
           className="np-doc">
-          <DocTemplate />
+          <DocTemplate
+            manifest={this.state.manifest}
+          />
         </section>
 
         <footer
@@ -94,4 +127,4 @@ class Template extends React.Component {
   }
 }
 
-export default Template;
+export default Doc;

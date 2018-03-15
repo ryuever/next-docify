@@ -2,12 +2,14 @@ import React from 'react';
 
 import DocSidebar from './DocSidebar';
 import DocContent from './DocContent';
-const DocTemplate = () => {
+const DocTemplate = (props) => {
+  const { manifest } = props;
+
   return (
     <div className="doc-template">
       <section className="sidebar">
         <div className="doc-belongs">Android地图SDK</div>
-        <DocSidebar />
+        <DocSidebar manifest={manifest}/>
       </section>
 
       <section className="main">
