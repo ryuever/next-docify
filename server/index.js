@@ -22,13 +22,7 @@ export default () => {
 
     siteApp.get('*', (req, res) => {
       const parsedUrl = parseUrl(req.url, true)
-      const { pathname, query } = parsedUrl
-
-      if (pathname.startsWith('docs')) {
-        return app.render(req, res, 'docs', query);
-      } else {
-        handle(req, res, parsedUrl)
-      }
+      handle(req, res, parsedUrl)
     })
   })
 }

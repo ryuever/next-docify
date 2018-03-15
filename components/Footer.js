@@ -1,5 +1,5 @@
 import React from 'react';
-import config from 'config';
+import config from '../config';
 
 const { copyright, company, backup, sales, contact } = config;
 

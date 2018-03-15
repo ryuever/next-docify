@@ -22,13 +22,6 @@ class Provider {
     return `${this.context}/docs`;
   }
 
-  tryCalNextOrder(prev, next) {
-    const { parentSlug: prevParentSlug, order } = prev;
-    const { parentSlug } = next;
-
-    return prevParentSlug === parentSlug ? order + 1 : 0;
-  }
-
   walk(pattern, opts) {
     return glob.sync(pattern, opts);
   }

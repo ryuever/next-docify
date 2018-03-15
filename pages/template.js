@@ -1,10 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
 
-import Header from 'components/Header';
-import Footer from 'components/Footer';
-import DocBanner from 'components/DocBanner';
-import DocTemplate from 'components/DocTemplate';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import DocBanner from '../components/DocBanner';
+import DocTemplate from '../components/DocTemplate';
 
 class Template extends React.Component {
   updateDocContainerMinHeight() {
