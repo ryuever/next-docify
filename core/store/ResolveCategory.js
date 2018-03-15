@@ -1,20 +1,13 @@
 import fs from 'fs';
 import Remarkable from 'remarkable';
+import Output from './Output';
 
 const md = new Remarkable();
-const stack = [];
-const nextStack = [];
+let stack = [];
+let nextStack = [];
 let depth = 0;
 
 class ResolveCategory {
-  constructor() {
-
-  }
-
-  parse() {
-
-  }
-
   static tryPossibleSummaryName(docsPath) {
     const possibleValues = ['Summary.md', 'SUMMARY.md', 'summary.md'];
     for (let key of possibleValues) {
@@ -25,7 +18,11 @@ class ResolveCategory {
     return false;
   }
 
-  static parseSummary(docsPath) {
+  static parseSummary(docsPath, rootDir) {
+    stack = [];
+    nextStack = [];
+    depth = 0;
+
     const file = ResolveCategory.tryPossibleSummaryName(docsPath);
     if (!file) return;
 
@@ -87,15 +84,7 @@ class ResolveCategory {
       accumulate: [],
     })
 
-    fs.writeFileSync(
-      process.cwd() + `/build/manifest.js`,
-      '/**\n' +
-        ' * @generated\n' +
-        ' */\n' +
-        'module.exports = ' +
-        JSON.stringify(res.accumulate, null, 2) +
-        ';\n'
-    );
+    Output.getInstance().outputManifest(rootDir, res.accumulate);
   }
 
   static tagsShouldProcess() {

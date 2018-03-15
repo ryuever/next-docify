@@ -2,63 +2,88 @@ import glob from 'glob';
 import Stat from './Stat';
 import fs from 'fs';
 
+import Output from './Output';
 import ResolveCategory from './ResolveCategory';
 import ResolvePostMeta from './ResolvePostMeta';
 import ResolveStat from './ResolveStat';
 
-const statsMap = new Map();
 const postMetasMap = new Map();
 
 class Provider {
+  constructor(opts = {}) {
+    const {
+      outputPath, context
+    } = opts;
 
-  static resolveDocPath() {
-    const rootPath = process.cwd();
-    return `${rootPath}/docs`;
+    this.context = context || process.cwd();    // dir to resolve 'docs'
+    Output.createSingleton({
+      outputPath,
+    })
   }
 
-  static tryCalNextOrder(prev, next) {
+  resolveDocPath() {
+    return `${this.context}/docs`;
+  }
+
+  tryCalNextOrder(prev, next) {
     const { parentSlug: prevParentSlug, order } = prev;
     const { parentSlug } = next;
 
     return prevParentSlug === parentSlug ? order + 1 : 0;
   }
 
-  static walk(pattern, opts) {
+  walk(pattern, opts) {
     return glob.sync(pattern, opts);
   }
 
-  static resolveMeta() {
+  resolveMeta() {
     // first resolve summary file first
-    const docsPath = Provider.resolveDocPath();
+    const docsPath = this.resolveDocPath();
     const globOpts = {
       cwd: docsPath,
     };
 
     const pattern1 = '*/';
-    const directDirectories = Provider.walk(pattern1, globOpts);
-    directDirectories.forEach(directory => {
-      const cwd = `${docsPath}/${directory}`;
-      ResolveCategory.parseSummary(cwd)
+    const directDirectories = this.walk(pattern1, globOpts);
+    directDirectories.forEach(dir => {
+      const cwd = `${docsPath}/${dir}`;
+      ResolveCategory.parseSummary(cwd, dir)
     })
 
     const pattern2 = '**/*.md';
-    const files = Provider.walk(pattern2, globOpts);
-    files.forEach(file => {
-      // const cwd = `${docsPath}/${file}`;
-      // const stat = new Stat({
-      //   file,
-      //   cwd,
-      // });
+    const files = this.walk(pattern2, globOpts);
+    const filesMap = this.groupFilesByRootDir(files);
 
-      // const postMeta = ResolvePostMeta.parse(fs.readFileSync(cwd, 'utf8'));
-      // postMetasMap.set(cwd, postMeta);
+    const rootDirs = Object.keys(filesMap);
+    rootDirs.reduce((prev, rootDir) => {
+      const files = filesMap[rootDir];
+      files.reduce((prev, file) => {
+        const cwd = `${this.resolveDocPath()}/${file}`;
+        const stat = ResolveStat.parse({
+          cwd,
+          rootDir,
+        })
+        console.log('stat : ', stat);
+      }, null)
 
-      console.log('file : ', file);
-    });
+    }, null)
+  }
+
+  groupFilesByRootDir(paths) {
+    // Path indicating a file will be ignored
+    return paths.reduce((prev, path) => {
+      const file = `${this.resolveDocPath()}/${path}`;
+      const stats = fs.statSync(file);
+      const parts = path.split('/');
+      if (parts.length === 1 && stats.isFile()) return prev;
+      const key = parts[0];
+      prev[key] = prev[key] ? prev[key].concat(path) : [path];
+      return prev;
+    }, Object.create(null));
   }
 
   static walk2() {
-    const docsPath = Provider.resolveDocPath();
+    const docsPath = this.resolveDocPath();
     const pattern = '**/*.md';
     const files = glob.sync(pattern, {
       cwd: docsPath,
@@ -82,78 +107,7 @@ class Provider {
 
       const postMeta = ResolvePostMeta.parse(fs.readFileSync(cwd, 'utf8'));
       postMetasMap.set(cwd, postMeta);
-
-      const rootCategory = stat.rootCategory;
-      if (!mapKey || (mapKey.category !== rootCategory)) mapKey = createMapKey(rootCategory);
-      if (!statsMap.get(mapKey)) statsMap.set(mapKey, []);
-
-      const stats = statsMap.get(mapKey);
-      const len = stats.length;
-
-      if (!len) stat.order = 0
-      else stat.order = Provider.tryCalNextOrder(stats[len -1], stat);
-
-      stats.push(stat);
     });
-
-    console.log('statsMap : ', statsMap);
-    console.log('postMetasMap : ', postMetasMap);
-
-    // Provider.outputPostMetas();
-    // Provider.outputStats();
-  }
-
-  // toSlug(cwd) as key
-  // descript file content info
-  static outputPostMetas(category) {
-    const data = Object.create(null);
-    for (let key in this) {
-      if (this.hasOwnProperty(key) && !key.startsWith('_')) {
-        data[key] = this[key];
-      }
-    }
-
-    fs.writeFileSync(
-      process.cwd() + `/build/${category}/post-meta.js`,
-      '/**\n' +
-        ' * @generated\n' +
-        ' */\n' +
-        'module.exports = ' +
-        JSON.stringify(data, null, 2) +
-        ';\n'
-    );
-  }
-
-  // descript file stat
-  // toSlug(cwd) as key
-  static outputStats(category) {
-    const data = Object.create(null);
-
-    fs.writeFileSync(
-      process.cwd() + `/build/${category}/stats.js`,
-      '/**\n' +
-        ' * @generated\n' +
-        ' */\n' +
-        'module.exports = ' +
-        JSON.stringify(data, null, 2) +
-        ';\n'
-    );
-  }
-
-  // descript category layout
-  // should has tree structure
-  static outputManifest(category) {
-    const data = Object.create(null);
-
-    fs.writeFileSync(
-      process.cwd() + `/build/${category}/manifest.js`,
-      '/**\n' +
-        ' * @generated\n' +
-        ' */\n' +
-        'module.exports = ' +
-        JSON.stringify(data, null, 2) +
-        ';\n'
-    );
   }
 }
 

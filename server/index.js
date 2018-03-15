@@ -9,16 +9,15 @@ export default () => {
   const app = next({ dev })
   const handle = app.getRequestHandler()
 
-  StoreProvider.resolveMeta();
+  const storeProvider = new StoreProvider();
+  storeProvider.resolveMeta();
 
   app.prepare()
   .then(() => {
     const siteApp = express();
     siteApp.listen(port, err => {
       if (err) throw err;
-      /* eslint-disable no-console */
       console.log(`> Site generator ready on http://localhost:${port}`)
-      /* eslint-enable no-console */
     })
 
     siteApp.get('*', (req, res) => {

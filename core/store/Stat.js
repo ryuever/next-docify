@@ -1,5 +1,7 @@
 import path from 'path';
 import Meta from './Meta';
+import fs from 'fs';
+
 import toSlug from '../utils/toSlug';
 
 class Stat extends Meta {
@@ -8,23 +10,18 @@ class Stat extends Meta {
       cwd: opts.cwd,
     });
 
-    const { file, source, cwd } = opts;
-    if (!file) throw new Error('`file` is require');
+    const { rootDir } = opts;
 
-    this.file = file;
-    this.source = source;
-    this.cwd = cwd;
+    // Indicating the direct child of `docs` folder it belongs to.
+    this.rootDir = rootDir;
+
     this.slug = '';
     this.parentSlug = '';
-    this.id = '';
-    this.title = '';
-    this.fileName = '';
-    this.rootCategory = '';
     this.category = '';
     this.order = null;
 
     this.initSlugs();
-    this.initRootCategory();
+    this.initFileStat();
     this.initParentSlugWithoutRootCategory();
   }
 
@@ -41,25 +38,23 @@ class Stat extends Meta {
   }
 
   initSlugs() {
-    const parts = Stat.getParts(this.file);
-    const len = parts.length;
-    const fileName = Stat.getFileName(parts[len -1]);
-
-    this.id = this.slug = Stat.getFileId(fileName);
+    const parts = Stat.getParts(this.cwd);
     parts.pop();
-
     this.parentSlug = parts.reduce((prev, cur) => `${prev}/${toSlug(cur)}`, '');
   }
 
-  initRootCategory() {
-    const parts = Stat.getParts(this.file);
-    this.rootCategory = parts.shift();
+  initParentSlugWithoutRootCategory() {
+    // only match startsWith `this.rootDir` and followd by `/`
+    const reg = RegExp(`^/?${this.rootDir}(?=/)`, 'i');
+    this.parentSlugSlim = this.parentSlug.replace(reg, '');
   }
 
-  initParentSlugWithoutRootCategory() {
-    // only match startsWith `this.rootCategory` and followd by `/`
-    const reg = RegExp(`^/?${this.rootCategory}(?=/)`, 'i');
-    this.parentSlugSlim = this.parentSlug.replace(reg, '');
+  initFileStat() {
+    const stats = fs.statSync(this.cwd);
+    const { birthtime, mtime } = stats;
+    this.isDir = stats.isDirectory();
+    this.createdAt = new Date(birthtime).toLocaleString();
+    this.updatedAt = new Date(mtime).toLocaleString();
   }
 
   toJson() {
