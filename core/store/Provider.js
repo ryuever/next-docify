@@ -92,20 +92,20 @@ class Provider {
   prepareDataSource(pathname) {
     const docPath = this.resolveDocPath();
 
-    // const id = `${toSlug(docPath)}-${pathname}`;
-
-    console.log('pathname : ', pathname);
     if (pathname.startsWith('/docs/ios-sdk')) {
-      console.log('cope file');
-      cp(join(this.context, 'build', 'iOS-SDK', 'manifest.js'), docPath, {
-        overwrite: true,
-      })
+      cp(
+        join(this.context, 'build', 'iOS-SDK', 'manifest.js'),
+        join(docPath, 'manifest.js'),
+        { overwrite: true }
+      )
     }
 
-    if (pathname.startsWith('/docs/androidskd')) {
-      cp(join(this.context, 'build', 'AndroidSDK', 'manifest.js'), docPath, {
-        overwrite: true,
-      })
+    if (pathname.startsWith('/docs/androidsdk')) {
+      cp(
+        join(this.context, 'build', 'AndroidSDK', 'manifest.js'),
+        join(docPath, 'manifest.js'),
+        { overwrite: true }
+      )
     }
   }
 }
