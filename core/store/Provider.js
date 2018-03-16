@@ -9,6 +9,7 @@ import ResolvePostMeta from './ResolvePostMeta';
 import ResolveStat from './ResolveStat';
 
 import toSlug from '../utils/toSlug';
+import readJSON from '../utils/readJSON';
 
 class Provider {
   constructor(opts = {}) {
@@ -76,16 +77,20 @@ class Provider {
         const postMeta = ResolvePostMeta.parse({
           cwd,
         });
-        prev.postMetas[postMeta.id] = postMeta.toJson();
+        prev.postmeta[postMeta.id] = postMeta.toJson();
         return prev;
       }, {
         stats: {},
-        postMetas: {},
+        postmeta: {},
       })
 
-      const { stats, postMetas } = content;
+      const { stats, postmeta } = content;
+
+      const refineManifest = ResolveCategory.refineManifestAfterResolvePostMeta(docsPath, rootDir, postmeta);
+
       Output.getInstance().outputStats(rootDir, stats);
-      Output.getInstance().outputPostMeta(rootDir, postMetas);
+      Output.getInstance().outputPostMeta(rootDir, postmeta);
+      Output.getInstance().outputRefineManifest(rootDir, refineManifest);
     }, null)
   }
 
@@ -96,8 +101,8 @@ class Provider {
 
     if (pathname.startsWith('/docs/ios-sdk')) {
       cp(
-        join(this.context, 'build', 'iOS-SDK', 'manifest.js'),
-        join(docPath, 'manifest.js'),
+        join(this.context, 'build', 'iOS-SDK', 'refine.js'),
+        join(docPath, 'refine.js'),
         { overwrite: true }
       )
 
@@ -119,15 +124,13 @@ class Provider {
 
     if (pathname.startsWith('/docs/androidsdk')) {
       cp(
-        join(this.context, 'build', 'AndroidSDK', 'manifest.js'),
-        join(docPath, 'manifest.js'),
+        join(this.context, 'build', 'AndroidSDK', 'refine.js'),
+        join(docPath, 'refine.js'),
         { overwrite: true }
       )
 
-      let stats = fs.readFileSync(join(this.context, 'build', 'AndroidSDK', 'postmeta.js'), 'utf-8');
-      stats = stats.replace(/[^{]*/, '');
-      stats = stats.replace(/[^}]*$/, '');
-      const info = JSON.parse(stats)[id];
+      let stats = readJSON(join(this.context, 'build', 'AndroidSDK', 'postmeta.js'));
+      const info = stats[id];
 
       fs.writeFileSync(
         join(docPath, 'postmeta.js'),

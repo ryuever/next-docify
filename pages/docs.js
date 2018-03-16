@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import DocBanner from '../components/DocBanner';
 import DocTemplate from '../components/DocTemplate';
 
-import manifest from '../docs/manifest';
+import manifest from '../docs/refine';
 import postmeta from '../docs/postmeta';
 
 import config from 'config';

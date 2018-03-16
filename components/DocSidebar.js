@@ -18,17 +18,19 @@ export default class DocSidebar extends React.Component {
   }
 
   renderSidebar(data, i) {
-    const { children, depth, value } = data;
+    const { children, depth, title, permalink } = data;
+
+    console.log(" data : ", data);
     const key = `${depth}-${i}`;
     if (children.length > 0) {
       return (
-        <SubMenu key={key} title={<span>{value}</span>}>
+        <SubMenu key={key} title={<span>{title}</span>}>
           {children.map((child, key) => this.renderSidebar(child, key))}
         </SubMenu>
       )
     }
 
-    return <Menu.Item key={key}>{value}</Menu.Item>
+    return <Menu.Item key={key}><a href={permalink}>{title}</a></Menu.Item>;
   }
 
   render() {

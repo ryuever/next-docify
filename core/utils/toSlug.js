@@ -1,6 +1,7 @@
 import limax from 'limax';
 
 const slug = str => {
+  console.log('str ', str);
   const strWithoutSuffix = str => str.replace(/\.[^/]+$/, '');
   const strWithoutPrefix = str => str.replace(/^\//, '');
 

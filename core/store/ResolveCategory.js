@@ -1,6 +1,10 @@
 import fs from 'fs';
 import Remarkable from 'remarkable';
 import Output from './Output';
+import resolveId from './utils/resolveId';
+import removeSuffix from './utils/removeSuffix';
+import readJSON from '../utils/readJSON';
+import toSlug from '../utils/toSlug';
 
 const md = new Remarkable();
 let stack = [];
@@ -155,6 +159,46 @@ class ResolveCategory {
       const len = stack.length;
       stack[len - 1].value = content;
     }
+  }
+
+  static refineManifestAfterResolvePostMeta(docsPath, rootDir, postmeta) {
+    const path = `${Output.getInstance().outputPath}/${rootDir}/manifest.js`;
+    const manifest = readJSON(path);
+
+    return manifest.map(fest => {
+      const refine = (parent, fest) => {
+        const { children, value } = fest;
+        const cwd = `${docsPath}/${parent}/${value}`;
+        const id = resolveId(cwd);
+
+        const url = `/docs/${parent}/${value}`;
+        const parts = url.split('/');
+        console.log('parts : ', parts);
+        const resolveUrl = url.split('/').map(part => part ? toSlug(part) : '').join('/');
+
+        const mf = {
+          name: value,
+          isFile: false,
+          title: removeSuffix(value),
+          permalink: resolveUrl,
+          children: [],
+        };
+
+        if (postmeta[id]) {
+          const { title } = postmeta[id];
+          mf.title = title;
+          mf.isFile = true;
+        }
+
+        if (children.length > 0) {
+          mf.children = children.map((child) => refine(`${parent}/${value}`, child))
+        }
+
+        return mf;
+      }
+
+      return refine(rootDir, fest);
+    })
   }
 }
 

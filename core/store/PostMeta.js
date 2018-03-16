@@ -1,4 +1,5 @@
 import Meta from './Meta';
+import removeSuffix from './utils/removeSuffix';
 
 class PostMeta extends Meta {
   constructor(opts = {}) {
@@ -6,7 +7,7 @@ class PostMeta extends Meta {
       cwd: opts.cwd,
     });
 
-    this.title = opts.title || '';
+    this.title = opts.title || removeSuffix(this.filename);
     this.author = opts.author || '';
     this._createdAt = opts.createdAt || '';
     this._updatedAt = opts.updatedAt || '';
