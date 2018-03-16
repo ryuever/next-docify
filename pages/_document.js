@@ -7,7 +7,7 @@ const { publicPath, antdStaticName } = config;
 export default class CustomDocument extends Document {
 
   render () {
-    const cssPath = normalizeUrlPath(`./static/${antdStaticName}`, publicPath);
+    const cssPath = normalizeUrlPath(`./static/stylesheets/${antdStaticName}`, publicPath);
 
     return (<html lang='en-US'>
       <Head>

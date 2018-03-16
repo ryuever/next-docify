@@ -9,6 +9,10 @@ import DocTemplate from '../components/DocTemplate';
 import manifest from '../docs/manifest';
 import postmeta from '../docs/postmeta';
 
+import config from 'config';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+const { publicPath, highlightStyleName } = config;
+
 class Doc extends React.Component {
   updateDocContainerMinHeight() {
     const min = `${window.innerHeight - 256 - 92}px`;
@@ -25,11 +29,13 @@ class Doc extends React.Component {
   }
 
   render() {
+    const cssPath = normalizeUrlPath(`./static/stylesheets/highlight/${highlightStyleName}`, publicPath);
 
     return (
       <article className="app">
         <Head>
           <title>SDK页面</title>
+          <link rel="stylesheet" href={cssPath} />
         </Head>
 
         <section className="np-header">

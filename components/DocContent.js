@@ -1,11 +1,10 @@
 import React from 'react';
-import Remarkable from 'remarkable';
+import md from '../utils/markdownParser';
 
 const DocContent = (props) => {
   const { postmeta } = props;
   const { content } = postmeta;
 
-  const md = new Remarkable();
   const html = md.render(content);
   return (
     <div
