@@ -3,7 +3,7 @@ import React from 'react';
 import DocSidebar from './DocSidebar';
 import DocContent from './DocContent';
 const DocTemplate = (props) => {
-  const { manifest } = props;
+  const { manifest, postmeta } = props;
 
   return (
     <div className="doc-template">
@@ -13,7 +13,7 @@ const DocTemplate = (props) => {
       </section>
 
       <section className="main">
-        <DocContent />
+        <DocContent postmeta={postmeta}/>
       </section>
 
       <style jsx>{`

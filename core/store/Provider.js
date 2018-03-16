@@ -91,6 +91,8 @@ class Provider {
 
   prepareDataSource(pathname) {
     const docPath = this.resolveDocPath();
+    const subPathname = pathname.replace('/docs', '');
+    const id = `${toSlug(this.resolveDocPath())}-${toSlug(subPathname)}`;
 
     if (pathname.startsWith('/docs/ios-sdk')) {
       cp(
@@ -98,6 +100,21 @@ class Provider {
         join(docPath, 'manifest.js'),
         { overwrite: true }
       )
+
+      let stats = fs.readFileSync(join(this.context, 'build', 'iOS-SDK', 'postmeta.js'), 'utf-8');
+      stats = stats.replace(/[^{]*/, '');
+      stats = stats.replace(/[^}]*$/, '');
+      const info = JSON.parse(stats)[id];
+
+      fs.writeFileSync(
+        join(docPath, 'postmeta.js'),
+        '/**\n' +
+          ' * @generated\n' +
+          ' */\n' +
+          'module.exports = ' +
+          Output.formatContentBeforeOutput(info) +
+          ';\n'
+      );
     }
 
     if (pathname.startsWith('/docs/androidsdk')) {
@@ -106,6 +123,21 @@ class Provider {
         join(docPath, 'manifest.js'),
         { overwrite: true }
       )
+
+      let stats = fs.readFileSync(join(this.context, 'build', 'AndroidSDK', 'postmeta.js'), 'utf-8');
+      stats = stats.replace(/[^{]*/, '');
+      stats = stats.replace(/[^}]*$/, '');
+      const info = JSON.parse(stats)[id];
+
+      fs.writeFileSync(
+        join(docPath, 'postmeta.js'),
+        '/**\n' +
+          ' * @generated\n' +
+          ' */\n' +
+          'module.exports = ' +
+          Output.formatContentBeforeOutput(info) +
+          ';\n'
+      );
     }
   }
 }
