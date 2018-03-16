@@ -1,26 +1,15 @@
 import React from 'react';
 import Head from 'next/head';
-import { parse as parseUrl } from 'url';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import DocBanner from '../components/DocBanner';
 import DocTemplate from '../components/DocTemplate';
 
-const env = process.env.NODE_ENV;
+import manifest from '../docs/manifest';
+import postmeta from '../docs/postmeta';
 
 class Doc extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      manifest: [],
-    }
-  }
-
-  componentWillMount() {
-
-  }
-
   updateDocContainerMinHeight() {
     const min = `${window.innerHeight - 256 - 92}px`;
     this.doc.style.minHeight = min;
@@ -33,22 +22,6 @@ class Doc extends React.Component {
   componentDidMount() {
     this.updateDocContainerMinHeight();
     this.updateFooterStyle();
-
-    const location = window.location.href;
-    const { query } = parseUrl(location);
-    const parts = query.split('&');
-    const options = {};
-
-    parts.forEach(part => {
-      const [key, value] = part.split('=');
-      options[key] = value;
-    })
-
-    import('../build/AndroidSDK/manifest.js').then((content) => {
-      this.setState({
-        manifest: content,
-      })
-    })
   }
 
   render() {
@@ -71,7 +44,8 @@ class Doc extends React.Component {
           ref={(ref) => this.doc = ref}
           className="np-doc">
           <DocTemplate
-            manifest={this.state.manifest}
+            manifest={manifest}
+            postmeta={postmeta}
           />
         </section>
 

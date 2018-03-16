@@ -1,10 +1,14 @@
 import glob from 'glob';
 import fs from 'fs';
+import cp from 'recursive-copy';
+import { join } from 'path';
 
 import Output from './Output';
 import ResolveCategory from './ResolveCategory';
 import ResolvePostMeta from './ResolvePostMeta';
 import ResolveStat from './ResolveStat';
+
+import toSlug from '../utils/toSlug';
 
 class Provider {
   constructor(opts = {}) {
@@ -83,6 +87,26 @@ class Provider {
       Output.getInstance().outputStats(rootDir, stats);
       Output.getInstance().outputPostMeta(rootDir, postMetas);
     }, null)
+  }
+
+  prepareDataSource(pathname) {
+    const docPath = this.resolveDocPath();
+
+    // const id = `${toSlug(docPath)}-${pathname}`;
+
+    console.log('pathname : ', pathname);
+    if (pathname.startsWith('/docs/ios-sdk')) {
+      console.log('cope file');
+      cp(join(this.context, 'build', 'iOS-SDK', 'manifest.js'), docPath, {
+        overwrite: true,
+      })
+    }
+
+    if (pathname.startsWith('/docs/androidskd')) {
+      cp(join(this.context, 'build', 'AndroidSDK', 'manifest.js'), docPath, {
+        overwrite: true,
+      })
+    }
   }
 }
 

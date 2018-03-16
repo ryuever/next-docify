@@ -2,6 +2,7 @@ import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
 import StoreProvider from '../core/store/Provider';
+import isDocURL from '../utils/isDocURL';
 
 export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
@@ -21,7 +22,19 @@ export default () => {
     })
 
     siteApp.get('*', (req, res) => {
-      const parsedUrl = parseUrl(req.url, true)
+      let parsedUrl = parseUrl(req.url, true)
+      const { pathname } =parsedUrl;
+
+      if (isDocURL(pathname)) {
+        storeProvider.prepareDataSource(pathname);
+
+        parsedUrl = {
+          pathname: '/docs',
+          path: '/docs',
+          href: '/docs',
+        }
+      }
+
       handle(req, res, parsedUrl)
     })
   })
