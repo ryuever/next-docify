@@ -25,3 +25,9 @@ import postmeta from 'next-docify/postmeta'
 - support `next-docify dev`
 
 - support `next-docify build meta`
+
+- support `next-docify build summary`
+
+- support `next-docify clear summary`
+
+- support using file name as `title` if there is no meta config in doc
