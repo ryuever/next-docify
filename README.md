@@ -31,3 +31,9 @@ import postmeta from 'next-docify/postmeta'
 - support `next-docify clear summary`
 
 - support using file name as `title` if there is no meta config in doc
+
+- import webpack `Tapable` module to control events.
+
+- refactor data structure, use binary tree to store `meta` info instead of hash table.
+
+- emulate `Mongodb` file store system. create a connection between `manifest.js` and `postmeta.js`

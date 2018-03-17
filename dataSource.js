@@ -73,37 +73,37 @@ export default [{
     title: 'Android开发',
     children: [{
       title: 'Android地图开发',
-      href: './template',
+      href: '/docs/android-sdk',
     }, {
       title: 'Android定位SDK',
-      href: './template',
+      href: '/docs/android-sdk',
     }, {
       title: 'Android鹰眼轨迹SDK',
-      href: './template',
+      href: '/docs/android-sdk',
     }, {
       title: 'Android导航SDK',
-      href: './template',
+      href: '/docs/android-sdk',
     }, {
       title: 'Android全景SDK',
-      href: './template',
+      href: '/docs/android-sdk',
     }]
   }, {
     title: 'iOS开发',
     children: [{
       title: 'iOS地图开发',
-      href: './template',
+      href: '/docs/ios-sdk',
     }, {
       title: 'iOS定位SDK',
-      href: './template',
+      href: '/docs/ios-sdk',
     }, {
       title: 'iOS鹰眼轨迹SDK',
-      href: './template',
+      href: '/docs/ios-sdk',
     }, {
       title: 'iOS导航SDK',
-      href: './template',
+      href: '/docs/ios-sdk',
     }, {
       title: 'iOS全景SDK',
-      href: './template',
+      href: '/docs/ios-sdk',
     }]
   }, {
     title: '服务接口',
