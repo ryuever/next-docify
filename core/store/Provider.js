@@ -119,10 +119,12 @@ class Provider {
         { overwrite: true }
       )
 
-      let stats = fs.readFileSync(join(this.context, 'build', 'iOS-SDK', 'postmeta.js'), 'utf-8');
-      stats = stats.replace(/[^{]*/, '');
-      stats = stats.replace(/[^}]*$/, '');
-      const info = JSON.parse(stats)[id];
+      let stats = readJSON(join(this.context, 'build', 'iOS-SDK', 'postmeta.js'));
+      let info = stats[id];
+
+      if (!info) {
+        info = stats[`${id}-readme`];
+      }
 
       fs.writeFileSync(
         join(docPath, 'postmeta.js'),
@@ -143,7 +145,11 @@ class Provider {
       )
 
       let stats = readJSON(join(this.context, 'build', 'Android-SDK', 'postmeta.js'));
-      const info = stats[id];
+      let info = stats[id];
+
+      if (!info) {
+        info = stats[`${id}-readme`];
+      }
 
       fs.writeFileSync(
         join(docPath, 'postmeta.js'),

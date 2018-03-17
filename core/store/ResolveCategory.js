@@ -169,17 +169,19 @@ class ResolveCategory {
     return manifest.map(fest => {
       const refine = (parent, fest) => {
         const { children, value, depth } = fest;
-        const cwd = `${Provider.getInstance().context}/${parent}`;
+        const nextParent = `${parent}/${value}`;
+
+        const cwd = `${Provider.getInstance().context}${nextParent}`;
         const id = resolveId(cwd);
 
-        const nextParent = `${parent}/${value}`;
         const resolveUrl = nextParent.split('/').map(part => part ? toSlug(part) : '').join('/');
-
+        const slimTitle = removeSuffix(value);
         const mf = {
           name: value,
           isFile: false,
           depth: depth,
-          title: removeSuffix(value),
+          title: slimTitle,
+          slug: toSlug(slimTitle),  // should based on the original title value.
           permalink: resolveUrl,
         };
 
@@ -189,7 +191,6 @@ class ResolveCategory {
           mf.isFile = true;
         }
 
-        mf.slug = toSlug(mf.title);
         mf.children = [];
         if (children.length > 0) {
           mf.children = children.map((child) => refine(nextParent, child))
