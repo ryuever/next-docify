@@ -11,6 +11,8 @@ import ResolveStat from './ResolveStat';
 import toSlug from '../utils/toSlug';
 import readJSON from '../utils/readJSON';
 
+let singleton = null;
+
 class Provider {
   constructor(opts = {}) {
     const {
@@ -21,6 +23,17 @@ class Provider {
     Output.createSingleton({
       outputPath,
     })
+
+    singleton = this;
+  }
+
+  static getInstance() {
+    if (singleton) return singleton;
+  }
+
+  static createSingleton(opts) {
+    if (singleton) return singleton;
+    return new Provider(opts);
   }
 
   resolveDocPath() {
@@ -122,14 +135,14 @@ class Provider {
       );
     }
 
-    if (pathname.startsWith('/docs/androidsdk')) {
+    if (pathname.startsWith('/docs/android-sdk')) {
       cp(
-        join(this.context, 'build', 'AndroidSDK', 'refine.js'),
+        join(this.context, 'build', 'Android-SDK', 'refine.js'),
         join(docPath, 'refine.js'),
         { overwrite: true }
       )
 
-      let stats = readJSON(join(this.context, 'build', 'AndroidSDK', 'postmeta.js'));
+      let stats = readJSON(join(this.context, 'build', 'Android-SDK', 'postmeta.js'));
       const info = stats[id];
 
       fs.writeFileSync(
