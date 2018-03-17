@@ -7,25 +7,63 @@ export default class DocSidebar extends React.Component {
     super(props);
     this.state = {
       theme: 'light',
-      current: '1',
+      openKeys: [],
+      selectedKeys: '',
     }
   }
 
-  handleClick = (e) => {
+  componentDidMount() {
+    const href = window.location.href;
+    const path = href.replace(/.*\/docs/, '');
+    const parts = path.split('/');
+
+    const openKeys = parts.reduce(({prev, merge}, cur) => {
+      const nextState = { prev, merge };
+
+      if (cur) {
+        nextState.prev = `${prev}/${cur}`;
+        nextState.merge.push(nextState.prev);
+      }
+
+      return nextState;
+    }, {
+      prev: '',
+      merge: [],
+    })
+
     this.setState({
-      current: e.key,
-    });
+      selectedKeys: path,
+      openKeys: openKeys.merge,
+    })
   }
 
-  renderSidebar(data, i) {
-    const { children, depth, title, permalink } = data;
+  handleClick = (e) => {
+    const { openKeys } = this.state;
 
-    console.log(" data : ", data);
-    const key = `${depth}-${i}`;
+    if (openKeys.indexOf(e.key) >= 0) {
+      this.setState({
+        openKeys: openKeys.filter(key => !key.startsWith(e.key))
+      })
+    } else {
+      this.setState({
+        openKeys: openKeys.concat(e.key)
+      })
+    }
+  }
+
+  renderSidebar(data, parentSlug) {
+    const { children, title, permalink, slug } = data;
+
+    const key = `${parentSlug}/${slug}`;
+
     if (children.length > 0) {
       return (
-        <SubMenu key={key} title={<span>{title}</span>}>
-          {children.map((child, key) => this.renderSidebar(child, key))}
+        <SubMenu
+          key={key}
+          title={<span>{title}</span>}
+          onTitleClick={this.handleClick.bind(this)}
+        >
+          {children.map((child, order) => this.renderSidebar(child, key, order))}
         </SubMenu>
       )
     }
@@ -35,18 +73,19 @@ export default class DocSidebar extends React.Component {
 
   render() {
     const { manifest } = this.props;
+    const { selectedKeys, openKeys } = this.state;
+
     return (
       <section className='sidebar'>
         <Menu
-          onClick={this.handleClick}
           style={{ width: 210 }}
-          defaultOpenKeys={['sub1']}
-          selectedKeys={[this.state.current]}
+          selectedKeys={[selectedKeys]}
+          openKeys={openKeys}
           mode="inline"
         >
-          {manifest.map((data, i) => this.renderSidebar(data, i))}
+          {manifest.map((data) => this.renderSidebar(data, ''))}
         </Menu>
-        <style jsx global>{`
+        {/* <style jsx global>{`
           .ant-menu-inline .ant-menu-item,
           .ant-menu-inline .ant-menu-submenu-title,
           .ant-menu-vertical .ant-menu-item,
@@ -61,7 +100,7 @@ export default class DocSidebar extends React.Component {
             font-size: 14px !important;
           }
         `}
-        </style>
+        </style> */}
       </section>
     )
   }
