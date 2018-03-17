@@ -53,7 +53,6 @@ export default class DocSidebar extends React.Component {
 
   renderSidebar(data, parentSlug) {
     const { children, title, permalink, slug } = data;
-
     const key = `${parentSlug}/${slug}`;
 
     if (children.length > 0) {
@@ -74,19 +73,22 @@ export default class DocSidebar extends React.Component {
   render() {
     const { manifest } = this.props;
     const { selectedKeys, openKeys } = this.state;
+    const base = manifest[0];
 
     return (
       <section className='sidebar'>
+        <div className="doc-belongs">{base.title}</div>
+
         <Menu
           style={{ width: 210 }}
           selectedKeys={[selectedKeys]}
           openKeys={openKeys}
           mode="inline"
         >
-          {manifest.map((data) => this.renderSidebar(data, ''))}
+          {base.children.map((data) => this.renderSidebar(data, `/${base.slug}`))}
         </Menu>
-        {/* <style jsx global>{`
-          .ant-menu-inline .ant-menu-item,
+        <style jsx global>{`
+          {/* .ant-menu-inline .ant-menu-item,
           .ant-menu-inline .ant-menu-submenu-title,
           .ant-menu-vertical .ant-menu-item,
           .ant-menu-vertical .ant-menu-submenu-title {
@@ -98,9 +100,16 @@ export default class DocSidebar extends React.Component {
 
           :root .ant-menu-submenu-inline>.ant-menu-submenu-title:after {
             font-size: 14px !important;
+          } */}
+
+          .doc-belongs {
+            font-size: 14px;
+            line-height: 42px;
+            padding-left: 24px;
+            color: #999;
           }
         `}
-        </style> */}
+        </style>
       </section>
     )
   }
