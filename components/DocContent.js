@@ -1,15 +1,16 @@
 import React from 'react';
-import md from '../utils/markdownParser';
+import markdown from '../docs/Android-SDK/开发指南/创建项目/开发注意事项.md';
 
-const DocContent = (props) => {
-  const { postmeta } = props;
-  const { content } = postmeta;
+const DocContent = () => {
+  // const { postmeta } = props;
+  // const { content } = postmeta;
+  // const html = md.render(content);
+  const { content } = markdown;
 
-  const html = md.render(content);
   return (
     <div
       dangerouslySetInnerHTML={{
-        __html: html
+        __html: content
       }}
     >
 

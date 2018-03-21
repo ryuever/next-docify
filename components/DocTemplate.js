@@ -11,7 +11,7 @@ const DocTemplate = (props) => {
         <DocSidebar manifest={manifest}/>
       </section>
 
-      <section className="main">
+      <section className="main markdown-body">
         <DocContent postmeta={postmeta}/>
       </section>
 

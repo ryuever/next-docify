@@ -3,6 +3,7 @@ export default {
   publicPath: '/',
   antdStaticName: 'antd.min.css',
   highlightStyleName: 'solarized-dark.css',
+  markdownCssName: 'markdown.css',
   sales: '400-728-9687',
   contact: '400-821-6859',
   company: '上海图聚智能科技有限公司',

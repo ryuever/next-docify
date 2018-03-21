@@ -17,7 +17,7 @@ const meta = (name) => {
 
 import config from '../config';
 import normalizeUrlPath from '../utils/normalizeUrlPath';
-const { publicPath, highlightStyleName } = config;
+const { publicPath, highlightStyleName, markdownCssName } = config;
 
 class Doc extends React.Component {
   updateDocContainerMinHeight() {
@@ -36,12 +36,14 @@ class Doc extends React.Component {
 
   render() {
     const cssPath = normalizeUrlPath(`./static/stylesheets/highlight/${highlightStyleName}`, publicPath);
+    const markdownCss = normalizeUrlPath(`./static/stylesheets/${markdownCssName}`, publicPath);
 
     return (
       <article className="app">
         <Head>
           <title>SDK页面</title>
           <link rel="stylesheet" href={cssPath} />
+          <link rel="stylesheet" href={markdownCss} />
         </Head>
 
         <section className="np-header">

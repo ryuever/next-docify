@@ -1,7 +1,7 @@
 import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
-import StoreProvider from '../core/store/Provider';
+import StoreProvider from '../lib/core/store/Provider';
 import isDocURL from '../utils/isDocURL';
 
 export default () => {
