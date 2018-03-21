@@ -1,26 +1,10 @@
-// import glob from 'glob';
-
-// const result = {
-//   '/docs/': 'cwd',
-// };
-
-// const nextDocifyEntries = () => {
-
-// }
-
-// pages :  { 'bundles/pages/_document.js': [ './pages/_document.js' ],
-//   'bundles/pages/docs.js': [ './pages/docs.js' ],
-//   'bundles/pages/index.js': [ './pages/index.js' ],
-//   'bundles/pages/_error.js':
-//    [ '/Users/ryuyutyo/Documents/git/palmap/next-palmap/node_modules/next/dist/pages/_error.js' ] }
-
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const { resolve } = require('path');
 
 const { ANALYZE } = process.env
 module.exports = {
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     // config.module.rules.unshift({
     //   test: /\.js$/,
     //   enforce: 'pre',
@@ -36,9 +20,9 @@ module.exports = {
     //   fs: path.resolve(__dirname, 'core', 'fs')
     // };
 
-    config.resolveLoader.modules = config.resolveLoader.modules.concat([
+    const extraResolver = [
       resolve(__dirname, 'lib')
-    ])
+    ];
 
     const extraRuls = [{
       test: /\.md$/,
@@ -48,11 +32,6 @@ module.exports = {
       }
     }]
 
-    extraRuls.reduce((accum, rule) => {
-      accum.push(rule)
-      return accum;
-    }, config.module.rules)
-
     const extraPlugins = [
       new webpack.DefinePlugin({
         'process.env.RUN_ENV': JSON.stringify(process.env.RUN_ENV)
@@ -60,17 +39,30 @@ module.exports = {
       new webpack.NormalModuleReplacementPlugin(/refactor/, (resource) => {
         resource.request = './a.json';
       }),
-      // ANALYZE ? new BundleAnalyzerPlugin({
-      //   analyzerMode: 'server',
-      //   analyzerPort: isServer ? 8888 : 8889,
-      //   openAnalyzer: true
-      // }) : null
+      ANALYZE ? new BundleAnalyzerPlugin({
+        analyzerMode: 'server',
+        analyzerPort: isServer ? 8888 : 8889,
+        openAnalyzer: true
+      }) : null
     ];
 
-    extraPlugins.reduce((accum, plugin) => {
-      accum.push(plugin);
-      return accum;
-    }, config.plugins);
+    const nextData = [{
+      list: extraPlugins,
+      init: config.plugins,
+    }, {
+      list: extraRuls,
+      init: config.module.rules,
+    }, {
+      list: extraResolver,
+      init: config.resolveLoader.modules,
+    }];
+
+    nextData.reduce((_, { list, init}) => {
+      list.reduce((accum, cur) => {
+        if (cur) accum.push(cur);
+        return accum;
+      }, init)
+    }, {})
 
     return config;
   },

@@ -8,12 +8,6 @@ import DocTemplate from '../components/DocTemplate';
 
 import manifest from '../docs/refine';
 import postmeta from '../docs/postmeta';
-// import refactor from 'refactor';
-
-const meta = (name) => {
-  const data = require('../test/' + name + '.json');
-  console.log(data);
-}
 
 import config from '../config';
 import normalizeUrlPath from '../utils/normalizeUrlPath';
