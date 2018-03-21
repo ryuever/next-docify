@@ -5,23 +5,17 @@ const { resolve } = require('path');
 const { ANALYZE } = process.env
 module.exports = {
   webpack: (config, { isServer }) => {
-    // config.module.rules.unshift({
-    //   test: /\.js$/,
-    //   enforce: 'pre',
-    //   exclude: /node_modules/,
-    //   loader: 'eslint-loader',
-    // });
-
-    // config.resolve.alias = {
-    //   config: path.resolve(__dirname, 'config'),
-    //   components: path.resolve(__dirname, 'components'),
-    //   dataSource: path.resolve(__dirname, 'dataSource'),
-    //   utils: path.resolve(__dirname, 'utils'),
-    //   fs: path.resolve(__dirname, 'core', 'fs')
-    // };
+    const extraAlias = [
+      { config: resolve(__dirname, 'config') },
+      { components: resolve(__dirname, 'components') },
+      { dataSource: resolve(__dirname, 'dataSource') },
+      { utils: resolve(__dirname, 'utils') },
+      { docs: resolve(__dirname, 'docs') },
+      { lib: resolve(__dirname, 'lib') },
+    ];
 
     const extraResolver = [
-      resolve(__dirname, 'lib')
+      resolve(__dirname, 'lib'),
     ];
 
     const extraRuls = [{
@@ -30,6 +24,11 @@ module.exports = {
       use: {
         loader: 'markdown-loader',
       }
+    }, {
+      test: /\.js$/,
+      enforce: 'pre',
+      exclude: /node_modules/,
+      loader: 'eslint-loader',
     }]
 
     const extraPlugins = [
@@ -43,10 +42,20 @@ module.exports = {
         analyzerMode: 'server',
         analyzerPort: isServer ? 8888 : 8889,
         openAnalyzer: true
-      }) : null
+      }) : null,
+      new webpack.ContextReplacementPlugin(/docs$/, () => {
+        // console.log('context : ', context)
+      }),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('development'),
+      }),
     ];
 
     const nextData = [{
+      list: extraAlias,
+      init: config.resolve || {},
+      keyToModify: 'alias',
+    }, {
       list: extraPlugins,
       init: config.plugins,
     }, {
@@ -57,12 +66,26 @@ module.exports = {
       init: config.resolveLoader.modules,
     }];
 
-    nextData.reduce((_, { list, init}) => {
+    nextData.reduce((_, { list, init, keyToModify}) => {
       list.reduce((accum, cur) => {
-        if (cur) accum.push(cur);
+        if (cur) {
+          if (Array.isArray(accum)) accum.push(cur);
+          else accum[keyToModify] = { ...accum[keyToModify], ...cur };
+        }
+
         return accum;
       }, init)
     }, {})
+
+    const fn = config.entry;
+
+    config.entry = () => Promise.resolve(fn.call(null).then((entry) => {
+      const nextEntry = {
+        'kaifa.js': [resolve(__dirname, 'docs', 'Android-SDK', '开发指南', '地图交互', '控件和手势.md')],
+        ...entry,
+      }
+      return Promise.resolve(nextEntry);
+    }))
 
     return config;
   },

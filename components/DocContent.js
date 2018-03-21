@@ -1,12 +1,14 @@
 import React from 'react';
-import md from '../lib/markdown-loader/Parser';
-// import markdown from '../docs/Android-SDK/开发指南/创建项目/开发注意事项.md';
+// import md from 'libs/markdown-loader/Parser';
+import markdown from 'docs/Android-SDK/开发指南/地图交互/控件和手势.md';
 
-const DocContent = (props) => {
-  const { postmeta } = props;
-  const { content } = postmeta;
-  const html = md.render(content);
-  // const { content: html } = markdown;
+require.context('../docs', true, /\.md$/);
+
+const DocContent = () => {
+  // const { postmeta } = props;
+  // const { content } = postmeta;
+  // const html = md.render(content);
+  const { content: html } = markdown;
 
   return (
     <div

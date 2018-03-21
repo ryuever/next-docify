@@ -1,9 +1,9 @@
 import React from 'react';
-import config from '../config';
+import config from 'config';
 
 const { copyright, company, backup, sales, contact } = config;
 
-const Footer = (props) => {
+const Footer = () => {
   return (
     <div className="footer">
       <p>{`${copyright} ${company} ${backup}`}</p>

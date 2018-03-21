@@ -1,16 +1,17 @@
 import React from 'react';
 import Head from 'next/head';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import DocBanner from '../components/DocBanner';
-import DocTemplate from '../components/DocTemplate';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+import DocBanner from 'components/DocBanner';
+import DocTemplate from 'components/DocTemplate';
 
-import manifest from '../docs/refine';
-import postmeta from '../docs/postmeta';
+import manifest from 'docs/refine';
+import postmeta from 'docs/postmeta';
 
-import config from '../config';
-import normalizeUrlPath from '../utils/normalizeUrlPath';
+import config from 'config';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+
 const { publicPath, highlightStyleName, markdownCssName } = config;
 
 class Doc extends React.Component {

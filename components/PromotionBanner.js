@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import normalizeUrlPath from '../utils/normalizeUrlPath';
-import config from '../config';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+import config from 'config';
 
 const { publicPath } = config;
 

@@ -2,9 +2,9 @@ import React from 'react';
 import Router from 'next/router'
 import Link from 'next/link';
 import HeaderExtraAppender from './HeaderExtraAppender';
-import dataSource from '../dataSource';
-import normalizeUrlPath from '../utils/normalizeUrlPath';
-import config from '../config';
+import dataSource from 'dataSource';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+import config from 'config';
 
 const { publicPath, shouldNormalizeWithIndex } = config;
 

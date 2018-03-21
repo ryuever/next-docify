@@ -1,7 +1,8 @@
 import React from 'react'
 import Document, { Head, Main, NextScript } from 'next/document'
-import config from '../config';
-import normalizeUrlPath from '../utils/normalizeUrlPath';
+import config from 'config';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+
 const { publicPath, antdStaticName } = config;
 
 export default class CustomDocument extends Document {
