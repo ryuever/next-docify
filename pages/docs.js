@@ -8,9 +8,15 @@ import DocTemplate from '../components/DocTemplate';
 
 import manifest from '../docs/refine';
 import postmeta from '../docs/postmeta';
+// import refactor from 'refactor';
 
-import config from 'config';
-import normalizeUrlPath from 'utils/normalizeUrlPath';
+const meta = (name) => {
+  const data = require('../test/' + name + '.json');
+  console.log(data);
+}
+
+import config from '../config';
+import normalizeUrlPath from '../utils/normalizeUrlPath';
 const { publicPath, highlightStyleName } = config;
 
 class Doc extends React.Component {
