@@ -1,6 +1,10 @@
 import React from 'react';
 import { Menu } from 'antd';
 import parseQuery from 'utils/parseQuery';
+import config from 'config';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
+
+const { publicPath } = config;
 const SubMenu = Menu.SubMenu;
 
 export default class DocSidebar extends React.Component {
@@ -65,7 +69,8 @@ export default class DocSidebar extends React.Component {
     const parts = permalink.split('/');
     parts.shift();
 
-    const href = `/${parts[0]}?title=${parts.slice(1).join('/')}`;
+    const path = normalizeUrlPath(`./${parts[0]}`, publicPath, true);
+    const href = `${path}?title=${parts.slice(1).join('/')}`;
 
     if (children.length > 0) {
       return (

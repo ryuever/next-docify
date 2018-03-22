@@ -33,6 +33,7 @@ export default class Header extends React.Component {
   createServiceItem({ title, id, children, display, href }) {
     const { activeService } = this.state;
     let nextClassName = 'item' + (activeService === id ? ' active' : '');
+
     const nextHref = normalizeUrlPath(href, publicPath, shouldNormalizeWithIndex);
 
     return (

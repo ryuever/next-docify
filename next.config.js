@@ -97,7 +97,7 @@ module.exports = {
     return config;
   },
 
-  // assetPrefix: '/out',
+  assetPrefix: '/out',
   exportPathMap: () => ({
     '/': { page: '/' },
     '/docs': { page: '/docs' },

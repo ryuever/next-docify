@@ -1,6 +1,6 @@
 export default {
   platformTitle: '图聚开放平台',
-  publicPath: '/',
+  publicPath: '',
   antdStaticName: 'antd.min.css',
   highlightStyleName: 'solarized-dark.css',
   markdownCssName: 'markdown.css',
