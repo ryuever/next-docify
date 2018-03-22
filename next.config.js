@@ -88,7 +88,7 @@ module.exports = {
 
     config.entry = () => Promise.resolve(fn.call(null).then((entry) => {
       const nextEntry = {
-        // 'kaifa.js': [resolve(__dirname, 'docs', 'Android-SDK', '开发指南', '创建项目', '开发注意事项.md')],
+        // 'kaifa.js': [resolve(__dirname, 'docs', 'android-sdk', '开发指南', '创建项目', '开发注意事项.md')],
         ...entry,
       }
       return Promise.resolve(nextEntry);
@@ -97,7 +97,7 @@ module.exports = {
     return config;
   },
 
-  assetPrefix: '/out',
+  // assetPrefix: '/out',
   exportPathMap: () => ({
     '/': { page: '/' },
     '/docs': { page: '/docs' },

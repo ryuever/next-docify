@@ -2,7 +2,7 @@ import React from 'react';
 import parseQuery from 'utils/parseQuery';
 import toSlug from 'lib/utils/toSlug';
 
-const dataSource = require.context('../docs/Android-SDK', true, /\.md$/);
+const dataSource = require.context('../docs/android-sdk', true, /\.md$/);
 
 export default class DocContent extends React.Component {
   constructor(props) {

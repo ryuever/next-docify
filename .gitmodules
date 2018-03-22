@@ -1,0 +1,3 @@
+[submodule "docs/android-sdk"]
+	path = docs/android-sdk
+	url = git@code.aliyun.com:palmap/android-sdk.git

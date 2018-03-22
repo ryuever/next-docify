@@ -37,3 +37,9 @@ import postmeta from 'next-docify/postmeta'
 - refactor data structure, use binary tree to store `meta` info instead of hash table.
 
 - emulate `Mongodb` file store system. create a connection between `manifest.js` and `postmeta.js`
+
+```shell
+git submodule init && git submodule update
+```
+
+## markdown rules
