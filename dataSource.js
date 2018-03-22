@@ -73,19 +73,19 @@ export default [{
     title: 'Android开发',
     children: [{
       title: 'Android地图开发',
-      href: '/docs/android-sdk',
+      href: '/docs?title=android-sdk',
     }, {
       title: 'Android定位SDK',
-      href: '/docs/android-sdk',
+      href: '/docs?title=android-sdk',
     }, {
       title: 'Android鹰眼轨迹SDK',
-      href: '/docs/android-sdk',
+      href: '/docs?title=android-sdk',
     }, {
       title: 'Android导航SDK',
-      href: '/docs/android-sdk',
+      href: '/docs?title=android-sdk',
     }, {
       title: 'Android全景SDK',
-      href: '/docs/android-sdk',
+      href: '/docs?title=android-sdk',
     }]
   }, {
     title: 'iOS开发',

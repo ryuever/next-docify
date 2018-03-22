@@ -1,5 +1,6 @@
 export default str => {
-  const parts = str.split('&');
+  const nextStr = str.replace(/^\?/, '');
+  const parts = nextStr.split('&');
   const options = {};
 
   parts.forEach(part => {

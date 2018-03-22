@@ -1,5 +1,6 @@
 import React from 'react';
 import { Menu } from 'antd';
+import parseQuery from 'utils/parseQuery';
 const SubMenu = Menu.SubMenu;
 
 export default class DocSidebar extends React.Component {
@@ -13,8 +14,12 @@ export default class DocSidebar extends React.Component {
   }
 
   componentDidMount() {
-    const href = window.location.href;
-    const path = href.replace(/.*\/docs/, '');
+    // const href = window.location.href;
+    // const path = href.replace(/.*\/docs/, '');
+
+    const search = window.location.search;
+    const path = parseQuery(search).title;
+
     const parts = path.split('/');
 
     const openKeys = parts.reduce(({prev, merge}, cur) => {
@@ -32,7 +37,7 @@ export default class DocSidebar extends React.Component {
     })
 
     this.setState({
-      selectedKeys: path,
+      selectedKeys: `/${path}`,
       openKeys: openKeys.merge,
     })
   }
@@ -52,8 +57,15 @@ export default class DocSidebar extends React.Component {
   }
 
   renderSidebar(data, parentSlug) {
+    // permalink : /docs/android-sdk/kai-fa-zhi-nan/chuang-jian-di-tu
+
     const { children, title, permalink, slug } = data;
     const key = `${parentSlug}/${slug}`;
+
+    const parts = permalink.split('/');
+    parts.shift();
+
+    const href = `/${parts[0]}?title=${parts.slice(1).join('/')}`;
 
     if (children.length > 0) {
       return (
@@ -67,7 +79,7 @@ export default class DocSidebar extends React.Component {
       )
     }
 
-    return <Menu.Item key={key}><a href={permalink}>{title}</a></Menu.Item>;
+    return <Menu.Item key={key}><a href={href}>{title}</a></Menu.Item>;
   }
 
   render() {

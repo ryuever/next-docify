@@ -35,17 +35,24 @@ module.exports = {
       new webpack.DefinePlugin({
         'process.env.RUN_ENV': JSON.stringify(process.env.RUN_ENV)
       }),
-      new webpack.NormalModuleReplacementPlugin(/refactor/, (resource) => {
-        resource.request = './a.json';
-      }),
+      // new webpack.NormalModuleReplacementPlugin(/\.md$/, (context) => {
+      //   console.log('context : ', context);
+      //   // co.request = './a.json';
+      // }),
       ANALYZE ? new BundleAnalyzerPlugin({
         analyzerMode: 'server',
         analyzerPort: isServer ? 8888 : 8889,
         openAnalyzer: true
       }) : null,
-      new webpack.ContextReplacementPlugin(/docs$/, () => {
-        // console.log('context : ', context)
-      }),
+      // new webpack.ContextReplacementPlugin(/\/docs/, (context) => {
+      //   // console.log('context : ', context);
+      //   // console.log('context : ', context)
+      // }),
+
+      // new webpack.ContextReplacementPlugin(/\/docs/, '../docs', {
+      //   "./开发指南/创建地图/显示地图.md": 'xianshi.md',
+      // }),
+
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('development'),
       }),
@@ -81,7 +88,7 @@ module.exports = {
 
     config.entry = () => Promise.resolve(fn.call(null).then((entry) => {
       const nextEntry = {
-        'kaifa.js': [resolve(__dirname, 'docs', 'Android-SDK', '开发指南', '地图交互', '控件和手势.md')],
+        // 'kaifa.js': [resolve(__dirname, 'docs', 'Android-SDK', '开发指南', '创建项目', '开发注意事项.md')],
         ...entry,
       }
       return Promise.resolve(nextEntry);

@@ -1,24 +1,58 @@
 import React from 'react';
-// import md from 'libs/markdown-loader/Parser';
-import markdown from 'docs/Android-SDK/开发指南/地图交互/控件和手势.md';
+import parseQuery from 'utils/parseQuery';
+import toSlug from 'lib/utils/toSlug';
 
-require.context('../docs', true, /\.md$/);
+const dataSource = require.context('../docs/Android-SDK', true, /\.md$/);
 
-const DocContent = () => {
-  // const { postmeta } = props;
-  // const { content } = postmeta;
-  // const html = md.render(content);
-  const { content: html } = markdown;
+export default class DocContent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      html: '',
+    }
+  }
 
-  return (
-    <div
-      dangerouslySetInnerHTML={{
+  componentDidMount() {
+    const search = window.location.search;
+    const { title } = parseQuery(search);
+
+    let page = '';
+    dataSource.keys().forEach(key => {
+      const titleWithCategory = title.replace(/^[^/]*\//, '');
+      const slug = toSlug(key, '/');
+      if (slug === titleWithCategory) {
+        page = key;
+      }
+    });
+
+    if (!page) {
+      const readme = dataSource.keys().filter(key => toSlug(key) === 'readme');
+      if (readme.length > 0) {
+        page = readme[0];
+      } else {
+        window.location.href = '/';
+      }
+    }
+
+    this.watchPathChange(page);
+  }
+
+  watchPathChange(page) {
+    const { content } = dataSource(page);
+    this.setState({
+      html: content
+    })
+  }
+
+  render() {
+    const html = this.state.html;
+
+    if (!html) return null;
+
+    return (
+      <div dangerouslySetInnerHTML={{
         __html: html
-      }}
-    >
-
-    </div>
-  )
+      }}/>
+    )
+  }
 }
-
-export default DocContent;
