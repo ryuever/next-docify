@@ -9,8 +9,8 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import DocBanner from 'components/DocBanner';
 import DocTemplate from 'components/DocTemplate';
-import manifest from 'docs/refine';
-import postmeta from 'docs/postmeta';
+import manifest from '../../build/ios-sdk/refine';
+import postmeta from '../../build/ios-sdk/postmeta';
 
 const dataSource = require.context('../../docs/ios-sdk', true, /\.md$/);
 const { publicPath, highlightStyleName, markdownCssName } = config;

@@ -34,8 +34,6 @@ export default () => {
           path: '/docs',
           href: '/docs',
         }
-
-        console.log('parse : ', parsedUrl);
       }
 
       handle(req, res, parsedUrl)
