@@ -95,7 +95,6 @@ module.exports = {
       return Promise.resolve(nextEntry);
     }))
 
-    console.log('config : ', config);
     return config;
   },
 
