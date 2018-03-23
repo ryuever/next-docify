@@ -23,16 +23,19 @@ export default () => {
 
     siteApp.get('*', (req, res) => {
       let parsedUrl = parseUrl(req.url, true)
-      const { pathname } =parsedUrl;
+      const { pathname } = parsedUrl;
 
       if (isDocURL(pathname)) {
         storeProvider.prepareDataSource(pathname);
+        const parsed = (pathname.replace(/^.*(?=docs)/, '')).split('/');
 
         parsedUrl = {
-          pathname: '/docs',
+          pathname: `/${parsed.slice(0, 2).join('/')}`,
           path: '/docs',
           href: '/docs',
         }
+
+        console.log('parse : ', parsedUrl);
       }
 
       handle(req, res, parsedUrl)

@@ -73,46 +73,46 @@ export default [{
     title: 'Android开发',
     children: [{
       title: 'Android地图开发',
-      href: './docs',
+      href: './docs/android-sdk',
       query: 'title=android-sdk',
     }, {
       title: 'Android定位SDK',
-      href: './docs',
+      href: './docs/android-sdk',
       query: 'title=android-sdk',
     }, {
       title: 'Android鹰眼轨迹SDK',
-      href: './docs',
+      href: './docs/android-sdk',
       query: 'title=android-sdk',
     }, {
       title: 'Android导航SDK',
-      href: './docs',
+      href: './docs/android-sdk',
       query: 'title=android-sdk',
     }, {
       title: 'Android全景SDK',
-      href: './docs',
+      href: './docs/android-sdk',
       query: 'title=android-sdk',
     }]
   }, {
     title: 'iOS开发',
     children: [{
       title: 'iOS地图开发',
-      href: './docs',
+      href: './docs/ios-sdk',
       query: 'title=ios-sdk',
     }, {
       title: 'iOS定位SDK',
-      href: './docs',
+      href: './docs/ios-sdk',
       query: 'title=ios-sdk',
     }, {
       title: 'iOS鹰眼轨迹SDK',
-      href: './docs',
+      href: './docs/ios-sdk',
       query: 'title=ios-sdk',
     }, {
       title: 'iOS导航SDK',
-      href: './docs',
+      href: './docs/ios-sdk',
       query: 'title=ios-sdk',
     }, {
       title: 'iOS全景SDK',
-      href: './docs',
+      href: './docs/ios-sdk',
       query: 'title=ios-sdk',
     }]
   }, {

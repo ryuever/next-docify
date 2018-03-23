@@ -1,20 +1,55 @@
 import React from 'react';
 import Head from 'next/head';
 
+import config from 'config';
+import toSlug from 'lib/utils/toSlug';
+import parseQuery from 'utils/parseQuery';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import DocBanner from 'components/DocBanner';
 import DocTemplate from 'components/DocTemplate';
-
 import manifest from 'docs/refine';
 import postmeta from 'docs/postmeta';
 
-import config from 'config';
-import normalizeUrlPath from 'utils/normalizeUrlPath';
-
+const dataSource = require.context('../../docs/ios-sdk', true, /\.md$/);
 const { publicPath, highlightStyleName, markdownCssName } = config;
 
 class Doc extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      html: '',
+    }
+  }
+
+  componentDidMount() {
+    this.updateDocContainerMinHeight();
+    this.updateFooterStyle();
+    const search = window.location.search;
+    const { title } = parseQuery(search);
+
+    let page = '';
+    dataSource.keys().forEach(key => {
+      const titleWithCategory = title.replace(/^[^/]*\//, '');
+      const slug = toSlug(key, '/');
+      if (slug === titleWithCategory) {
+        page = key;
+      }
+    });
+
+    if (!page) {
+      const readme = dataSource.keys().filter(key => toSlug(key) === 'readme');
+      if (readme.length > 0) {
+        page = readme[0];
+      } else {
+        window.location.href = '/';
+      }
+    }
+
+    this.watchPathChange(page);
+  }
+
   updateDocContainerMinHeight() {
     const min = `${window.innerHeight - 256 - 92}px`;
     this.doc.style.minHeight = min;
@@ -24,9 +59,11 @@ class Doc extends React.Component {
     this.footer.style.position = 'relative';
   }
 
-  componentDidMount() {
-    this.updateDocContainerMinHeight();
-    this.updateFooterStyle();
+  watchPathChange(page) {
+    const { content } = dataSource(page);
+    this.setState({
+      html: content
+    })
   }
 
   render() {
@@ -55,6 +92,7 @@ class Doc extends React.Component {
           <DocTemplate
             manifest={manifest}
             postmeta={postmeta}
+            html={this.state.html}
           />
         </section>
 

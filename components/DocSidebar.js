@@ -69,7 +69,7 @@ export default class DocSidebar extends React.Component {
     const parts = permalink.split('/');
     parts.shift();
 
-    const path = normalizeUrlPath(`./${parts[0]}`, publicPath, true);
+    const path = normalizeUrlPath(`./${parts[0]}/${parts[1]}`, publicPath, true);
     const href = `${path}?title=${parts.slice(1).join('/')}`;
 
     if (children.length > 0) {

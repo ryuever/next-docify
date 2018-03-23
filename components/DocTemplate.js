@@ -3,7 +3,7 @@ import React from 'react';
 import DocSidebar from './DocSidebar';
 import DocContent from './DocContent';
 const DocTemplate = (props) => {
-  const { manifest, postmeta } = props;
+  const { manifest, postmeta, html} = props;
 
   return (
     <div className="doc-template">
@@ -12,7 +12,10 @@ const DocTemplate = (props) => {
       </section>
 
       <section className="main markdown-body">
-        <DocContent postmeta={postmeta}/>
+        <DocContent
+          postmeta={postmeta}
+          html={html}
+        />
       </section>
 
       <style jsx>{`
