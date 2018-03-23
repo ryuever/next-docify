@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+'use strict';
+
+const spawn = require('cross-spawn');
+const program = require('commander');
+const pkg = require('../package.json');
+
+const { version } = pkg;
+
+program
+  .version(version, '-v, --version')
+  .usage('<cmd> [options]')
+  .arguments('<cmd>')
+  .command('export', 'exports static application')
+  .action(function (cmd) {
+    const args = process.argv.slice(3);
+    const script = require.resolve('./' + cmd);
+    spawn.sync(
+      'node',
+      [script, ...args],
+      { stdio: 'inherit' }
+    )
+  });
+
+program.parse(process.argv);

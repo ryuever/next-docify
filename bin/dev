@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+
+program
+  .description('start a dev mode servered application')
+  .option('--port <port>', 'start server port')
+  .on('--help', function() {
+    console.log('  Examples:');
+    console.log();
+    console.log('    $ next-notify dev');
+    console.log();
+  });
+
+program.parse(process.argv);
