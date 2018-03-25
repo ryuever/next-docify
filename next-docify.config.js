@@ -24,6 +24,10 @@ module.exports = {
       include: resolve(__dirname, 'docs'),
       use: {
         loader: 'markdown-loader',
+        options: {
+          regExp: /\/([a-z0-9]+)\/[a-z0-9]+\.png$/,
+          name: '[1]-[name].[ext]'
+        }
       }
     }, {
       test: /\.js$/,
