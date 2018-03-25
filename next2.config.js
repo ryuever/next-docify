@@ -1,5 +1,5 @@
 module.exports = {
-  // assetPrefix: '/out',
+  assetPrefix: '/out',
   exportPathMap: () => ({
     '/': { page: '/' },
     '/docs/ios-sdk': { page: '/docs/ios-sdk' },

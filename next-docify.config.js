@@ -25,8 +25,8 @@ module.exports = {
       use: {
         loader: 'markdown-loader',
         options: {
-          regExp: /\/([a-z0-9]+)\/[a-z0-9]+\.png$/,
-          name: '[1]-[name].[ext]'
+          publishPath: process.env.NODE_ENV.startsWith('dev') ? '' : '/out',
+          root: '/docs',
         }
       }
     }, {

@@ -6,7 +6,7 @@
   "author": "youchao.liu",
   "license": "MIT",
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "NODE_ENV=development node scripts/dev.js",
     "dev-next": "RUN_ENV=dev next",
     "build": "next build",
     "start": "next start",
