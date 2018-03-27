@@ -20,7 +20,7 @@ module.exports = [
         "children": [
           {
             "name": "概述.md",
-            "isFile": true,
+            "isFile": false,
             "depth": 3,
             "title": "概述",
             "slug": "gai-shu",
@@ -84,7 +84,7 @@ module.exports = [
             "children": [
               {
                 "name": "显示地图.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "显示地图",
                 "slug": "xian-shi-di-tu",
@@ -93,7 +93,7 @@ module.exports = [
               },
               {
                 "name": "显示定位.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "显示定位",
                 "slug": "xian-shi-ding-wei",
@@ -112,7 +112,7 @@ module.exports = [
             "children": [
               {
                 "name": "方法交互.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "方法交互",
                 "slug": "fang-fa-jiao-hu",
@@ -121,7 +121,7 @@ module.exports = [
               },
               {
                 "name": "控件和手势.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "控件和手势",
                 "slug": "kong-jian-he-shou-shi",
@@ -130,7 +130,7 @@ module.exports = [
               },
               {
                 "name": "事件交互.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "事件交互",
                 "slug": "shi-jian-jiao-hu",
@@ -149,7 +149,7 @@ module.exports = [
             "children": [
               {
                 "name": "绘制点标记.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "绘制点标记",
                 "slug": "hui-zhi-dian-biao-ji",
@@ -158,7 +158,7 @@ module.exports = [
               },
               {
                 "name": "绘制线.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "绘制线",
                 "slug": "hui-zhi-xian",
@@ -167,7 +167,7 @@ module.exports = [
               },
               {
                 "name": "文本标记.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "文本标记",
                 "slug": "wen-ben-biao-ji",
@@ -176,7 +176,7 @@ module.exports = [
               },
               {
                 "name": "点标记动画.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "点标记动画",
                 "slug": "dian-biao-ji-dong-hua",
@@ -195,7 +195,7 @@ module.exports = [
             "children": [
               {
                 "name": "实现路线规划.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "实现路线规划",
                 "slug": "shi-xian-lu-xian-gui-hua",
@@ -233,7 +233,7 @@ module.exports = [
             "children": [
               {
                 "name": "坐标转换.md",
-                "isFile": true,
+                "isFile": false,
                 "depth": 4,
                 "title": "坐标转换",
                 "slug": "zuo-biao-zhuan-huan",
@@ -254,7 +254,7 @@ module.exports = [
         "children": [
           {
             "name": "常见问题.md",
-            "isFile": true,
+            "isFile": false,
             "depth": 3,
             "title": "常见问题",
             "slug": "chang-jian-wen-ti",

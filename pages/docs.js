@@ -9,10 +9,10 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import DocBanner from 'components/DocBanner';
 import DocTemplate from 'components/DocTemplate';
-import manifest from '../../build/android-sdk/refine';
-import postmeta from '../../build/android-sdk/postmeta'
+import manifest from '../build/android-sdk/refine';
+import postmeta from '../build/android-sdk/postmeta'
 
-const dataSource = require.context('../../docs/android-sdk', true, /\.md$/);
+const dataSource = require.context('../docs/android-sdk', true, /\.md$/);
 const { publicPath, highlightStyleName, markdownCssName } = config;
 
 class Doc extends React.Component {
