@@ -1,6 +1,6 @@
 {
-  "name": "next-palmap",
-  "version": "1.0.0",
+  "name": "next-docify",
+  "version": "1.0.1",
   "description": "Seamless static site generator with Next.js",
   "main": "index.js",
   "author": "youchao.liu",
