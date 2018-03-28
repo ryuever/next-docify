@@ -1,17 +1,22 @@
 import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
-import StoreProvider from '../lib/core/store/Provider';
+
+import { preCacheSourceFiles, preMakeBuildFolder } from '../lib/pre-start';
+import StoreProvider from '../lib/store/Provider';
 import isDocURL from '../utils/isDocURL';
 
 export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
   const dev = process.env.NODE_ENV !== 'production'
   const app = next({ dev })
+
+  preCacheSourceFiles();
+  preMakeBuildFolder();
+
   const handle = app.getRequestHandler()
 
   const storeProvider = new StoreProvider();
-  console.log('store : ', storeProvider);
   storeProvider.resolveMeta();
 
   app.prepare()

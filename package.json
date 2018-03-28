@@ -49,7 +49,7 @@
     "lib",
     "server",
     "utils",
-    "next-config.js",
+    "next.config.js",
     "next-docify.config.js"
   ],
   "keywords": [
