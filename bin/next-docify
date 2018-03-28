@@ -14,7 +14,12 @@ program
   .command('export', 'exports static application')
   .action(function (cmd) {
     const args = process.argv.slice(3);
+
+    const nextCmd = cmd || 'dev';
+
+    process.env.NODE_ENV = nextCmd === 'dev' ? 'development' : 'production';
     const script = require.resolve('./' + cmd);
+
     spawn.sync(
       'node',
       [script, ...args],

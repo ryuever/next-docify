@@ -1,16 +1,11 @@
 {
   "name": "next-palmap",
   "version": "1.0.0",
-  "description": "The next break change of palmap paltform",
+  "description": "Seamless static site generator with Next.js",
   "main": "index.js",
   "author": "youchao.liu",
   "license": "MIT",
   "scripts": {
-    "dev": "NODE_ENV=development node scripts/dev.js",
-    "dev-next": "RUN_ENV=dev next",
-    "build": "next build",
-    "start": "next start",
-    "export": "RUN_ENV=publish next export",
     "analyze": "cross-env ANALYZE=1 next build",
     "lint": "eslint --ext .js pages components"
   },
@@ -50,5 +45,10 @@
     "eslint": "^4.18.2",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-react": "^7.7.0"
-  }
+  },
+  "keywords": [
+    "static-site-generator",
+    "doc-content-splitting",
+    "Next.js"
+  ]
 }
