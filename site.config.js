@@ -8,11 +8,13 @@ const defaultConfig = {
   context: process.cwd(),
 };
 
-let customizedSiteConfig = {};
+let customizedSiteConfig = [];
 const userDefinedSiteConfigPath = resolve(process.cwd(), 'site.config.js');
 if (fs.existsSync(userDefinedSiteConfigPath)) {
-  customizedSiteConfig = require(userDefinedSiteConfigPath);
+  customizedSiteConfig = customizedSiteConfig.concat(require(userDefinedSiteConfigPath));
   customizedSiteConfig.origin = 'site.config.js';
+} else {
+  throw new Error('A `site.config.js` file is required to generate site config info');
 }
 
 const preCached = {

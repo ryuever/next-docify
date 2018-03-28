@@ -2,7 +2,7 @@ import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
 
-import { preCacheSourceFiles, preMakeBuildFolder } from '../lib/pre-start';
+import { preCacheSourceFiles, preMakeBuildFolder } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
 import isDocURL from '../utils/isDocURL';
 
