@@ -1,6 +1,6 @@
 # next-palmap
 
-The next breaking change of IPalmap platform.
+Seamless static site generator with Next.js
 
 ## Todo
 
@@ -43,5 +43,3 @@ git submodule init && git submodule update
 ```
 
 ## markdown rules
-
-

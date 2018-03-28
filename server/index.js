@@ -11,6 +11,7 @@ export default () => {
   const handle = app.getRequestHandler()
 
   const storeProvider = new StoreProvider();
+  console.log('store : ', storeProvider);
   storeProvider.resolveMeta();
 
   app.prepare()

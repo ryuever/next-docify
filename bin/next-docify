@@ -21,7 +21,7 @@ program
     const script = require.resolve('./' + cmd);
 
     spawn.sync(
-      'node',
+      'babel-node',
       [script, ...args],
       { stdio: 'inherit' }
     )

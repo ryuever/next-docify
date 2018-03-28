@@ -13,8 +13,6 @@
     "next-docify": "./bin/next-docify"
   },
   "dependencies": {
-    "antd": "^3.2.3",
-    "babel-plugin-import": "^1.6.6",
     "babel-register": "^6.26.0",
     "chalk": "^2.3.2",
     "colors": "^1.2.1",
@@ -26,7 +24,7 @@
     "glob": "^7.1.2",
     "highlight.js": "^9.12.0",
     "limax": "^1.6.0",
-    "md5": "^2.2.1",
+    "memory-fs": "^0.4.1",
     "mkdirp": "^0.5.1",
     "next": "^5.0.0",
     "react": "^16.2.0",
@@ -36,8 +34,7 @@
     "remarkable": "^1.7.1",
     "rimraf": "^2.6.2",
     "url": "^0.11.0",
-    "webpack-bundle-analyzer": "^2.11.1",
-    "yargs": "^11.0.0"
+    "webpack-bundle-analyzer": "^2.11.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.2",
@@ -46,6 +43,15 @@
     "eslint-loader": "^2.0.0",
     "eslint-plugin-react": "^7.7.0"
   },
+  "files": [
+    "bin",
+    "config",
+    "lib",
+    "server",
+    "utils",
+    "next-config.js",
+    "next-docify.config.js"
+  ],
   "keywords": [
     "static-site-generator",
     "doc-content-splitting",

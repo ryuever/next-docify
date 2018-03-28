@@ -1,7 +1,7 @@
-import common from './default';
-import prod from './prod';
-import dev from './dev';
-import publish from './publish';
+const common = require('./default');
+const prod = require('./prod');
+const dev = require('./dev');
+const publish = require('./publish');
 
 const env =  process.env.RUN_ENV || process.env.NODE_ENV;
 
@@ -35,4 +35,4 @@ if (env.indexOf('publish') === 0) {
   config = copy(common, publish);
 }
 
-export default config;
+module.exports = config;

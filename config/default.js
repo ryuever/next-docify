@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   platformTitle: '图聚开放平台',
   publicPath: '',
   antdStaticName: 'antd.min.css',
