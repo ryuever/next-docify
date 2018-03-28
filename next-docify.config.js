@@ -63,7 +63,7 @@ module.exports = {
 
       let plugins = config.plugins.slice(0, -3);
 
-      !isServer && plugins.push(new webpack.optimize.CommonsChunkPlugin({
+      plugins.push(new webpack.optimize.CommonsChunkPlugin({
         name: `commons`,
         filename: `commons.js`,
         minChunks (module, count) {
@@ -99,11 +99,13 @@ module.exports = {
           // return count >= totalPages * 0.5
           return count > 2;
         }
-      })),
+      }));
 
-      !isServer && plugins.push(new webpack.optimize.CommonsChunkPlugin({
-        name: 'android-sdk/README',
-        filename: 'android-sdk/README.js',
+      const keys = Object.keys(entries);
+
+      const commonsChunkTemplate = key => new webpack.optimize.CommonsChunkPlugin({
+        name: `${key}`,
+        filename: `${key}.js`,
         minChunks: function(module, count) {
           if (dev) {
             return false
@@ -117,44 +119,8 @@ module.exports = {
             return true
           }
 
-          if (RegExp('android-sdk/README.md').test(module.resource)) {
-            prev.push('android-sdk/README');
-            return true;
-          }
-
-          for(let i = 0; i < prev.length; i++) {
-            if (RegExp(`${prev[i]}.md`).test(module.resource)) {
-              return false;
-            }
-          }
-
-          if (module.resource && module.resource.endsWith('.md')) {
-            return true;
-          }
-
-          return false;
-        },
-      }))
-
-      !isServer && plugins.push(new webpack.optimize.CommonsChunkPlugin({
-        name: 'android-sdk/Summary',
-        filename: 'android-sdk/Summary.js',
-        minChunks: function(module, count) {
-          if (dev) {
-            return false
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react-dom${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (RegExp('android-sdk/Summary.md').test(module.resource)) {
-            prev.push('android-sdk/Summary');
-
+          if (RegExp(`${key}.md`).test(module.resource)) {
+            prev.push(`${key}`);
             return true;
           }
 
@@ -168,145 +134,12 @@ module.exports = {
           }
           return false;
         },
-      }))
+      });
 
-      !isServer && plugins.push(new webpack.optimize.CommonsChunkPlugin({
-        name: 'android-sdk/开发指南/创建项目/Android Studio配置',
-        filename: 'android-sdk/开发指南/创建项目/Android Studio配置.js',
-        minChunks: function(module, count) {
-          if (dev) {
-            return false
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react-dom${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (RegExp('android-sdk/开发指南/创建项目/Android Studio配置.md').test(module.resource)) {
-            prev.push('android-sdk/开发指南/创建项目/Android Studio配置');
-            return true;
-          }
-
-          for(let i = 0; i < prev.length; i++) {
-            if (RegExp(`${prev[i]}.md`).test(module.resource)) {
-              return false;
-            }
-          }
-
-          if (module.resource && module.resource.endsWith('.md')) {
-            return true;
-          }
-
-          return false;
-        },
-      }))
-
-      !isServer && plugins.push(new webpack.optimize.CommonsChunkPlugin({
-        name: 'android-sdk/开发指南/创建项目/Hello PalMap',
-        filename: 'android-sdk/开发指南/创建项目/Hello PalMap.js',
-        minChunks: function(module, count) {
-          if (dev) {
-            return false
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react-dom${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (RegExp('android-sdk/开发指南/创建项目/Hello PalMap.md').test(module.resource)) {
-            prev.push('android-sdk/开发指南/创建项目/Hello PalMap');
-            return true;
-          }
-
-          for(let i = 0; i < prev.length; i++) {
-            if (RegExp(`${prev[i]}.md`).test(module.resource)) {
-              return false;
-            }
-          }
-
-          if (module.resource && module.resource.endsWith('.md')) {
-            return true;
-          }
-
-          return false;
-        },
-      }))
-
-      !isServer && plugins.push(new webpack.optimize.CommonsChunkPlugin({
-        name: 'android-sdk/开发指南/创建项目/开发注意事项',
-        filename: 'android-sdk/开发指南/创建项目/开发注意事项.js',
-        minChunks: function(module, count) {
-          if (dev) {
-            return false
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react-dom${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (RegExp('android-sdk/开发指南/创建项目/开发注意事项.md').test(module.resource)) {
-            prev.push('android-sdk/开发指南/创建项目/开发注意事项');
-            return true;
-          }
-
-          for(let i = 0; i < prev.length; i++) {
-            if (RegExp(`${prev[i]}.md`).test(module.resource)) {
-              return false;
-            }
-          }
-
-          if (module.resource && module.resource.endsWith('.md')) {
-            return true;
-          }
-          return false;
-        },
-      }))
-
-      !isServer && plugins.push(new webpack.optimize.CommonsChunkPlugin({
-        name: 'android-sdk/开发指南/创建项目/室内导航',
-        filename: 'android-sdk/开发指南/创建项目/室内导航.js',
-        minChunks: function(module, count) {
-          if (dev) {
-            return false
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react-dom${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (module.resource && module.resource.includes(`${sep}react${sep}`) && count >= 0) {
-            return true
-          }
-
-          if (RegExp('android-sdk/开发指南/创建项目/室内导航.md').test(module.resource)) {
-            prev.push('android-sdk/开发指南/创建项目/室内导航');
-            return true;
-          }
-
-          for(let i = 0; i < prev.length; i++) {
-            if (RegExp(`${prev[i]}.md`).test(module.resource)) {
-              return false;
-            }
-          }
-
-          if (module.resource && module.resource.endsWith('.md')) {
-            return true;
-          }
-          return false;
-        },
-      }))
+      keys.forEach(key => {
+        const keyWithoutExtension = key.replace(/\.[^.]*/, '');
+        plugins.push(commonsChunkTemplate(keyWithoutExtension));
+      })
 
       plugins = plugins.concat(config.plugins.slice(-2));
       config.plugins = plugins;

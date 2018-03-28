@@ -12,7 +12,7 @@ import DocTemplate from 'components/DocTemplate';
 import manifest from '../build/android-sdk/refine';
 import postmeta from '../build/android-sdk/postmeta'
 
-const dataSource = require.context('../docs/android-sdk', true, /\.md$/);
+const dataSource = require.context('../docs', true, /\.md$/);
 const { publicPath, highlightStyleName, markdownCssName } = config;
 
 class Doc extends React.Component {
