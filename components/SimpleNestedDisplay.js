@@ -8,11 +8,12 @@ const SimpleNestedDisplay = (props) => {
   const { content } = props;
 
   const renderSub = (sub, id) => {
-    const { title, href } = sub;
+    const { title, href, query } = sub;
+    let nextHref = `${normalizeUrlPath(href, publicPath, shouldNormalizeWithIndex)}${query ? `?${query}` : ''}`;
 
     return (
       <li key={id} className="sub-item">
-        <a href={normalizeUrlPath(href, publicPath, shouldNormalizeWithIndex)}>{title}</a>
+        <a href={nextHref}>{title}</a>
 
         <style jsx>{`
           .sub-item {

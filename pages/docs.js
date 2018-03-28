@@ -1,12 +1,55 @@
 import React from 'react';
 import Head from 'next/head';
 
+import config from 'config';
+import toSlug from 'lib/utils/toSlug';
+import parseQuery from 'utils/parseQuery';
+import normalizeUrlPath from 'utils/normalizeUrlPath';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import DocBanner from 'components/DocBanner';
 import DocTemplate from 'components/DocTemplate';
+import manifest from '../build/android-sdk/refine';
+import postmeta from '../build/android-sdk/postmeta'
 
-class Template extends React.Component {
+const dataSource = require.context('../docs', true, /\.md$/);
+const { publicPath, highlightStyleName, markdownCssName } = config;
+
+class Doc extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      html: '',
+    }
+  }
+
+  componentDidMount() {
+    this.updateDocContainerMinHeight();
+    this.updateFooterStyle();
+    const search = window.location.search;
+    const { title } = parseQuery(search);
+
+    let page = '';
+    dataSource.keys().forEach(key => {
+      const titleWithCategory = title.replace(/^[^/]*\//, '');
+      const slug = toSlug(key, '/');
+      if (slug === titleWithCategory) {
+        page = key;
+      }
+    });
+
+    if (!page) {
+      const readme = dataSource.keys().filter(key => toSlug(key) === 'readme');
+      if (readme.length > 0) {
+        page = readme[0];
+      } else {
+        window.location.href = '/';
+      }
+    }
+
+    this.watchPathChange(page);
+  }
+
   updateDocContainerMinHeight() {
     const min = `${window.innerHeight - 256 - 92}px`;
     this.doc.style.minHeight = min;
@@ -16,16 +59,23 @@ class Template extends React.Component {
     this.footer.style.position = 'relative';
   }
 
-  componentDidMount() {
-    this.updateDocContainerMinHeight();
-    this.updateFooterStyle();
+  watchPathChange(page) {
+    const { content } = dataSource(page);
+    this.setState({
+      html: content
+    })
   }
 
   render() {
+    const cssPath = normalizeUrlPath(`./static/stylesheets/highlight/${highlightStyleName}`, publicPath);
+    const markdownCss = normalizeUrlPath(`./static/stylesheets/${markdownCssName}`, publicPath);
+
     return (
       <article className="app">
         <Head>
           <title>SDK页面</title>
+          <link rel="stylesheet" href={cssPath} />
+          <link rel="stylesheet" href={markdownCss} />
         </Head>
 
         <section className="np-header">
@@ -39,7 +89,11 @@ class Template extends React.Component {
         <section
           ref={(ref) => this.doc = ref}
           className="np-doc">
-          <DocTemplate />
+          <DocTemplate
+            manifest={manifest}
+            postmeta={postmeta}
+            html={this.state.html}
+          />
         </section>
 
         <footer
@@ -94,4 +148,4 @@ class Template extends React.Component {
   }
 }
 
-export default Template;
+export default Doc;

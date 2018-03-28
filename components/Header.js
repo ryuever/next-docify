@@ -1,7 +1,7 @@
 import React from 'react';
 import Router from 'next/router'
 import Link from 'next/link';
-import HeaderExtraAppender from 'components/HeaderExtraAppender';
+import HeaderExtraAppender from './HeaderExtraAppender';
 import dataSource from 'dataSource';
 import normalizeUrlPath from 'utils/normalizeUrlPath';
 import config from 'config';
@@ -33,6 +33,7 @@ export default class Header extends React.Component {
   createServiceItem({ title, id, children, display, href }) {
     const { activeService } = this.state;
     let nextClassName = 'item' + (activeService === id ? ' active' : '');
+
     const nextHref = normalizeUrlPath(href, publicPath, shouldNormalizeWithIndex);
 
     return (

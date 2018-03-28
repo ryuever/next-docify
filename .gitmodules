@@ -1,0 +1,9 @@
+[submodule "docs/android-sdk"]
+	path = docs/android-sdk
+	url = git@code.aliyun.com:palmap/android-sdk.git
+  ignore = dirty
+[submodule "docs/ios-sdk"]
+	path = docs/ios-sdk
+	url = git@code.aliyun.com:palmap/ios-sdk.git
+  ignore = dirty
+

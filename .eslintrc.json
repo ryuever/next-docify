@@ -22,7 +22,7 @@
   ],
   "rules": {
     "no-set-state": "off",
-
+    "no-console": "off",
     "react/prop-types": 0
   }
 }
