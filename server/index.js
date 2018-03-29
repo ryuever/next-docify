@@ -1,10 +1,11 @@
 import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
-
 import { preCacheSourceFiles, preMakeBuildFolder } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
 import isDocURL from '../utils/isDocURL';
+
+delete require.cache['/Users/ryuyutyo/Documents/git/verdaccio/modules/next-docify/lib/babel/plugins/dynamic-context-plugin.js'];
 
 export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
@@ -32,16 +33,13 @@ export default () => {
       const { pathname } = parsedUrl;
 
       if (isDocURL(pathname)) {
-        storeProvider.prepareDataSource(pathname);
         const parsed = (pathname.replace(/^.*(?=docs)/, '')).split('/');
-
         parsedUrl = {
-          pathname: `/${parsed.slice(0, 2).join('/')}`,
+          pathname: `/${parsed[0]}`,
           path: '/docs',
           href: '/docs',
         }
       }
-
       handle(req, res, parsedUrl)
     })
   })

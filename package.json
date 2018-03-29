@@ -13,6 +13,7 @@
     "next-docify": "./bin/next-docify"
   },
   "dependencies": {
+    "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-register": "^6.26.0",
     "chalk": "^2.3.2",
     "colors": "^1.2.1",
