@@ -1,16 +1,18 @@
 import express from 'express';
+import { resolve } from 'path';
 import next from 'next';
 import { parse as parseUrl } from 'url';
 import { preCacheSourceFiles, preMakeBuildFolder } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
 import isDocURL from '../utils/isDocURL';
 
-delete require.cache['/Users/ryuyutyo/Documents/git/verdaccio/modules/next-docify/lib/babel/plugins/dynamic-context-plugin.js'];
-
 export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
   const dev = process.env.NODE_ENV !== 'production'
-  const app = next({ dev })
+  const app = next({
+    dir: resolve(__dirname, '..'),
+    dev
+  })
 
   preCacheSourceFiles();
   preMakeBuildFolder();

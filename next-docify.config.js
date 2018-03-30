@@ -7,15 +7,6 @@ const { ANALYZE } = process.env
 
 module.exports = {
   webpack: (config, { dev, isServer }) => {
-    const extraAlias = [
-      { config: resolve(__dirname, 'config') },
-      { components: resolve(__dirname, 'components') },
-      { dataSource: resolve(__dirname, 'dataSource') },
-      { utils: resolve(__dirname, 'utils') },
-      { docs: resolve(__dirname, 'docs') },
-      { lib: resolve(__dirname, 'lib') },
-    ];
-
     const extraResolver = [
       resolve(__dirname, 'lib'),
     ];
@@ -146,10 +137,6 @@ module.exports = {
     })()
 
     const nextData = [{
-      list: extraAlias,
-      init: config.resolve || {},
-      keyToModify: 'alias',
-    }, {
       list: extraPlugins,
       init: config.plugins,
       method: 'unshift'
