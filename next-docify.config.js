@@ -21,7 +21,6 @@ module.exports = {
 
     const extraRuls = [{
       test: /\.md$/,
-      include: resolve(__dirname, 'docs'),
       use: {
         loader: 'markdown-loader',
         options: {
@@ -49,8 +48,8 @@ module.exports = {
       entries[`${dir}/${name}.js`] = [resolve(__dirname, 'docs', file)];
     });
 
-    !isServer && (function() {
-      const prev = [];
+    false && !isServer && (function() {
+      // const prev = [];
 
       let plugins = config.plugins.slice(0, -3);
 
@@ -92,8 +91,6 @@ module.exports = {
         }
       }));
 
-      const keys = Object.keys(entries);
-
       const commonsChunkTemplate = key => new webpack.optimize.CommonsChunkPlugin({
         name: `${key}`,
         filename: `${key}.js`,
@@ -127,7 +124,9 @@ module.exports = {
         },
       });
 
-      keys.forEach(key => {
+      const keys = Object.keys(entries);
+
+      keys && keys.length > 0 && keys.forEach(key => {
         const keyWithoutExtension = key.replace(/\.[^.]*/, '');
         plugins.push(commonsChunkTemplate(keyWithoutExtension));
       })
@@ -161,13 +160,30 @@ module.exports = {
 
     const fn = config.entry;
 
-    config.entry = () => Promise.resolve(fn.call(null).then((entry) => {
-      const nextEntry = {
-        ...entry,
-      }
+    config.entry = () => new Promise((resolve, reject) => {
+      fn.call(null).then(entries => {
+        resolve(entries);
+      }, () => reject());
+    })
 
-      return Promise.resolve(nextEntry);
-    }))
+    // config.entry = () => Promise.resolve(fn.call(null).then((entry) => {
+    //   // interpolate entry with path relative process.cwd();
+
+    //   const nextEntry = {};
+
+    //   for (let key in entry) {
+    //     const items = entry[key];
+
+    //     if (Array.isArray(items)) {
+    //       nextEntry[key] = items.map((item) => {
+    //         return item.replace(/^.*(?=next-docify\/node_modules)next-docify/, resolve(process.cwd()));
+    //       })
+    //     } else {
+    //       return nextEntry[key] = items.replace(/^(?=next-docify\/node_modules)next-docify/, resolve(process.cwd()));
+    //     }
+    //   }
+    //   return Promise.resolve(nextEntry);
+    // }))
 
     return config;
   },

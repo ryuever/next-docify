@@ -1,5 +1,4 @@
 import express from 'express';
-import { resolve } from 'path';
 import next from 'next';
 import { parse as parseUrl } from 'url';
 import { preCacheSourceFiles, preMakeBuildFolder } from '../lib/prestart';
@@ -10,7 +9,7 @@ export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
   const dev = process.env.NODE_ENV !== 'production'
   const app = next({
-    dir: resolve(__dirname, '..'),
+    // dir: resolve(__dirname, '..'),
     dev
   })
 

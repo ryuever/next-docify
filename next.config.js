@@ -23,5 +23,5 @@ if (useDefinedNextConfig.webpack) {
 module.exports = {
   webpack: webpackConfig,
   ...rest,
-  distDir: process.cwd(),
+  // distDir: './website/.next',
 }
