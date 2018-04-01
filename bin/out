@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+
+program
+  .description('export standalone static assets')
+  .on('--help', function() {
+    console.log('  Examples:');
+    console.log();
+    console.log('    $ next-notify export');
+    console.log();
+  });
+
+program.parse(process.argv);
+
+require('babel-register')({
+  babelrc: false,
+  plugins: [
+    'transform-class-properties',
+    'transform-object-rest-spread',
+  ],
+  ignore: /node_modules\/(?!next-docify)/,
+  presets: ['react', 'env'],
+});
+
+const spawn = require('cross-spawn');
+process.env.NODE_ENV = 'production';
+
+const script = require.resolve('../' + 'node_modules/next/dist/bin/next');
+
+const proc = spawn(
+  'node',
+  [script, 'export'],
+  { stdio: 'inherit' }
+)
+
+proc.on('close', (code, signal) => {
+  if (code !== null) {
+    process.exit(code)
+  }
+  if (signal) {
+    if (signal === 'SIGKILL') {
+      process.exit(137)
+    }
+    console.log(`got signal ${signal}, exiting`)
+    process.exit(1)
+  }
+  process.exit(0)
+})
+proc.on('error', (err) => {
+  console.error(err)
+  process.exit(1)
+})

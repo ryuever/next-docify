@@ -14,17 +14,35 @@ program
   .command('export', 'exports static application')
   .action(function (cmd) {
     const args = process.argv.slice(3);
-
     const nextCmd = cmd || 'dev';
+    const script = require.resolve('./' + cmd);
+    let proc = null;
 
     process.env.NODE_ENV = nextCmd === 'dev' ? 'development' : 'production';
-    const script = require.resolve('./' + cmd);
 
-    spawn.sync(
-      'babel-node',
+    proc = spawn(
+      'node',
       [script, ...args],
       { stdio: 'inherit' }
-    )
+    );
+
+    proc.on('close', (code, signal) => {
+      if (code !== null) {
+        process.exit(code)
+      }
+      if (signal) {
+        if (signal === 'SIGKILL') {
+          process.exit(137)
+        }
+        console.log(`got signal ${signal}, exiting`)
+        process.exit(1)
+      }
+      process.exit(0)
+    })
+    proc.on('error', (err) => {
+      console.error(err)
+      process.exit(1)
+    })
   });
 
 program.parse(process.argv);
