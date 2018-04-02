@@ -1,7 +1,7 @@
 import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
-import { preCacheSourceFiles, preMakeBuildFolder } from '../lib/prestart';
+import { preCacheSourceFiles, initOutputFolder } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
 import isDocURL from '../utils/isDocURL';
 
@@ -14,13 +14,11 @@ export default () => {
   })
 
   preCacheSourceFiles();
-  preMakeBuildFolder();
+  initOutputFolder();
+  const storeProvider = new StoreProvider();
+  storeProvider.resolveMetas();
 
   const handle = app.getRequestHandler()
-
-  const storeProvider = new StoreProvider();
-  storeProvider.resolveMeta();
-
   app.prepare()
   .then(() => {
     const siteApp = express();
