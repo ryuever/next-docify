@@ -3,7 +3,7 @@ import next from 'next';
 import { parse as parseUrl } from 'url';
 import { preCacheSourceFiles, initOutputFolder } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
-import isDocURL from '../utils/isDocURL';
+import siteConfig from '../lib/siteConfig';
 
 export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
@@ -31,14 +31,17 @@ export default () => {
       let parsedUrl = parseUrl(req.url, true)
       const { pathname } = parsedUrl;
 
-      if (isDocURL(pathname)) {
-        const parsed = (pathname.replace(/^.*(?=docs)/, '')).split('/');
+      const routeGateWay = siteConfig.resolveGatewayRoutes();
+
+      if (routeGateWay.has(pathname)) {
+        const value = routeGateWay.get(pathname);
         parsedUrl = {
-          pathname: `/${parsed[0]}`,
-          path: '/docs',
-          href: '/docs',
+          pathname: value,
+          path: value,
+          href: value,
         }
       }
+
       handle(req, res, parsedUrl)
     })
   })
