@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const DynamicRuntimePlugin = require('./lib/webpack/plugins/dynamic-runtime-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const { resolve, sep } = require('path');
 const glob = require('glob');
@@ -48,8 +49,10 @@ module.exports = {
       entries[`${dir}/${name}.js`] = [resolve(__dirname, 'docs', file)];
     });
 
+    !isServer && config.plugins.unshift(new DynamicRuntimePlugin());
+
     false && !isServer && (function() {
-      // const prev = [];
+      const prev = [];
 
       let plugins = config.plugins.slice(0, -3);
 
