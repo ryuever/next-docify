@@ -11,8 +11,7 @@ export const app = next({
   dev
 })
 
-export default () => {
-  const port = parseInt(process.env.PORT, 10) || 3000
+export default (port) => {
   preCacheSourceFiles();
   initOutputFolder();
   const storeProvider = new StoreProvider();
@@ -24,7 +23,7 @@ export default () => {
     const siteApp = express();
     siteApp.listen(port, err => {
       if (err) throw err;
-      console.log(`> Site generator ready on http://localhost:${port}`)
+      console.log(`> Starting next-docify server on port http://localhost:${port}`)
     })
 
     siteApp.get('*', (req, res) => {

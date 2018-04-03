@@ -34,6 +34,7 @@
     "regenerator-runtime": "^0.11.1",
     "remarkable": "^1.7.1",
     "rimraf": "^2.6.2",
+    "tcp-port-used": "^0.1.2",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^2.11.1"
   },

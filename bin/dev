@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const program = require('commander');
+const chalk = require('chalk');
+const tcpPortUsed = require('tcp-port-used');
 
 program
   .description('start a dev mode servered application')
@@ -24,6 +26,25 @@ require('babel-register')({
   presets: ['react', 'env'],
 });
 
-const server = require('../server').default;
+const port = parseInt(program.port, 10) || 3000;
 
-server();
+tcpPortUsed
+  .check(port, 'localhost')
+  .then(function(inUse) {
+    if (inUse) {
+      console.error(chalk.red('Port ' + port + ' is in use'));
+      process.exit(1);
+    } else {
+      console.log('start in');
+      // start local server on specified port
+      const server = require('../server').default;
+      server(port);
+    }
+  })
+  .catch(function(ex) {
+    setTimeout(function() {
+      throw ex;
+    }, 0);
+  });
+
+

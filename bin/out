@@ -5,6 +5,7 @@ const { join, resolve, relative } = require('path');
 const program = require('commander');
 const mkdirp = require('mkdirp');
 const cp = require('recursive-copy')
+const rimraf = require('rimraf');
 const exportApp = require('next/dist/server/export').default;
 const siteConfig = require('../lib/siteConfig');
 
@@ -37,6 +38,8 @@ const options = {
   silent: program.silent,
   outdir: program.outdir ? resolve(program.outdir) : resolve(dir, 'out')
 }
+
+rimraf.sync(resolve('.', 'out'));
 
 exportApp(dir, options).then(() => {
   if (existsSync(join(process.cwd(), '.next', 'chunk'))) {
