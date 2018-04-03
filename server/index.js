@@ -5,14 +5,14 @@ import { preCacheSourceFiles, initOutputFolder } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
 import siteConfig from '../lib/siteConfig';
 
+const dev = process.env.NODE_ENV !== 'production'
+export const app = next({
+  // dir: resolve(__dirname, '..'),
+  dev
+})
+
 export default () => {
   const port = parseInt(process.env.PORT, 10) || 3000
-  const dev = process.env.NODE_ENV !== 'production'
-  const app = next({
-    // dir: resolve(__dirname, '..'),
-    dev
-  })
-
   preCacheSourceFiles();
   initOutputFolder();
   const storeProvider = new StoreProvider();
