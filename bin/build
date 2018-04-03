@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+require('babel-register')({
+  babelrc: false,
+  plugins: [
+    'transform-class-properties',
+    'transform-object-rest-spread',
+  ],
+  ignore: /node_modules\/(?!next-docify)/,
+  presets: ['react', 'env'],
+});
+
+const program = require('commander');
+const { resolve } = require('path');
+const build = require('next/dist/server/build').default;
+const { preCacheSourceFiles, initOutputFolder } = require('../lib/prestart');
+const StoreProvider = require('../lib/store/Provider').default;
+
+program
+  .description('start a dev mode servered application')
+  .option('--port <port>', 'start server port')
+  .on('--help', function() {
+    console.log('  Examples:');
+    console.log();
+    console.log('    $ next-notify build');
+    console.log();
+  });
+
+program.parse(process.argv);
+process.env.NODE_ENV = 'production';
+
+preCacheSourceFiles();
+initOutputFolder();
+const storeProvider = new StoreProvider();
+storeProvider.resolveMetas();
+
+const dir = resolve('.');
+build(dir).catch((err) => {
+  console.log('err : ', err);
+})

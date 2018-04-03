@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
 const { existsSync } = require('fs');
-const { join } = require('path');
+const { join, resolve, relative } = require('path');
 const program = require('commander');
 const mkdirp = require('mkdirp');
 const cp = require('recursive-copy')
+const exportApp = require('next/dist/server/export').default;
+const siteConfig = require('../lib/siteConfig');
 
 program
   .description('export standalone static assets')
@@ -27,44 +29,46 @@ require('babel-register')({
   presets: ['react', 'env'],
 });
 
-const spawn = require('cross-spawn');
 process.env.NODE_ENV = 'production';
 
-const script = require.resolve('../' + 'node_modules/next/dist/bin/next');
+const dir = resolve('.');
 
-const proc = spawn(
-  'node',
-  [script, 'export'],
-  { stdio: 'inherit' }
-)
-
-proc.on('close', (code, signal) => {
-  if (code !== null) {
-    process.exit(code)
-  }
-  if (signal) {
-    if (signal === 'SIGKILL') {
-      process.exit(137)
-    }
-    console.log(`got signal ${signal}, exiting`)
-    process.exit(1)
-  }
-  process.exit(0)
-})
-proc.on('error', (err) => {
-  console.error(err)
-  process.exit(1)
-})
-
-if (existsSync(join(process.cwd(), '.next', 'chunk'))) {
-  console.log('ext');
-  mkdirp(join(process.cwd(), 'out', '_next', 'test'), () => {
-   cp (
-      join(process.cwd(), '.next', 'chunk'),
-      join(process.cwd(), 'out', '_next', 'test', 'chunk'), (err, results) => {
-        if (err) console.log('err : ', err);
-        // console.log('result : ', results);
-      }
-    )
-  })
+const options = {
+  silent: program.silent,
+  outdir: program.outdir ? resolve(program.outdir) : resolve(dir, 'out')
 }
+
+exportApp(dir, options).then(() => {
+  if (existsSync(join(process.cwd(), '.next', 'chunk'))) {
+    mkdirp(join(process.cwd(), 'out', '_next', 'webpack'), () => {
+     cp (
+        join(process.cwd(), '.next', 'chunk'),
+        join(process.cwd(), 'out', '_next', 'webpack', 'chunk'), (err) => {
+          if (err) console.error('err : ', err);
+        }
+      )
+    })
+  }
+
+  const transferIndexFile = (config) => {
+    const { accessPath, component } = config;
+    const relativePath = relative(resolve('.', 'pages'), resolve('.', component));
+
+    const sourceIndexDir = join(process.cwd(), 'out', relativePath);
+    const targetIndexDir = join(process.cwd(), 'out', accessPath);
+
+    mkdirp(targetIndexDir, () => {
+      cp(
+        join(sourceIndexDir, 'index.html'),
+        join(targetIndexDir, 'index.html'), (err) => {
+          if (err) console.error('err: ', err);
+        }
+      )
+    })
+  }
+
+  const configs = siteConfig.resolveSiteConfig();
+  configs.forEach(config => transferIndexFile(config));
+}).catch((err) => {
+  console.error(err);
+})
