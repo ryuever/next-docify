@@ -35,8 +35,6 @@ tcpPortUsed
       console.error(chalk.red('Port ' + port + ' is in use'));
       process.exit(1);
     } else {
-      console.log('start in');
-      // start local server on specified port
       const server = require('../server').default;
       server(port);
     }
