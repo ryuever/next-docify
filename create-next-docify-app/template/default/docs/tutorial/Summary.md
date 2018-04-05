@@ -1,4 +1,4 @@
 # Summary
 
 * tutorial
-  * quick-start(./quick-start.md)
+  * quick-start(quick-start.md)

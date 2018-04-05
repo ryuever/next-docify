@@ -20,7 +20,7 @@ module.exports = (context, appName, useYarn, dependencies, verbose) => {
 
     process.chdir(appPath);
 
-    const terminator = loading('start install package');
+    const terminator = loading('Installing dependency packages');
     const child = spawn(cmd, args, { studio: 'inherit' });
     child.on('close', code => {
       terminator();

@@ -38,8 +38,13 @@ function createApp({
   updatePackageFile(context, appName);
   handleGitignore(context, appName);
   handleBabelFile(context, appName);
+
   installPackages(context, appName, useYarn, dependencies, verbose).then(() => {
-    finishInitializeApp();
+    finishInitializeApp({
+      context,
+      appName,
+      useYarn,
+    });
   }).catch((reason) =>{
     console.log();
     console.log('Aborting installation.');
