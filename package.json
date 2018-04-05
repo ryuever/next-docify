@@ -1,6 +1,6 @@
 {
   "name": "next-docify",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Seamless static site generator with Next.js",
   "main": "index.js",
   "author": "youchao.liu",
