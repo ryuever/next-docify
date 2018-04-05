@@ -7,7 +7,6 @@ import siteConfig from '../lib/siteConfig';
 
 const dev = process.env.NODE_ENV !== 'production'
 export const app = next({
-  // dir: resolve(__dirname, '..'),
   dev
 })
 
