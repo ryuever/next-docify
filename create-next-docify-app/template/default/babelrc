@@ -1,0 +1,7 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    "transform-decorators-legacy",
+    "next-docify/lib/babel/plugins/dynamic-bundle-import-plugin"
+  ]
+}

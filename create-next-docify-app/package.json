@@ -1,0 +1,19 @@
+{
+  "name": "create-next-docify-app",
+  "version": "1.0.0",
+  "description": "cli for next-docify ",
+  "main": "index.js",
+  "bin": {
+    "next-docify-cli": "index.js"
+  },
+  "files": [
+    "lib/*",
+    "template/*",
+    "index.js"
+  ],
+  "author": "youchao.liu",
+  "license": "MIT",
+  "dependencies": {
+    "ora": "^2.0.0"
+  }
+}
