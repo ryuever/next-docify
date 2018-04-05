@@ -1,0 +1,9 @@
+{
+  "name": "create-next-docify-example",
+  "scripts": {
+    "dev": "next-docify dev",
+    "build": "next-docify build",
+    "out": "next-docify out"
+  },
+  "dependencies": {}
+}
