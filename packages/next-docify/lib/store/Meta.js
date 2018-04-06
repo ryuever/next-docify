@@ -12,7 +12,7 @@ class Meta {
     this.filename = value.split('/').pop();
   }
 
-  get _cwd()  {
+  get _cwd() {
     return this.cwd;
   }
 

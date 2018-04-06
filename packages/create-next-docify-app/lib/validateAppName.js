@@ -5,8 +5,8 @@ module.exports = (name, dependencies) => {
     console.error(`
       You cant create project ${chalk.red(name)},
       Because it has the same name with npm dependency package
-    `)
+    `);
 
     process.exit(1);
   }
-}
+};

@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const { join } = require('path');
 
-module.exports = (opts) => {
+module.exports = opts => {
   const { context, appName, useYarn } = opts;
   const appPath = join(context, appName);
   const cmd = useYarn ? 'yarn' : 'npm';
@@ -12,14 +12,10 @@ module.exports = (opts) => {
   console.log(chalk.cyan(`  ${cmd} dev`));
   console.log('    Starts the development server.');
   console.log();
-  console.log(
-    chalk.cyan(`  ${cmd} ${useYarn ? '' : 'run '}build`)
-  );
+  console.log(chalk.cyan(`  ${cmd} ${useYarn ? '' : 'run '}build`));
   console.log('    Bundles the app into static files for production.');
   console.log();
-  console.log(
-    chalk.cyan(`  ${cmd} ${useYarn ? '' : 'run '}out`)
-  );
+  console.log(chalk.cyan(`  ${cmd} ${useYarn ? '' : 'run '}out`));
   console.log('    Bundles the app into static html files for deployment.');
   console.log();
 
@@ -27,4 +23,4 @@ module.exports = (opts) => {
   console.log();
   console.log(chalk.cyan('  cd'), appPath);
   console.log(`  ${chalk.cyan(`${cmd} dev`)}`);
-}
+};

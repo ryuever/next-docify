@@ -10,4 +10,4 @@ module.exports = (context, appName) => {
     join(appPath, 'package.json'),
     JSON.stringify(pkg, null, 2) + EOL
   );
-}
+};

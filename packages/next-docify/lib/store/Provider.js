@@ -11,10 +11,9 @@ let singleton = null;
 
 class Provider {
   constructor() {
-
     Output.createSingleton({
       outputPath,
-    })
+    });
 
     singleton = this;
   }
@@ -44,13 +43,13 @@ class Provider {
           docPath,
           docBaseName,
           docDirName,
-        })
+        });
       }
-    })
+    });
 
     Array.from(docsNeedToParsed.values()).forEach(config => {
       this.resolveMeta(config);
-    })
+    });
   }
 
   resolveMeta(config) {
@@ -60,30 +59,33 @@ class Provider {
       cwd: docPath,
     };
 
-    ResolveCategory.parseSummary(config)
+    ResolveCategory.parseSummary(config);
 
     const pattern = '**/*.md';
     const files = this.walk(pattern, globOpts);
 
-    const content = files.reduce((prev, file) => {
-      const cwd = resolve(docPath, file);
+    const content = files.reduce(
+      (prev, file) => {
+        const cwd = resolve(docPath, file);
 
-      const stat = ResolveStat.parse({
-        cwd,
-        docBaseName,
-      })
-      prev.stats[stat.id] = stat.toJson();
+        const stat = ResolveStat.parse({
+          cwd,
+          docBaseName,
+        });
+        prev.stats[stat.id] = stat.toJson();
 
-      const postMeta = ResolvePostMeta.parse({
-        cwd,
-        config,
-      });
-      prev.postmeta[postMeta.id] = postMeta.toJson();
-      return prev;
-    }, {
-      stats: {},
-      postmeta: {},
-    })
+        const postMeta = ResolvePostMeta.parse({
+          cwd,
+          config,
+        });
+        prev.postmeta[postMeta.id] = postMeta.toJson();
+        return prev;
+      },
+      {
+        stats: {},
+        postmeta: {},
+      }
+    );
 
     const { stats, postmeta } = content;
 

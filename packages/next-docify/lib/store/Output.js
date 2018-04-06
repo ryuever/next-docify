@@ -27,7 +27,7 @@ class Output {
 
   outputPostMeta(docBaseName, content) {
     const destDir = join(this.outputPath, docBaseName);
-    mkdirp.sync(destDir)
+    mkdirp.sync(destDir);
     fs.writeFileSync(
       join(destDir, 'postmeta.js'),
       '/**\n' +
@@ -43,7 +43,7 @@ class Output {
   // toSlug(cwd) as key
   outputStats(docBaseName, content) {
     const destDir = join(this.outputPath, docBaseName);
-    mkdirp.sync(destDir)
+    mkdirp.sync(destDir);
 
     fs.writeFileSync(
       join(destDir, 'stats.js'),

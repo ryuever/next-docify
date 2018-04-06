@@ -15,5 +15,5 @@ module.exports = function(data) {
   return `module.exports = ${JSON.stringify({
     meta: meta,
     content: nextContent,
-  })}`
-}
+  })}`;
+};

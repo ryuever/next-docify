@@ -11,16 +11,21 @@ program
   .version(pkg.version)
   .usage(`${chalk.green('<app-directory>')} [options]`)
   .arguments('<app-directory> [template]')
-  .option('-t, --templateName <template-name>', 'supplied template name', 'default')
+  .option(
+    '-t, --templateName <template-name>',
+    'supplied template name',
+    'default'
+  )
   .option('-v, --verbose <verbose>', 'print additional logs', true)
-  .action(function(app){
+  .action(function(app) {
     name = app;
-    console.log(chalk.cyan('Start to init an application ' + app + '!'))
-  }).on('--help', function() {
+    console.log(chalk.cyan('Start to init an application ' + app + '!'));
+  })
+  .on('--help', function() {
     console.log('  Examples:');
     console.log('    $ create-next-docify-app app');
     console.log();
-  })
+  });
 
 program.parse(process.argv);
 

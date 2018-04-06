@@ -5,7 +5,7 @@ const { existsSync, copySync, readdirSync, statSync } = fs;
 
 const isDir = path => statSync(path).isDirectory();
 
-module.exports = (opts) => {
+module.exports = opts => {
   const { context, appName } = opts;
   const templateName = opts.templateName || 'default';
   const templateRepoPath = join(resolve(__dirname, '..'), 'template');
@@ -15,8 +15,11 @@ module.exports = (opts) => {
   if (existsSync(templatePath)) {
     copySync(templatePath, targetPath);
     console.log();
-    console.log(`${chalk.green('> Success!')} Created files for "${appName}" next-docify app`)
-
+    console.log(
+      `${chalk.green(
+        '> Success!'
+      )} Created files for "${appName}" next-docify app`
+    );
   } else {
     const files = readdirSync(templateRepoPath);
     const templateGallery = files.filter(isDir);
@@ -24,6 +27,6 @@ module.exports = (opts) => {
     console.error(`
       Could not locate supplied template: ${chalk.green(templatePath)};
       For recenlty, only has ${JSON.stringify(templateGallery)}
-    `)
+    `);
   }
-}
+};

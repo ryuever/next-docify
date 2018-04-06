@@ -5,28 +5,29 @@ import { preCacheSourceFiles, initOutputFolder } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
 import siteConfig from '../lib/siteConfig';
 
-const dev = process.env.NODE_ENV !== 'production'
+const dev = process.env.NODE_ENV !== 'production';
 export const app = next({
-  dev
-})
+  dev,
+});
 
-export default (port) => {
+export default port => {
   preCacheSourceFiles();
   initOutputFolder();
   const storeProvider = new StoreProvider();
   storeProvider.resolveMetas();
 
-  const handle = app.getRequestHandler()
-  app.prepare()
-  .then(() => {
+  const handle = app.getRequestHandler();
+  app.prepare().then(() => {
     const siteApp = express();
     siteApp.listen(port, err => {
       if (err) throw err;
-      console.log(`> Starting next-docify server on port http://localhost:${port}`)
-    })
+      console.log(
+        `> Starting next-docify server on port http://localhost:${port}`
+      );
+    });
 
     siteApp.get('*', (req, res) => {
-      let parsedUrl = parseUrl(req.url, true)
+      let parsedUrl = parseUrl(req.url, true);
       const { pathname } = parsedUrl;
 
       const routeGateWay = siteConfig.resolveGatewayRoutes();
@@ -37,10 +38,10 @@ export default (port) => {
           pathname: value,
           path: value,
           href: value,
-        }
+        };
       }
 
-      handle(req, res, parsedUrl)
-    })
-  })
-}
+      handle(req, res, parsedUrl);
+    });
+  });
+};

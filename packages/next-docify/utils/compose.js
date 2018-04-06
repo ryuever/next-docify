@@ -11,8 +11,9 @@ function compose(...funcs) {
     return funcs[0];
   }
 
-  return funcs.reduce((accum, cur) => (...args) => cur(accum(...args), ...args.slice(1)));
+  return funcs.reduce((accum, cur) => (...args) =>
+    cur(accum(...args), ...args.slice(1))
+  );
 }
 
 module.exports = compose;
-

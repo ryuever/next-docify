@@ -6,4 +6,4 @@ export default cwd => {
   data = data.replace(/[^}\]]*$/, '');
 
   return JSON.parse(data);
-}
+};

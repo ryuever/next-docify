@@ -9,11 +9,11 @@ const defaultConfig = {
   origin: 'default',
 };
 
-module.exports = (siteConfig) => {
+module.exports = siteConfig => {
   let nextSiteConfig = [].concat(siteConfig);
   const merged = {};
 
-  merged.siteConfig = nextSiteConfig.map((config) => {
+  merged.siteConfig = nextSiteConfig.map(config => {
     const preCached = {
       ...defaultConfig,
       ...config,
@@ -26,8 +26,8 @@ module.exports = (siteConfig) => {
       origin: 'site.config.js',
       docPath: join(context, docDirName, docBaseName),
       component: join(context, component),
-    }
-  })
+    };
+  });
 
   const { context, outputPath } = defaultGlobalConfig;
   merged.siteGlobalConfig = {
@@ -36,4 +36,4 @@ module.exports = (siteConfig) => {
   };
 
   return merged;
-}
+};

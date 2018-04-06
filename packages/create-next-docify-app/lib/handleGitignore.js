@@ -5,10 +5,7 @@ const { moveSync, unlinkSync, appendFileSync, readFileSync } = fs;
 module.exports = (context, appName) => {
   const appPath = join(context, appName);
   try {
-    moveSync(
-      join(appPath, 'gitignore'),
-      join(appPath, '.gitignore'),
-    );
+    moveSync(join(appPath, 'gitignore'), join(appPath, '.gitignore'));
   } catch (err) {
     // Append if there's already a `.gitignore` file there
     if (err.code === 'EEXIST') {
@@ -19,4 +16,4 @@ module.exports = (context, appName) => {
       throw err;
     }
   }
-}
+};

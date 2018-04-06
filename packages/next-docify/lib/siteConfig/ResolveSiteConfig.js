@@ -24,14 +24,18 @@ class ResolveSiteConfig {
 
   resolveGlobalConfig() {
     if (this._siteGlobalConfig) return this._siteGlobalConfig;
-    const { siteGlobalConfig } = withDefaultConfig(require(this.resolveSiteConfigPath()));
-    return this._siteGlobalConfig = siteGlobalConfig;
+    const { siteGlobalConfig } = withDefaultConfig(
+      require(this.resolveSiteConfigPath())
+    );
+    return (this._siteGlobalConfig = siteGlobalConfig);
   }
 
   resolveSiteConfig() {
     if (this._siteConfig) return this._siteConfig;
-    const { siteConfig } = withDefaultConfig(require(this.resolveSiteConfigPath()));
-    return this._siteConfig = siteConfig;
+    const { siteConfig } = withDefaultConfig(
+      require(this.resolveSiteConfigPath())
+    );
+    return (this._siteConfig = siteConfig);
   }
 
   checkConfigFileExist() {
@@ -47,8 +51,11 @@ class ResolveSiteConfig {
     siteConfig.forEach(config => {
       const { component } = config;
       if (this.siteMap.has(component))
-        this.siteMap.set(component, [].concat(this.siteMap.get(component), config));
-      else this.siteMap.set(component, [config])
+        this.siteMap.set(
+          component,
+          [].concat(this.siteMap.get(component), config)
+        );
+      else this.siteMap.set(component, [config]);
     });
   }
 
@@ -59,12 +66,14 @@ class ResolveSiteConfig {
     const siteConfig = this.resolveSiteConfig();
     siteConfig.forEach(({ accessPath, component }) => {
       if (this._gatewayRoutes.has(accessPath)) {
-        throw new Error(`accessPath ${accessPath} could not be shared by different site`);
+        throw new Error(
+          `accessPath ${accessPath} could not be shared by different site`
+        );
       }
 
       const pageRelative = relative('./pages', component);
       this._gatewayRoutes.set(accessPath, `/${pageRelative}`);
-    })
+    });
 
     return this._gatewayRoutes;
   }

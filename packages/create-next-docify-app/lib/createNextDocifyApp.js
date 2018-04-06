@@ -13,11 +13,7 @@ const finishInitializeApp = require('./finishInitializeApp');
 let useYarn = shouldUseYarn();
 let context;
 
-function createApp({
-  name,
-  verbose,
-  templateName,
-}) {
+function createApp({ name, verbose, templateName }) {
   const resolvedPath = resolve(name);
   const parsed = parse(resolvedPath);
   const { dir, base } = parsed;
@@ -33,29 +29,31 @@ function createApp({
     context,
     templateName,
     appName,
-  })
+  });
 
   updatePackageFile(context, appName);
   handleGitignore(context, appName);
   handleBabelFile(context, appName);
 
-  installPackages(context, appName, useYarn, dependencies, verbose).then(() => {
-    finishInitializeApp({
-      context,
-      appName,
-      useYarn,
+  installPackages(context, appName, useYarn, dependencies, verbose)
+    .then(() => {
+      finishInitializeApp({
+        context,
+        appName,
+        useYarn,
+      });
+    })
+    .catch(reason => {
+      console.log();
+      console.log('Aborting installation.');
+      if (reason.command) {
+        console.log(`  ${chalk.cyan(reason.command)} has failed.`);
+      } else {
+        console.log(chalk.red('Unexpected error. Please report it as a bug:'));
+        console.log(reason);
+      }
+      console.log();
     });
-  }).catch((reason) =>{
-    console.log();
-    console.log('Aborting installation.');
-    if (reason.command) {
-      console.log(`  ${chalk.cyan(reason.command)} has failed.`);
-    } else {
-      console.log(chalk.red('Unexpected error. Please report it as a bug:'));
-      console.log(reason);
-    }
-    console.log();
-  })
 }
 
 module.exports = createApp;

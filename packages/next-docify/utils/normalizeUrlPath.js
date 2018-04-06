@@ -22,7 +22,7 @@ export default (str, publishPath = '/', withIndex) => {
     }
 
     return '/';
-  }
+  };
 
   if (str === '#') return str;
   const resolvedPath = resolvePath(str, publishPath);
@@ -33,4 +33,4 @@ export default (str, publishPath = '/', withIndex) => {
     if (resolvedPath === '/') return '/index.html';
     if (!resolvedPath.endsWith('.html')) return `${resolvedPath}/index.html`;
   }
-}
+};

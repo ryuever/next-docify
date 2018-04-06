@@ -12,8 +12,8 @@ class PostMeta extends Meta {
 
     this.meta = {
       ...opts.meta,
-      title: opts.meta.title || removeSuffix(this.filename)
-    }
+      title: opts.meta.title || removeSuffix(this.filename),
+    };
     this.author = opts.author || '';
     this._createdAt = opts.createdAt || '';
     this._updatedAt = opts.updatedAt || '';
@@ -34,8 +34,8 @@ class PostMeta extends Meta {
     const { context } = siteGlobalConfig;
     const relativePath = relative(context, cwd);
     const parts = relativePath.split(sep);
-    let permalink = parts.map(part => part ? toSlug(part) : '').join('/');
-    return permalink.replace(/^([^/])/, '/$1')
+    let permalink = parts.map(part => (part ? toSlug(part) : '')).join('/');
+    return permalink.replace(/^([^/])/, '/$1');
   }
 }
 

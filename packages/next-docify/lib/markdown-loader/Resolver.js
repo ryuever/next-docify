@@ -23,7 +23,7 @@ class Resolver {
 
     const meta = Object.create(null);
 
-    while((match = reg.exec(header)) !== null) {
+    while ((match = reg.exec(header)) !== null) {
       const data = match[1];
       const parts = data.split(':');
 
@@ -37,7 +37,7 @@ class Resolver {
   }
 
   static parse(source) {
-    const [header, content] = Resolver.resolveParts(source)
+    const [header, content] = Resolver.resolveParts(source);
     const headerMeta = Resolver.parseHeader(header);
 
     return {

@@ -40,96 +40,102 @@ class ResolveCategory {
 
     lines.forEach((line, lineNumber) => {
       ResolveCategory.parseLine(line, lineNumber);
-    })
+    });
 
-    const res = nextStack.filter(stack => stack.value).reduce((sum, cur) => {
-      const { prev, merge, accumulate } = sum;
+    const res = nextStack.filter(stack => stack.value).reduce(
+      (sum, cur) => {
+        const { prev, merge, accumulate } = sum;
 
-      let nextMerge = merge;
-      let nextAccumulate = accumulate;
+        let nextMerge = merge;
+        let nextAccumulate = accumulate;
 
-      const { depth: prevDepth } = prev;
-      const { depth, value } = cur;
+        const { depth: prevDepth } = prev;
+        const { depth, value } = cur;
 
-      // resolve `permalink` and `title` from content
-      const hasParenthesesAndWithPermalink = str => /\(.+\)/.test(str)
+        // resolve `permalink` and `title` from content
+        const hasParenthesesAndWithPermalink = str => /\(.+\)/.test(str);
 
-      cur.relativePath = '';
-      const resolveTitleAndPermalink = str => {
-        if (!str) throw new Error('missing content');
-        const ret = {
-          title: str,
-          permalink: '',
+        cur.relativePath = '';
+        const resolveTitleAndPermalink = str => {
+          if (!str) throw new Error('missing content');
+          const ret = {
+            title: str,
+            permalink: '',
+          };
+          if (!hasParenthesesAndWithPermalink(str)) ret.title = str;
+          else {
+            const matched = str.match(/([^(]*)\(([^)]*)/);
+            if (matched) {
+              ret.title = matched[1];
+              cur.relativePath = ret.permalink = matched[2];
+            }
+          }
+
+          return ret;
         };
-        if (!hasParenthesesAndWithPermalink(str)) ret.title = str;
-        else {
-          const matched = str.match(/([^(]*)\(([^)]*)/);
-          if (matched) {
-            ret.title = matched[1];
-            cur.relativePath = ret.permalink = matched[2];
-          }
+
+        const { title, permalink } = resolveTitleAndPermalink(value);
+        cur.cwd = escapeFilename(resolve(docPath, cur.relativePath));
+        // cur.cwd = resolve(docPath, cur.relativePath);
+        // cur.cwd = `${docPath}/${cur.relativePath}`;
+        cur.id = resolveId(cur.cwd);
+        const stats = fs.statSync(cur.cwd);
+        cur.isFile = stats.isFile();
+
+        cur.title = title;
+
+        // TODO: should reconsider how to set `nextPermalink` value
+        // let nextPermalink = `/${permalink}`;
+        let nextPermalink = `/${docDirName}/${docBaseName}/${permalink}`;
+        nextPermalink = nextPermalink.replace(/\/$/, '');
+        cur.permalink = nextPermalink
+          .split('/')
+          .map(part => (part ? toSlug(part) : ''))
+          .join('/');
+
+        if (!prevDepth || prevDepth === depth) {
+          nextMerge.push(cur);
         }
 
-        return ret;
-      }
-
-      const { title, permalink } = resolveTitleAndPermalink(value);
-      cur.cwd = escapeFilename(resolve(docPath, cur.relativePath));
-      // cur.cwd = resolve(docPath, cur.relativePath);
-      // cur.cwd = `${docPath}/${cur.relativePath}`;
-      cur.id = resolveId(cur.cwd);
-      const stats = fs.statSync(cur.cwd);
-      cur.isFile = stats.isFile();
-
-      cur.title = title;
-
-      // TODO: should reconsider how to set `nextPermalink` value
-      // let nextPermalink = `/${permalink}`;
-      let nextPermalink = `/${docDirName}/${docBaseName}/${permalink}`;
-      nextPermalink = nextPermalink.replace(/\/$/, '');
-      cur.permalink = nextPermalink.split('/').map(part => part ? toSlug(part) : '').join('/');
-
-      if (!prevDepth || prevDepth === depth) {
-        nextMerge.push(cur);
-      }
-
-      if (prevDepth < depth) {
-        nextAccumulate = nextAccumulate.concat(nextMerge);
-        nextMerge = [];
-        nextMerge.push(cur);
-      }
-
-      // if the prevDepth has a bigger value, the prev items will be consider as the cur's children
-      if (prevDepth > depth) {
-        if (merge.length > 0) {
-          cur.children = merge.slice();
+        if (prevDepth < depth) {
+          nextAccumulate = nextAccumulate.concat(nextMerge);
           nextMerge = [];
-          nextAccumulate.push(cur);
-        } else {
-          const len = nextAccumulate.length;
-          let i = len - 1;
-          for (; i >= 0; i--) {
-            const token = nextAccumulate[i];
-            if (token.depth <= depth) break;
-          }
-
-          cur.children = nextAccumulate.slice(i + 1, len);
-          nextAccumulate = nextAccumulate.slice(0, i + 1);
-
-          nextAccumulate.push(cur);
+          nextMerge.push(cur);
         }
-      }
 
-      return {
-        prev: cur,
-        merge: nextMerge,
-        accumulate: nextAccumulate,
+        // if the prevDepth has a bigger value, the prev items will be consider as the cur's children
+        if (prevDepth > depth) {
+          if (merge.length > 0) {
+            cur.children = merge.slice();
+            nextMerge = [];
+            nextAccumulate.push(cur);
+          } else {
+            const len = nextAccumulate.length;
+            let i = len - 1;
+            for (; i >= 0; i--) {
+              const token = nextAccumulate[i];
+              if (token.depth <= depth) break;
+            }
+
+            cur.children = nextAccumulate.slice(i + 1, len);
+            nextAccumulate = nextAccumulate.slice(0, i + 1);
+
+            nextAccumulate.push(cur);
+          }
+        }
+
+        return {
+          prev: cur,
+          merge: nextMerge,
+          accumulate: nextAccumulate,
+        };
+      },
+      {
+        prev: {},
+        merge: [],
+        accumulate: [],
       }
-    }, {
-      prev: {},
-      merge: [],
-      accumulate: [],
-    })
+    );
 
     let accum = res.accumulate;
     const len = accum.length;
@@ -150,19 +156,28 @@ class ResolveCategory {
     accum = remainding.slice(0, i);
     accum.push(missing);
 
-    const filterManifests = (manifests) => {
-      return manifests.map((manifest) => {
+    const filterManifests = manifests => {
+      return manifests.map(manifest => {
         const keysToSave = [
-          'id', 'cwd', 'relativePath',
-          'value', 'title', 'isFile',
-          'title', 'permalink', 'value',
+          'id',
+          'cwd',
+          'relativePath',
+          'value',
+          'title',
+          'isFile',
+          'title',
+          'permalink',
+          'value',
           'depth',
         ];
 
-        const refine = keysToSave.reduce((accum, key) => ({
-          ...accum,
-          [key]: manifest[key],
-        }), {})
+        const refine = keysToSave.reduce(
+          (accum, key) => ({
+            ...accum,
+            [key]: manifest[key],
+          }),
+          {}
+        );
 
         refine.children = [];
 
@@ -171,8 +186,8 @@ class ResolveCategory {
         }
 
         return refine;
-      })
-    }
+      });
+    };
 
     const nextData = filterManifests(accum);
 
@@ -180,7 +195,10 @@ class ResolveCategory {
   }
 
   static tagsShouldProcess() {
-    return ['ul', 'li'].reduce((prev, cur) => prev.concat([`<${cur}>`, `</${cur}>`]), []);
+    return ['ul', 'li'].reduce(
+      (prev, cur) => prev.concat([`<${cur}>`, `</${cur}>`]),
+      []
+    );
   }
 
   // only care <li, </li>, <ul> and </ul> tags, for else `<p></p>` will be replaced with empty.
@@ -210,7 +228,7 @@ class ResolveCategory {
         isClosingBracket: tag.startsWith('</'),
         children: [],
       });
-    })
+    });
 
     // only care <ul></ul> and <li></li>
     if (lineStack.length === 0) return;
@@ -219,7 +237,7 @@ class ResolveCategory {
 
     let content = '';
 
-    for (let i = 0; i < length;) {
+    for (let i = 0; i < length; ) {
       if (lineStack.length > 0) {
         const token = lineStack[0];
         const { start, end, isClosingBracket, itag } = token;

@@ -11,22 +11,24 @@ export default class App extends React.Component {
   }
   componentDidMount() {
     site({
-      path: '/docs/tutorial/quick-start'
-    }).then((data) => {
+      path: '/docs/tutorial/quick-start',
+    }).then(data => {
       const { dataSource } = data;
       const { content } = dataSource;
       this.setState({
         content,
-      })
-    })
+      });
+    });
   }
 
   render() {
     const { content } = this.state;
     return (
-      <div dangerouslySetInnerHTML={{
-        __html: content
-      }}/>
-    )
+      <div
+        dangerouslySetInnerHTML={{
+          __html: content,
+        }}
+      />
+    );
   }
 }

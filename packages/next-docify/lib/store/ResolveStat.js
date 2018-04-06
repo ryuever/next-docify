@@ -1,9 +1,7 @@
 import Stat from './Stat';
 
 class ResolveStat {
-  constructor() {
-
-  }
+  constructor() {}
 
   static parse(opts) {
     return new Stat(opts);

@@ -9,10 +9,10 @@ import siteConfig from './siteConfig';
 // This is only for using `memory-fs`
 export function preCacheSourceFiles() {
   if (!isMemoryFs) {
-    return
+    return;
   }
 
-  const copyFileForMemoryFsUsage = (docPath) => {
+  const copyFileForMemoryFsUsage = docPath => {
     const files = glob.sync('**/*.md', {
       cwd: docPath,
     });
@@ -22,15 +22,15 @@ export function preCacheSourceFiles() {
       const { dir } = parse(dest);
       mkdirp(dir);
       fs.writeFileSync(dest, nodeFs.readFileSync(dest));
-    })
-  }
+    });
+  };
 
   const configs = siteConfig.resolveSiteConfig();
-  configs.forEach(config => copyFileForMemoryFsUsage(config.docPath))
+  configs.forEach(config => copyFileForMemoryFsUsage(config.docPath));
 }
 
 export function initOutputFolder() {
-  const { outputPath }  = siteConfig.resolveGlobalConfig();
+  const { outputPath } = siteConfig.resolveGlobalConfig();
   rimraf.sync(outputPath);
   mkdirp(outputPath);
 }

@@ -11,10 +11,7 @@ if (fs.pathExistsSync(userConfigNextFilePath)) {
 }
 
 let webpackConfig = docifyConfig.webpack;
-const {
-  webpack: useDefinedWebpack,
-  ...rest
-} = useDefinedNextConfig;
+const { webpack: useDefinedWebpack, ...rest } = useDefinedNextConfig;
 
 if (useDefinedNextConfig.webpack) {
   webpackConfig = compose(useDefinedWebpack, webpackConfig);
@@ -24,4 +21,4 @@ module.exports = {
   webpack: webpackConfig,
   ...rest,
   // distDir: './website/.next',
-}
+};

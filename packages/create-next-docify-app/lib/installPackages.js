@@ -10,10 +10,17 @@ module.exports = (context, appName, useYarn, dependencies, verbose) => {
 
     if (useYarn) {
       cmd = 'yarn';
-      args = [].concat('add','--exact', '--exact', dependencies, '--cwd', appPath);
+      args = [].concat(
+        'add',
+        '--exact',
+        '--exact',
+        dependencies,
+        '--cwd',
+        appPath
+      );
     } else {
       cmd = 'npm';
-      args = [].concat('install', '--save', '--save-exact')
+      args = [].concat('install', '--save', '--save-exact');
       verbose && args.push('--verbose');
       [].push.apply(args, dependencies);
     }
@@ -32,6 +39,6 @@ module.exports = (context, appName, useYarn, dependencies, verbose) => {
       }
 
       resolve();
-    })
-  })
-}
+    });
+  });
+};
