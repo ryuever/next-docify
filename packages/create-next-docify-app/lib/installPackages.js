@@ -12,7 +12,7 @@ module.exports = (context, appName, dependencies, verbose) => {
 
     switch (cmd) {
       case 'yarn':
-        args = [].concat('add', '--exact', dependencies, '--cwd', appPath);
+        args = [].concat('add', dependencies, '--cwd', appPath);
         break;
       case 'npm':
       case 'cnpm':
@@ -43,8 +43,6 @@ module.exports = (context, appName, dependencies, verbose) => {
 
     console.log();
     const terminator = loading(`Installing ${packagesLog}`);
-
-    console.log('cmd : ', cmd, args);
     const child = spawn(cmd, args, { stdio: 'ignore' });
     child.on('close', code => {
       terminator();
