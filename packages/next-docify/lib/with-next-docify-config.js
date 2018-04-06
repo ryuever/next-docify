@@ -1,7 +1,7 @@
 const nextDocifyConfig = require('../next-docify.config');
 const compose = require('../utils/compose');
 
-module.exports = nextConfig => {
+module.exports = (nextConfig = {}) => {
   let docifyWebpackConfig = nextDocifyConfig.webpack;
   const { webpack: nextWebpackConfig, ...rest } = nextConfig;
 
