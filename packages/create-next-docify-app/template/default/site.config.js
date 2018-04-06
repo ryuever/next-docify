@@ -1,7 +1,7 @@
 module.exports = [
   {
     site: 'next-docify template',
-    component: './pages/index',
+    component: './pages/docs',
     accessPath: '/docs',
     docDirName: 'docs',
     docBaseName: 'tutorial',

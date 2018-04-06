@@ -1,7 +1,6 @@
 const { parse, resolve } = require('path');
 const fs = require('fs-extra');
 const chalk = require('chalk');
-const shouldUseYarn = require('./shouldUseYarn');
 const installPackages = require('./installPackages');
 const validateAppName = require('./validateAppName');
 const copyTemplate = require('./copyTemplate');
@@ -10,7 +9,6 @@ const handleGitignore = require('./handleGitignore');
 const handleBabelFile = require('./handleBabelFile');
 const finishInitializeApp = require('./finishInitializeApp');
 
-let useYarn = shouldUseYarn();
 let context;
 
 function createApp({ name, verbose, templateName }) {
@@ -35,12 +33,12 @@ function createApp({ name, verbose, templateName }) {
   handleGitignore(context, appName);
   handleBabelFile(context, appName);
 
-  installPackages(context, appName, useYarn, dependencies, verbose)
+  installPackages(context, appName, dependencies, verbose)
     .then(() => {
       finishInitializeApp({
         context,
         appName,
-        useYarn,
+        templateName,
       });
     })
     .catch(reason => {
