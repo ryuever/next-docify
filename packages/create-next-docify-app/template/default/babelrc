@@ -1,0 +1,6 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    "next-docify/lib/babel/plugins/dynamic-bundle-import-plugin"
+  ]
+}
