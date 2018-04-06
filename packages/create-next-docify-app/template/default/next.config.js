@@ -1,3 +1,3 @@
-const withNextDocifyConfig = require('next-docify/lib/with-next-docify-config');
+const withNextDocifyConfig = require('next-docify/with-next-docify-config');
 
 module.exports = withNextDocifyConfig({});
