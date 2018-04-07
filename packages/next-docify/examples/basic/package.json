@@ -1,0 +1,13 @@
+{
+  "name": "basic",
+  "scripts": {
+    "dev": "../../dist/bin/next-docify dev",
+    "build": "../../dist/bin/next-docify build",
+    "out": "../../dist/bin/next-docify out"
+  },
+  "dependencies": {
+    "next": "^5.1.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1"
+  }
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { existsSync } = require('fs');
+const { existsSync } = require('fs-extra');
 const { join, resolve, relative } = require('path');
 const program = require('commander');
 const mkdirp = require('mkdirp');
@@ -19,16 +19,6 @@ program
   });
 
 program.parse(process.argv);
-
-require('babel-register')({
-  babelrc: false,
-  plugins: [
-    'transform-class-properties',
-    'transform-object-rest-spread',
-  ],
-  ignore: /node_modules\/(?!next-docify)/,
-  presets: ['react', 'env'],
-});
 
 process.env.NODE_ENV = 'production';
 
@@ -49,8 +39,8 @@ exportApp(dir, options).then(() => {
         join(process.cwd(), 'out', '_next', 'webpack', 'chunk'), (err) => {
           if (err) console.error('err : ', err);
         }
-      )
-    })
+      );
+    });
   }
 
   const transferIndexFile = (config) => {
@@ -59,19 +49,20 @@ exportApp(dir, options).then(() => {
 
     const sourceIndexDir = join(process.cwd(), 'out', relativePath);
     const targetIndexDir = join(process.cwd(), 'out', accessPath);
+    const sourceIndexFile = join(sourceIndexDir, 'index.html');
+    const targetIndexFile = join(targetIndexDir, 'index.html');
 
-    mkdirp(targetIndexDir, () => {
-      cp(
-        join(sourceIndexDir, 'index.html'),
-        join(targetIndexDir, 'index.html'), (err) => {
-          if (err) console.error('err: ', err);
-        }
-      )
-    })
-  }
+
+    if (!existsSync(targetIndexFile)) {
+      mkdirp.sync(targetIndexDir);
+      cp(sourceIndexFile, targetIndexFile, (err) => {
+        if (err) console.error('err: ', err);
+      });
+    }
+  };
 
   const configs = siteConfig.resolveSiteConfig();
   configs.forEach(config => transferIndexFile(config));
 }).catch((err) => {
   console.error(err);
-})
+});

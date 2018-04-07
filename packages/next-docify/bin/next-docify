@@ -28,21 +28,21 @@ program
 
     proc.on('close', (code, signal) => {
       if (code !== null) {
-        process.exit(code)
+        process.exit(code);
       }
       if (signal) {
         if (signal === 'SIGKILL') {
           process.exit(137)
         }
         console.log(`got signal ${signal}, exiting`)
-        process.exit(1)
+        process.exit(1);
       }
-      process.exit(0)
-    })
+      process.exit(0);
+    });
     proc.on('error', (err) => {
-      console.error(err)
-      process.exit(1)
-    })
+      console.error(err);
+      process.exit(1);
+    });
   });
 
 program.parse(process.argv);

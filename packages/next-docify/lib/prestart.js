@@ -2,7 +2,7 @@ import { join, parse, relative } from 'path';
 import rimraf from 'rimraf';
 import glob from 'glob';
 import chokidar from 'chokidar';
-import { copySync, readFileSync, statSync } from 'fs-extra';
+import { copySync, statSync } from 'fs-extra';
 import fs, { isMemoryFs } from './fs';
 import mkdirp from 'mkdirp';
 import siteConfig from './siteConfig';
@@ -23,7 +23,7 @@ export function preCacheSourceFiles() {
       const dest = join(docPath, file);
       const { dir } = parse(dest);
       mkdirp(dir);
-      fs.writeFileSync(dest, readFileSync(dest));
+      fs.writeFileSync(dest, fs.readFileSync(dest));
     });
   };
 

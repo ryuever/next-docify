@@ -6,11 +6,12 @@
   "author": "youchao.liu",
   "license": "MIT",
   "scripts": {
+    "build": "taskr",
     "analyze": "cross-env ANALYZE=1 next build",
     "lint": "eslint --ext .js pages components"
   },
   "bin": {
-    "next-docify": "./bin/next-docify"
+    "next-docify": "./dist/bin/next-docify"
   },
   "dependencies": {
     "babel-plugin-dynamic-import-node": "^1.2.0",
@@ -39,21 +40,21 @@
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "devDependencies": {
+    "@taskr/babel": "^1.1.0",
+    "@taskr/clear": "^1.1.0",
+    "@taskr/esnext": "^1.1.0",
+    "@taskr/watch": "^1.1.0",
     "babel-eslint": "^8.2.2",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-env": "^1.6.1",
     "eslint": "^4.18.2",
     "eslint-loader": "^2.0.0",
-    "eslint-plugin-react": "^7.7.0"
+    "taskr": "^1.1.0"
   },
   "files": [
-    "bin",
-    "config",
-    "lib",
-    "server",
-    "utils",
-    "next.config.js",
-    "next-docify.config.js",
-    "with-next-docify-config.js"
+    "dist/*",
+    "with-next-docify-config.js",
+    "dynamic-bundle-import-plugin.js"
   ],
   "keywords": [
     "static-site-generator",

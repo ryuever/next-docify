@@ -1,1 +1,1 @@
-module.exports = require('./lib/with-next-docify-config');
+module.exports = require('./dist/lib/with-next-docify-config');

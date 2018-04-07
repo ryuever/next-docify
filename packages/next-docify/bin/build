@@ -1,14 +1,4 @@
 #!/usr/bin/env node
-require('babel-register')({
-  babelrc: false,
-  plugins: [
-    'transform-class-properties',
-    'transform-object-rest-spread',
-  ],
-  ignore: /node_modules\/(?!next-docify)/,
-  presets: ['react', 'env'],
-});
-
 const program = require('commander');
 const { resolve } = require('path');
 const build = require('next/dist/server/build').default;
