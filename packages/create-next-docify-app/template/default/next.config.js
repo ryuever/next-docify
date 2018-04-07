@@ -1,3 +1,8 @@
 const withNextDocifyConfig = require('next-docify/with-next-docify-config');
 
-module.exports = withNextDocifyConfig({});
+module.exports = withNextDocifyConfig({
+  exportPathMap: () => ({
+    '/': { page: '/' },
+    '/docs': { page: '/docs' },
+  }),
+});
