@@ -1,7 +1,11 @@
 import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
-import { preCacheSourceFiles, initOutputFolder } from '../lib/prestart';
+import {
+  preCacheSourceFiles,
+  initOutputFolder,
+  copyImageFileToStatic,
+} from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
 import siteConfig from '../lib/siteConfig';
 
@@ -13,6 +17,7 @@ export const app = next({
 export default port => {
   preCacheSourceFiles();
   initOutputFolder();
+  copyImageFileToStatic();
   const storeProvider = new StoreProvider();
   storeProvider.resolveMetas();
 
