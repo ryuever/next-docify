@@ -52,7 +52,8 @@
     "server",
     "utils",
     "next.config.js",
-    "next-docify.config.js"
+    "next-docify.config.js",
+    "with-next-docify-config.js"
   ],
   "keywords": [
     "static-site-generator",

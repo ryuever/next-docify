@@ -6,6 +6,9 @@ const { resolve, sep } = require('path');
 const glob = require('glob');
 const { ANALYZE } = process.env;
 
+const env = process.env.NODE_ENV;
+const isDev = !env || (env && env.startsWith('dev'));
+
 module.exports = {
   webpack: (config, { dev, isServer }) => {
     const extraResolver = [resolve(__dirname, 'lib')];
@@ -26,7 +29,7 @@ module.exports = {
         use: {
           loader: 'markdown-loader',
           options: {
-            publishPath: process.env.NODE_ENV.startsWith('dev') ? '' : '/out',
+            publishPath: isDev ? '' : '/out',
             root: '/docs',
           },
         },
