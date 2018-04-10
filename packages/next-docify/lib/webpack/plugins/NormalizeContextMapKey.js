@@ -1,6 +1,7 @@
 const RawSource = require('webpack-sources').RawSource;
 const { join, relative } = require('path');
 const siteConfig = require('../../siteConfig');
+const { DOCIFY_CHUNK_PREFIX } = require('../constants');
 
 const globalConfig = siteConfig.resolveGlobalConfig();
 const { context: appContext } = globalConfig;
@@ -10,7 +11,7 @@ class NormalizeContextMapKeyTemplate {
     moduleTemplate.plugin('render', (moduleSourcePostModule, module, chunk) => {
       // Each ContextModule will trigger one time `render`; but if has duplicate context, it will trigger only once.
       // Use `module` in case of `ContextModule` comes from same chunk, then get the `context` param will be a problem.
-      if (chunk.name === 'context-chunk') {
+      if (chunk.name === `${DOCIFY_CHUNK_PREFIX}/context-chunk`) {
         const { context } = module;
         const rawSource = moduleSourcePostModule.source();
         let nextRawSource = rawSource;
