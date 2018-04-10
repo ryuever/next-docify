@@ -44,27 +44,13 @@ const resolveChunkConstraints = () => {
   return constraints;
 };
 
-const resolveNextMainCommonChunkOnBuild = () =>
+const resolveMainCommonChunk = () =>
   new CommonsChunkPlugin({
     name: 'main.js',
     // to fix 'While running in normal mode it's not allowed to use a non-entry chunk' issue.
     // refer to https://github.com/webpack/webpack/issues/1016
     children: true,
   });
-
-// const resolveNextMainCommonChunk = () =>
-//   new CommonsChunkPlugin({
-//     name: `main.js`,
-//     filename: 'main.js',
-//     minChunks(module) {
-//       const { request } = module;
-//       if (!request && module instanceof contextModule) {
-//         return false;
-//       }
-
-//       return true;
-//     }
-//   });
 
 const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
   const keys = Array.from(chunkConstraints.keys());
@@ -78,7 +64,7 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
         new CommonsChunkPlugin({
           name: cur,
           filename: cur,
-          minChunks: function(module, count) {
+          minChunks: function(module, count, order) {
             const { resource } = module;
             if (prev && resource === prev) {
               return false;
@@ -99,13 +85,10 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
 
             if (dev) return false;
 
-            if (
-              resource ===
-              '/Users/ryuyutyo/Documents/git/verdaccio/modules/next-docify/node_modules/next/dist/client/next.js'
-            )
-              return true;
-
-            return count > 2;
+            // you should specify the first time check `count`, or it will cause error.
+            if (order === 0) {
+              return count > 2;
+            }
           },
         })
       );
@@ -131,13 +114,7 @@ const resolveContextChunk = path =>
     },
   });
 
-// const resolveManifestCommonChunk = () =>
-//   new CommonsChunkPlugin({
-//     name: 'manifest',
-//     filename: 'manifest.js',
-//   });
-
-const resolveManifestCommonChunkOnBuild = () =>
+const resolveManifestCommonChunk = () =>
   new CommonsChunkPlugin({
     name: 'manifest',
     filename: 'manifest.js',
@@ -173,8 +150,8 @@ const interpolateCommonsChunks = (plugins, opts) => {
     contextModule = resolveContextChunk(prev, opts);
   }
 
-  const mainCommonChunk = resolveNextMainCommonChunkOnBuild();
-  const manifestCommonChunk = resolveManifestCommonChunkOnBuild();
+  const mainCommonChunk = resolveMainCommonChunk();
+  const manifestCommonChunk = resolveManifestCommonChunk();
 
   if (opts.dev) {
     return []
