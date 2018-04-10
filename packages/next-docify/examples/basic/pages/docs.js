@@ -1,4 +1,9 @@
 import React from 'react';
+
+const getComponent = () => {
+  const bundle = require.context('../docs', true, /\.md$/);
+};
+
 export default () => <div>hello</div>;
 
 // import site from 'next-docify/site';

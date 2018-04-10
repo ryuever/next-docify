@@ -1,25 +1,31 @@
-const DynamicRuntimePlugin = require('./lib/webpack/plugins/dynamic-runtime-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { resolve } = require('path');
+const DynamicRuntimePlugin = require('./lib/webpack/plugins/dynamic-runtime-plugin');
+const NormalizeContextMapKey = require('./lib/webpack/plugins/NormalizeContextMapKey');
+const PrependChunkMap = require('./lib/webpack/plugins/PrependChunkMap');
 const interpolateCommonsChunks = require('./lib/webpack/utils/interpolateCommonsChunks');
-const { ANALYZE } = process.env;
 
-const env = process.env.NODE_ENV;
+const { ANALYZE, env } = process.env;
 const isDev = !env || (env && env.startsWith('dev'));
 
 module.exports = {
   webpack: (config, { dev, isServer }) => {
     const extraResolver = [resolve(__dirname, 'lib')];
 
+    const analyzer = new BundleAnalyzerPlugin({
+      analyzerMode: 'server',
+      analyzerPort: isServer ? 8888 : 8889,
+      openAnalyzer: true,
+    });
     const extraPlugins = [
-      ANALYZE
-        ? new BundleAnalyzerPlugin({
-            analyzerMode: 'server',
-            analyzerPort: isServer ? 8888 : 8889,
-            openAnalyzer: true,
-          })
-        : null,
+      ANALYZE ? analyzer : null,
+      new NormalizeContextMapKey(),
+      new PrependChunkMap(),
     ];
+    if (!isServer) {
+      config.plugins.unshift(new DynamicRuntimePlugin());
+      config.plugins = interpolateCommonsChunks(config.plugins, { dev });
+    }
 
     const extraRuls = [
       {
@@ -39,11 +45,6 @@ module.exports = {
       //   loader: 'eslint-loader',
       // },
     ];
-
-    if (!isServer) {
-      config.plugins.unshift(new DynamicRuntimePlugin());
-      config.plugins = interpolateCommonsChunks(config.plugins, { dev });
-    }
 
     const nextData = [
       {
@@ -83,26 +84,6 @@ module.exports = {
           () => reject()
         );
       });
-
-    // config.entry = () => Promise.resolve(fn.call(null).then((entry) => {
-    //   // interpolate entry with path relative process.cwd();
-
-    //   const nextEntry = {};
-
-    //   for (let key in entry) {
-    //     const items = entry[key];
-
-    //     if (Array.isArray(items)) {
-    //       nextEntry[key] = items.map((item) => {
-    //         return item.replace(/^.*(?=next-docify\/node_modules)next-docify/, resolve(process.cwd()));
-    //       })
-    //     } else {
-    //       return nextEntry[key] = items.replace(/^(?=next-docify\/node_modules)next-docify/, resolve(process.cwd()));
-    //     }
-    //   }
-    //   return Promise.resolve(nextEntry);
-    // }))
-
     return config;
   },
 };

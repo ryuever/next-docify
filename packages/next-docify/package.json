@@ -60,5 +60,6 @@
     "static-site-generator",
     "doc-content-splitting",
     "Next.js"
-  ]
+  ],
+  "repository": "https://github.com/ryuever/next-docify"
 }

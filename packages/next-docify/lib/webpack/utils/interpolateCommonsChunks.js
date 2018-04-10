@@ -1,5 +1,6 @@
 const { sep, relative, join } = require('path');
 const glob = require('glob');
+const { DOCIFY_CHUNK_PREFIX } = require('../constants');
 const siteConfig = require('../../siteConfig');
 
 const { context } = siteConfig.resolveGlobalConfig();
@@ -59,11 +60,13 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
     (accum, cur) => {
       const { merged } = accum;
       let prev = accum.prev;
+      const name = `${DOCIFY_CHUNK_PREFIX}/${cur}`;
+      const filename = name;
 
       merged.push(
         new CommonsChunkPlugin({
-          name: cur,
-          filename: cur,
+          name,
+          filename,
           minChunks: function(module, count, order) {
             const { resource } = module;
             if (prev && resource === prev) {
@@ -102,17 +105,21 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
   );
 };
 
-const resolveContextChunk = path =>
-  new CommonsChunkPlugin({
-    name: 'context-chunk',
-    filename: 'context-chunk',
+const resolveContextChunk = path => {
+  const name = `${DOCIFY_CHUNK_PREFIX}/context-chunk`;
+  const filename = name;
+  return new CommonsChunkPlugin({
+    name,
+    filename,
     minChunks: module => {
       if (path === module.resource) {
         return false;
       }
+
       return true;
     },
   });
+};
 
 const resolveManifestCommonChunk = () =>
   new CommonsChunkPlugin({
