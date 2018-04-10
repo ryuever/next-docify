@@ -8,6 +8,8 @@ const defaultGlobalConfig = {
 const defaultConfig = {
   origin: 'default',
   extension: 'js',
+  includeSubdirs: true,
+  filter: /\.md$/,
 };
 
 module.exports = siteConfig => {

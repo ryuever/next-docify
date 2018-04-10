@@ -2,4 +2,4 @@
 
 how to use `next-docify`
 
-![octocat](./octocat.png)
+![octocat](./octocat.png)fdaffsdfasfafd

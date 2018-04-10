@@ -1,9 +1,9 @@
 import React from 'react';
 import { DOCIFY_CHUNK_PREFIX } from '../../../lib/webpack/constants';
 
-const getComponent = () => {
-  const bundle = require.context('../docs', true, /\.md$/);
-};
+// const getComponent = () => {
+//   const bundle = require.context('../docs', true, /\.md$/);
+// };
 
 class App extends React.Component {
   constructor(props) {

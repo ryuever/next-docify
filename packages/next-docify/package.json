@@ -54,7 +54,7 @@
   "files": [
     "dist/*",
     "with-next-docify-config.js",
-    "dynamic-bundle-import-plugin.js"
+    "dynamic-site-import-plugin.js"
   ],
   "keywords": [
     "static-site-generator",

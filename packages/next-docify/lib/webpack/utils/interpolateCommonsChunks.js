@@ -61,12 +61,11 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
       const { merged } = accum;
       let prev = accum.prev;
       const name = `${DOCIFY_CHUNK_PREFIX}/${cur}`;
-      const filename = name;
 
       merged.push(
         new CommonsChunkPlugin({
           name,
-          filename,
+          filename: `${name}-[chunkhash].js`,
           minChunks: function(module, count, order) {
             const { resource } = module;
             if (prev && resource === prev) {
@@ -107,10 +106,9 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
 
 const resolveContextChunk = path => {
   const name = `${DOCIFY_CHUNK_PREFIX}/context-chunk`;
-  const filename = name;
   return new CommonsChunkPlugin({
     name,
-    filename,
+    filename: `${name}-[chunkhash].js`,
     minChunks: module => {
       if (path === module.resource) {
         return false;
@@ -121,13 +119,13 @@ const resolveContextChunk = path => {
   });
 };
 
-const resolveManifestCommonChunk = () =>
+const resolveManifestCommonChunk = ({ dev }) =>
   new CommonsChunkPlugin({
     name: 'manifest',
     filename: 'manifest.js',
     minChunks(module) {
       // To emit context module as a single chunk
-      if (!module.request && module instanceof contextModule) {
+      if (!dev && !module.request && module instanceof contextModule) {
         return false;
       }
 
@@ -158,7 +156,7 @@ const interpolateCommonsChunks = (plugins, opts) => {
   }
 
   const mainCommonChunk = resolveMainCommonChunk();
-  const manifestCommonChunk = resolveManifestCommonChunk();
+  const manifestCommonChunk = resolveManifestCommonChunk(opts);
 
   return []
     .concat(
