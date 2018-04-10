@@ -40,9 +40,10 @@ module.exports = {
       // },
     ];
 
-    !isServer && config.plugins.unshift(new DynamicRuntimePlugin());
-    !isServer &&
-      (config.plugins = interpolateCommonsChunks(config.plugins, { dev }));
+    if (!isServer) {
+      config.plugins.unshift(new DynamicRuntimePlugin());
+      config.plugins = interpolateCommonsChunks(config.plugins, { dev });
+    }
 
     const nextData = [
       {

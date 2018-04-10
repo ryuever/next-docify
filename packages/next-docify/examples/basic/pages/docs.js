@@ -1,5 +1,6 @@
 import React from 'react';
 export default () => <div>hello</div>;
+
 // import site from 'next-docify/site';
 
 // export default class App extends React.Component {

@@ -44,41 +44,27 @@ const resolveChunkConstraints = () => {
   return constraints;
 };
 
-const resolveNextMainCommonChunk = ({ dev }) =>
+const resolveNextMainCommonChunkOnBuild = () =>
   new CommonsChunkPlugin({
-    name: `main.js`,
-    filename: `main.js`,
-    minChunks(module, count) {
-      // We need to move react-dom explicitly into common chunks.
-      // Otherwise, if some other page or module uses it, it might
-      // included in that bundle too.
-      const { resource } = module;
-
-      if (resource && count > 0) {
-        const reg = RegExp(`${sep}react${sep}|${sep}react-dom${sep}`);
-
-        if (reg.test(resource)) {
-          return true;
-        }
-      }
-
-      if (/\.md$/.test(resource)) {
-        return true;
-      }
-
-      // if (dev && count > 2) return true;
-
-      if (!module.request && module instanceof contextModule) {
-        return true;
-      }
-
-      if (dev) {
-        return false;
-      }
-
-      return count > 2;
-    },
+    name: 'main.js',
+    // to fix 'While running in normal mode it's not allowed to use a non-entry chunk' issue.
+    // refer to https://github.com/webpack/webpack/issues/1016
+    children: true,
   });
+
+// const resolveNextMainCommonChunk = () =>
+//   new CommonsChunkPlugin({
+//     name: `main.js`,
+//     filename: 'main.js',
+//     minChunks(module) {
+//       const { request } = module;
+//       if (!request && module instanceof contextModule) {
+//         return false;
+//       }
+
+//       return true;
+//     }
+//   });
 
 const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
   const keys = Array.from(chunkConstraints.keys());
@@ -97,9 +83,10 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
             if (prev && resource === prev) {
               return false;
             }
+
             if (resource && count > 0) {
               const reg = RegExp(`${sep}react${sep}|${sep}react-dom${sep}`);
-              if (reg.test(resource)) return false;
+              if (reg.test(resource)) return true;
             }
 
             if (resource && /\.md$/.test(resource)) {
@@ -109,7 +96,16 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
             if (!module.request && module instanceof contextModule) {
               return true;
             }
-            return false;
+
+            if (dev) return false;
+
+            if (
+              resource ===
+              '/Users/ryuyutyo/Documents/git/verdaccio/modules/next-docify/node_modules/next/dist/client/next.js'
+            )
+              return true;
+
+            return count > 2;
           },
         })
       );
@@ -123,7 +119,7 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
   );
 };
 
-const resolveContextChunk = (path, { dev }) =>
+const resolveContextChunk = path =>
   new CommonsChunkPlugin({
     name: 'context-chunk',
     filename: 'context-chunk',
@@ -131,19 +127,26 @@ const resolveContextChunk = (path, { dev }) =>
       if (path === module.resource) {
         return false;
       }
-
       return true;
     },
   });
 
-const resolveManifestCommonChunk = () =>
+// const resolveManifestCommonChunk = () =>
+//   new CommonsChunkPlugin({
+//     name: 'manifest',
+//     filename: 'manifest.js',
+//   });
+
+const resolveManifestCommonChunkOnBuild = () =>
   new CommonsChunkPlugin({
     name: 'manifest',
     filename: 'manifest.js',
-    minChunks: module => {
-      if (!module.request) {
+    minChunks(module) {
+      // To emit context module as a single chunk
+      if (!module.request && module instanceof contextModule) {
         return false;
       }
+
       return true;
     },
   });
@@ -152,20 +155,17 @@ const interpolateCommonsChunks = (plugins, opts) => {
   const chunkConstraints = resolveChunkConstraints();
   if (chunkConstraints.size === 0) return plugins;
 
-  const { dev } = opts;
+  const defaultManifestIndex = findCommonChunk(plugins, 'manifest.js');
+  let nextPlugins = plugins.slice();
 
-  if (dev) {
-    const manifestCommonChunkIndex = findCommonChunk(plugins, 'manifest.js');
-    const nextManifestCommonChunk = resolveManifestCommonChunk();
-    plugins.splice(manifestCommonChunkIndex, 1);
-    plugins.splice(manifestCommonChunkIndex, 0, nextManifestCommonChunk);
+  if (defaultManifestIndex >= 0) {
+    nextPlugins.splice(defaultManifestIndex, 1);
   }
 
-  const mainCommonChunkIndex = findCommonChunk(plugins, 'main.js');
+  const mainCommonChunkIndex = findCommonChunk(nextPlugins, 'main.js');
   if (typeof mainCommonChunkIndex === 'undefined') return;
-  const front = plugins.slice(0, mainCommonChunkIndex);
-  const end = plugins.slice(mainCommonChunkIndex + 1);
-  const mainCommonChunk = resolveNextMainCommonChunk(opts);
+  const front = nextPlugins.slice(0, mainCommonChunkIndex - 1);
+  const end = nextPlugins.slice(mainCommonChunkIndex + 1);
   const { prev, merged } = resolveStandaloneMdChunk(chunkConstraints, opts);
 
   let contextModule;
@@ -173,8 +173,33 @@ const interpolateCommonsChunks = (plugins, opts) => {
     contextModule = resolveContextChunk(prev, opts);
   }
 
+  const mainCommonChunk = resolveNextMainCommonChunkOnBuild();
+  const manifestCommonChunk = resolveManifestCommonChunkOnBuild();
+
+  if (opts.dev) {
+    return []
+      .concat(
+        front,
+        merged,
+        contextModule,
+        manifestCommonChunk,
+        mainCommonChunk,
+        end
+      )
+      .filter(val => val);
+  }
+
+  // Because Next.js will not bundle a `manifest` chunk on build. no need to delete `manifest` chunk
+  // manually.
   return []
-    .concat(front, mainCommonChunk, merged, contextModule, end)
+    .concat(
+      front,
+      merged,
+      contextModule,
+      manifestCommonChunk,
+      mainCommonChunk,
+      end
+    )
     .filter(val => val);
 };
 
