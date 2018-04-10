@@ -1,8 +1,8 @@
 import React from 'react';
 
-// const getComponent = () => {
-//   const bundle = require.context('../docs', true, /\.md$/);
-// }
+const getComponent = () => {
+  const bundle = require.context('../docs', true, /\.md$/);
+};
 
 class App extends React.Component {
   constructor(props) {

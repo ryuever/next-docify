@@ -153,21 +153,6 @@ const interpolateCommonsChunks = (plugins, opts) => {
   const mainCommonChunk = resolveMainCommonChunk();
   const manifestCommonChunk = resolveManifestCommonChunk();
 
-  if (opts.dev) {
-    return []
-      .concat(
-        front,
-        merged,
-        contextModule,
-        manifestCommonChunk,
-        mainCommonChunk,
-        end
-      )
-      .filter(val => val);
-  }
-
-  // Because Next.js will not bundle a `manifest` chunk on build. no need to delete `manifest` chunk
-  // manually.
   return []
     .concat(
       front,
