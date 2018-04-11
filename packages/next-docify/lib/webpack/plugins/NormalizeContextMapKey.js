@@ -12,6 +12,7 @@ class NormalizeContextMapKeyTemplate {
       // Each ContextModule will trigger one time `render`; but if has duplicate context, it will trigger only once.
       // Use `module` in case of `ContextModule` comes from same chunk, then get the `context` param will be a problem.
       const shouldUpdateMapKey = () => {
+        // on dev mode, `context` map will be bundled into `manifest` file.
         if (process.env.NODE_ENV === 'development') {
           if (chunk.name === 'manifest') return true;
         } else if (chunk.name === `${DOCIFY_CHUNK_PREFIX}/context-chunk`) {

@@ -1,13 +1,13 @@
 const { sep, relative, join } = require('path');
 const glob = require('glob');
+const webpack = require('webpack');
+const contextModule = require('webpack/lib/ContextModule');
 const { DOCIFY_CHUNK_PREFIX } = require('../constants');
 const siteConfig = require('../../siteConfig');
 
-const { context } = siteConfig.resolveGlobalConfig();
-
-const webpack = require('webpack');
-const contextModule = require('webpack/lib/ContextModule');
 const { CommonsChunkPlugin } = webpack.optimize;
+const { context, outputPath } = siteConfig.resolveGlobalConfig();
+const metaFiles = ['postmeta', 'manifest'];
 
 const findCommonChunk = (plugins, filenameTemplate) => {
   const len = plugins.length;
@@ -22,7 +22,8 @@ const findCommonChunk = (plugins, filenameTemplate) => {
 
 const resolveCommonsChunkIdent = path => {
   let relativePath = relative(context, path);
-  relativePath = relativePath.replace(/\.[^/]*/, '');
+  // trim extension;
+  relativePath = relativePath.replace(/\.[^/]*$/, '');
   return `${relativePath}`;
 };
 
@@ -36,6 +37,15 @@ const resolveChunkConstraints = () => {
       const path = join(docPath, file);
       const key = resolveCommonsChunkIdent(path);
 
+      if (!constraints.has(key)) {
+        constraints.set(key, path);
+      }
+    });
+
+    metaFiles.forEach(meta => {
+      const { docBaseName } = config;
+      const path = join(outputPath, docBaseName, `${meta}.js`);
+      const key = resolveCommonsChunkIdent(path);
       if (!constraints.has(key)) {
         constraints.set(key, path);
       }
@@ -78,6 +88,14 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
             }
 
             if (resource && /\.md$/.test(resource)) {
+              return true;
+            }
+
+            const metaFileReg = RegExp(
+              `\\.docify.*${metaFiles.join('|')}\\.js$`
+            );
+
+            if (resource && metaFileReg.test(resource)) {
               return true;
             }
 

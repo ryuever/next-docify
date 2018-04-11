@@ -77,6 +77,17 @@ class ResolveSiteConfig {
 
     return this._gatewayRoutes;
   }
+
+  resolveAccesPathToDocMapping() {
+    const siteConfig = this.resolveSiteConfig();
+    return siteConfig.reduce((merged, config) => {
+      const { accessPath, docBaseName } = config;
+      return {
+        ...merged,
+        [accessPath]: docBaseName,
+      };
+    }, {});
+  }
 }
 
 module.exports = ResolveSiteConfig;

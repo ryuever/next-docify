@@ -5,9 +5,10 @@
 const template = require('babel-template');
 const syntax = require('babel-plugin-syntax-dynamic-import');
 const siteConfig = require('../../siteConfig');
-const { relative, sep, normalize, join } = require('path');
+const { relative, sep, normalize } = require('path');
 const toSlug = require('../../utils/toSlug').default;
 const { context } = siteConfig.resolveGlobalConfig();
+const accessPathToDocMapping = siteConfig.resolveAccesPathToDocMapping();
 
 const normalizeChunkNameAndSourcePath = source => {
   const relativePath = relative(context, source);
@@ -36,7 +37,7 @@ const normalizeChunkNameAndSourcePath = source => {
 
 const CONTEXT_VARIABLE = 'DC';
 
-const resolveContextDefinitionFromSiteConfig = configs => {
+const resolveContextDefinition = configs => {
   const variables = [];
 
   const variableDefinitions = configs.reduce((accum, config, key) => {
@@ -54,52 +55,26 @@ const resolveContextDefinitionFromSiteConfig = configs => {
   return joined;
 };
 
-const emulateImportCall = source => {
-  const { chunkName, source: nextSource } = normalizeChunkNameAndSourcePath(
-    source
-  );
+const META_CONTEXT_VARIABLE = 'MC';
 
-  return `
-    (
-      new (require('next/dynamic').SameLoopPromise)((resolve, reject) => {
-        const weakId = require.resolveWeak('${nextSource}')
-        try {
-          const weakModule = __webpack_require__(weakId)
-          return resolve(weakModule)
-        } catch (err) {}
-        require.ensure([], (require) => {
-          try {
-            let m = require('${nextSource}')
-            m.__webpackChunkName = '${chunkName}'
-            resolve(m)
-          } catch(error) {
-            reject(error)
-          }
-        }, 'chunk/${chunkName}');
-      })
-    )
-  `;
+const resolveMetaFileImport = configs => {
+  const variables = [];
+
+  const variableDefinitions = configs.reduce((accum, config, key) => {
+    const { docBaseName } = config;
+    const filter = /\/postmeta|manifest\.js$/;
+    const variable = `${META_CONTEXT_VARIABLE}${key}`;
+    variables.push(variable);
+    const cur = `var ${variable} = require.context('../.docify/${docBaseName}', false, ${filter});`;
+    return accum ? `${accum}\n${cur}` : cur;
+  }, '');
+
+  const vState = `var contextMetaVariables = [${variables.join(', ')}]`;
+
+  const joined = `${variableDefinitions}\n${vState}\n`;
+  return joined;
 };
 
-const emulateImportContextCall = docPath => {
-  const { chunkName, source: nextDocPath } = normalizeChunkNameAndSourcePath(
-    docPath
-  );
-
-  return `
-    (
-      new (require('next/dynamic').SameLoopPromise)((resolve, reject) => {
-        try {
-          let m = require.context('${nextDocPath}', true, /\\.md$/)
-          m.__webpackChunkName = '${chunkName}'
-          resolve(m)
-        } catch(error) {
-          reject(error)
-        }
-      })
-    )
-  `;
-};
 /**
  * check if `requestFile` has specified dataSource, then return including dataSource
  * config or return false
@@ -128,121 +103,116 @@ const getMandatorySiteConfigs = requestFile => {
   );
 };
 
-/**
- *
- * @param {object} config
- */
-const buildImportMetaTemplate = config => {
-  const { outputPath } = siteConfig.resolveGlobalConfig();
-  const { accessPath, docBaseName } = config;
-  const metaDataDir = join(outputPath, docBaseName);
-
-  return `
-    case '${accessPath}':
-      manifest = ${emulateImportCall(join(metaDataDir, 'manifest.js'))}
-      postmeta = ${emulateImportCall(join(metaDataDir, 'postmeta.js'))}
-      break;
-  `;
-};
-
-const buildMetaSwitchImport = configs => {
-  const cases = configs.map(config => buildImportMetaTemplate(config));
-
-  return `
-    switch(accessPath) {
-      ${cases.join('\n')}
-    }
-  `;
-};
-
-const buildImportDataSourceTemplate = config => {
-  const { outputPath } = siteConfig.resolveGlobalConfig();
-  const { docBaseName } = config;
-  let manifestPath = join(outputPath, docBaseName, 'manifest.js');
-  if (process.platform === 'win32') {
-    manifestPath = manifestPath.replace(/\\/g, '\\\\');
-  }
-  const manifestData = require(manifestPath);
-
-  let pathToConfigMap = '';
-
-  const applyCaseTemplate = info => {
-    const { cwd, permalink, isFile, children } = info;
-
-    if (permalink) {
-      pathToConfigMap = `
-        '${permalink}': '${config.accessPath}',
-        ${pathToConfigMap}
-      `;
-    }
-
-    let concatChildrenSources = '';
-
-    if (children.length > 0) {
-      const childrenSources = children.map(info => applyCaseTemplate(info));
-      if (childrenSources.length > 0) {
-        concatChildrenSources = childrenSources.join('\n');
-      }
-    }
-
-    if (!isFile) return concatChildrenSources;
-
-    return `
-      case '${permalink}':
-        dataSource = ${emulateImportCall(cwd)}
-        break;
-      ${concatChildrenSources}
-    `;
-  };
-
-  const sources = manifestData.map(manifest => applyCaseTemplate(manifest));
-
-  const concatSource = sources.reduce((concatenation, cur) => {
-    if (cur) return `${concatenation}\n${cur}`;
-    return concatenation;
-  }, '');
-
-  return {
-    caseSources: concatSource,
-    pathToConfigMap: pathToConfigMap,
-  };
-};
-
-const buildDataSourceSwithImport = configs => {
-  const cases = configs.map(config => buildImportDataSourceTemplate(config));
-
-  const { pathToConfigMap, caseSources } = cases.reduce((merged, cur) => {
-    const { pathToConfigMap: mergedMap, caseSources: mergedSources } = merged;
-
-    const { pathToConfigMap, caseSources } = cur;
-
-    return {
-      pathToConfigMap: mergedMap
-        ? `${mergedMap}\n${pathToConfigMap}`
-        : pathToConfigMap,
-      caseSources: mergedSources
-        ? `${mergedSources}\n${caseSources}`
-        : caseSources,
-    };
-  }, {});
-
-  return `
-    pathMap = {${pathToConfigMap}}
-    switch(path) {
-      ${caseSources}
-    }
-  `;
-};
-
-const buildDynamicImportDataSource = `
-  const requestDataSource = (path) => {
-    return new Promise((resolve, reject) => {
-      __webpack_require__.e(path).then(() => {
-        resolve();
-      })
-    })
+const buildRemoveLeadingSlashBlock = `
+  (path) => {
+    const removeLeadingSlash = str => str.replace(/^\\//, '');
+    return removeLeadingSlash(path);
   }
 `;
+
+const buildResolveDocChunkId = `
+  (path) => {
+    const nextPath = DOCIFY_CHUNK_PREFIX + '/' + path;
+    return docifyChunksMapping[nextPath];
+  }
+`;
+
+const buildResolveMetaChunkIds = `
+  (accessPath) => {
+    const nextPath = DOCIFY_CHUNK_PREFIX + '/' + DOCIFY_OUTPUTPATH + '/' + pathToDoc['/' + accessPath];
+    const postmetaKey = nextPath + '/' + 'postmeta';
+    const manifestKey = nextPath + '/' + 'manifest';
+    const keys = [{
+      chunk: 'postmeta',
+      key: postmetaKey,
+    }, {
+      chunk: 'manifest',
+      key: manifestKey,
+    }];
+
+    return keys.reduce((merged, item) => {
+      const { chunk, key } = item;
+      merged.push({
+        chunk,
+        id: docifyChunksMapping[key],
+      })
+      return merged;
+    }, []);
+  }
+`;
+
+const resolveDataSourceModule = `
+  (path) => {
+    var len = contextVariables.length;
+    for (var i = 0; i < len; i++) {
+      const mod = contextVariables[i](path);
+
+      if (mod) {
+        return { dataSource: mod };
+      }
+    }
+  }
+`;
+
+const resolveMetaModule = `
+  (accessPath) => {
+    var len = contextMetaVariables.length;
+    for (var i = 0; i < len; i++) {
+      const path = DOCIFY_OUTPUTPATH + '/' + pathToDoc['/' + accessPath];
+      const postmetaPath = path + '/' + 'postmeta';
+      const manifestPath = path + '/' + 'manifest';
+
+      const modMap = contextMetaVariables[i];
+      const postmeta = modMap(postmetaPath);
+      const manifest = modMap(manifestPath);
+
+      if (postmeta && manifest) {
+        return { postmeta, manifest };
+      }
+    }
+  }
+`;
+
+const buildImport = configs => {
+  const source = `
+    var MODULENAME = (options) => {
+      ${resolveContextDefinition(configs)}
+      ${resolveMetaFileImport(configs)}
+      const resolveDataSourceModule = ${resolveDataSourceModule};
+      const resolveMetaModule = ${resolveMetaModule};
+      const shortenPath = ${buildRemoveLeadingSlashBlock};
+      const pathToDoc = ${JSON.stringify(accessPathToDocMapping)};
+      const { path, accessPath } = options;
+      const shortPath = shortenPath(path);
+      const shortAccessPath = shortenPath(accessPath);
+
+      return new Promise((resolve, reject) => {
+        const jobs = [];
+
+        const resolveDocChunkId = ${buildResolveDocChunkId};
+        jobs.push(__webpack_require__.e(resolveDocChunkId(shortPath)));
+        const resolveMetaChunkIds = ${buildResolveMetaChunkIds};
+        const pendingMetas = resolveMetaChunkIds(shortAccessPath);
+
+        const len = pendingMetas.length;
+        for (var i = 0; i < len; i++) {
+          jobs.push(__webpack_require__.e(pendingMetas[i].id));
+        }
+
+        Promise.all(jobs).then(() => {
+          const data = Object.assign(
+            {},
+            resolveDataSourceModule(shortPath),
+            resolveMetaModule(shortAccessPath),
+          );
+          resolve(data);
+        })
+      })
+    }
+  `;
+
+  return template(source);
+};
 
 /**
  * 'next-docify/site!all?postmeta&manifest' => {
@@ -291,129 +261,6 @@ const parseImportBody = str => {
   };
 };
 
-// __webpack_require__.e(docifyChunksMapping[DOCIFY_CHUNK_PREFIX + '/context-chunk']);
-
-const buildImport = configs => {
-  const source = `
-    var MODULENAME = (options) => {
-      ${resolveContextDefinitionFromSiteConfig(configs)}
-      const removeLeadingSlash = str => str.replace(/^\\//, '');
-      const pathWithoutLeadingSlash = removeLeadingSlash(options.path);
-      const location = DOCIFY_CHUNK_PREFIX + '/' + pathWithoutLeadingSlash;
-      __webpack_require__.e(docifyChunksMapping[location]).then(() => {
-        const data = DC0(pathWithoutLeadingSlash);
-      })
-      const dynamic = require('next/dynamic').default
-      return new Promise((resolve) => {
-        const bundle = dynamic({
-          modules: (options) => {
-            const { path } = options;
-            let manifest;
-            let postmeta;
-            let dataSource;
-            let pathMap;
-            ${buildDataSourceSwithImport(configs)}
-
-            const accessPath = pathMap[path];
-
-            ${buildMetaSwitchImport(configs)}
-            const components = {
-              manifest,
-              postmeta,
-              dataSource,
-            };
-
-            return components;
-          },
-          render: (options, components) => {
-            resolve(components);
-          }
-        })
-        new bundle(options);
-      })
-    }
-  `;
-
-  return template(source);
-};
-
-const buildContextImportCases = config => {
-  const { docPath } = config;
-
-  return `
-    dataSource = ${emulateImportContextCall(docPath)};
-  `;
-};
-
-const buildContextImport = configs => {
-  const cases = configs.map(config => buildContextImportCases(config));
-
-  return `
-    ${cases.join('\n')}
-  `;
-};
-
-const builContextdImportMetaTemplate = config => {
-  const { outputPath } = siteConfig.resolveGlobalConfig();
-  const { docBaseName, docDirName } = config;
-  const metaDataDir = join(outputPath, docBaseName);
-
-  const accessPath = `/${docDirName}/${docBaseName}`;
-
-  return `
-    case '${accessPath}':
-      manifest = ${emulateImportCall(join(metaDataDir, 'manifest.js'))}
-      postmeta = ${emulateImportCall(join(metaDataDir, 'postmeta.js'))}
-      break;
-  `;
-};
-
-const buildContextMetaSwitchImport = configs => {
-  const cases = configs.map(config => builContextdImportMetaTemplate(config));
-
-  return `
-    switch(accessPath) {
-      ${cases.join('\n')}
-    }
-  `;
-};
-
-const buildImportAll = configs => {
-  const source = `
-    var MODULENAME = (options) => {
-      const dynamic = require('next/dynamic').default
-      return new Promise((resolve) => {
-        const bundle = dynamic({
-          modules: (options) => {
-            const { path } = options;
-            let manifest;
-            let postmeta;
-            let dataSource;
-
-            ${buildContextImport(configs)}
-            const accessPath = path;
-            ${buildContextMetaSwitchImport(configs)}
-
-            const components = {
-              manifest,
-              postmeta,
-              dataSource,
-            };
-
-            return components;
-          },
-          render: (options, components) => {
-            resolve(components);
-          }
-        })
-        new bundle(options);
-      })
-    }
-  `;
-
-  return template(source);
-};
-
 module.exports = ({ types: t }) => ({
   inherits: syntax,
   visitor: {
@@ -435,9 +282,7 @@ module.exports = ({ types: t }) => ({
           MODULENAME: t.identifier(name),
         });
       } else {
-        ast = buildImportAll(configs)({
-          MODULENAME: t.identifier(name),
-        });
+        // do something else
       }
 
       path.replaceWith(ast);

@@ -1,7 +1,9 @@
 const ConcatSource = require('webpack-sources').ConcatSource;
 const flattenArray = require('../../utils/flattenArray');
 const { DOCIFY_CHUNK_PREFIX } = require('../constants');
+const siteConfig = require('../../siteConfig');
 
+const { outputPathShort } = siteConfig.resolveGlobalConfig();
 const docifyChunksMapping = new Map();
 
 class PrependChunkMap {
@@ -77,11 +79,12 @@ class PrependChunkMap {
               /(__NEXT_REGISTER_PAGE\('[^']*', function\(\) \{)/,
               (match, p1) => {
                 const state1 = `\nvar DOCIFY_CHUNK_PREFIX = '${DOCIFY_CHUNK_PREFIX}';\n`;
-                const data2 = flattenArray(docifyChunksMapping.get(key));
-                const state2 = `var docifyChunksMapping = ${JSON.stringify(
-                  data2
+                const state2 = `\nvar DOCIFY_OUTPUTPATH = '${outputPathShort}';\n`;
+                const data3 = flattenArray(docifyChunksMapping.get(key));
+                const state3 = `var docifyChunksMapping = ${JSON.stringify(
+                  data3
                 )}\n`;
-                return `${p1}${state1}${state2}`;
+                return `${p1}${state1}${state2}${state3}`;
               }
             );
             compilation.assets[filename] = new ConcatSource(source);

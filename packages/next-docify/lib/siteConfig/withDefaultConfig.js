@@ -39,6 +39,7 @@ module.exports = siteConfig => {
   merged.siteGlobalConfig = {
     ...defaultGlobalConfig,
     outputPath: join(context, outputPath),
+    outputPathShort: outputPath,
   };
 
   return merged;
