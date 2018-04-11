@@ -173,46 +173,72 @@ const resolveMetaModule = `
   }
 `;
 
-const buildImport = configs => {
+const buildImportBody = configs => `
+  const pathToDoc = ${JSON.stringify(accessPathToDocMapping)};
+  ${resolveContextDefinition(configs)}
+  ${resolveMetaFileImport(configs)}
+  const resolveDataSourceModule = ${resolveDataSourceModule};
+  const resolveMetaModule = ${resolveMetaModule};
+  const shortenPath = ${buildRemoveLeadingSlashBlock};
+  const { path, accessPath } = options;
+  const shortPath = shortenPath(path);
+  const shortAccessPath = shortenPath(accessPath);
+
+  const jobs = [];
+
+  const resolveDocChunkId = ${buildResolveDocChunkId};
+  jobs.push(__webpack_require__.e(resolveDocChunkId(shortPath)));
+  const resolveMetaChunkIds = ${buildResolveMetaChunkIds};
+  const pendingMetas = resolveMetaChunkIds(shortAccessPath);
+
+  const len = pendingMetas.length;
+  for (var i = 0; i < len; i++) {
+    jobs.push(__webpack_require__.e(pendingMetas[i].id));
+  }
+
+  Promise.all(jobs).then(() => {
+    const data = Object.assign(
+      {},
+      resolveDataSourceModule(shortPath),
+      resolveMetaModule(shortAccessPath),
+    );
+    resolve(data);
+  })
+`;
+
+let buildImport = configs => {
   const source = `
     var MODULENAME = (options) => {
-      ${resolveContextDefinition(configs)}
-      ${resolveMetaFileImport(configs)}
-      const resolveDataSourceModule = ${resolveDataSourceModule};
-      const resolveMetaModule = ${resolveMetaModule};
-      const shortenPath = ${buildRemoveLeadingSlashBlock};
-      const pathToDoc = ${JSON.stringify(accessPathToDocMapping)};
-      const { path, accessPath } = options;
-      const shortPath = shortenPath(path);
-      const shortAccessPath = shortenPath(accessPath);
-
       return new Promise((resolve, reject) => {
-        const jobs = [];
-
-        const resolveDocChunkId = ${buildResolveDocChunkId};
-        jobs.push(__webpack_require__.e(resolveDocChunkId(shortPath)));
-        const resolveMetaChunkIds = ${buildResolveMetaChunkIds};
-        const pendingMetas = resolveMetaChunkIds(shortAccessPath);
-
-        const len = pendingMetas.length;
-        for (var i = 0; i < len; i++) {
-          jobs.push(__webpack_require__.e(pendingMetas[i].id));
-        }
-
-        Promise.all(jobs).then(() => {
-          const data = Object.assign(
-            {},
-            resolveDataSourceModule(shortPath),
-            resolveMetaModule(shortAccessPath),
-          );
-          resolve(data);
-        })
+        ${buildImportBody(configs)}
       })
     }
   `;
 
   return template(source);
 };
+
+/**
+ * On production, the `context` map has been extract to a standalone file.
+ * So the dependency file should be fetch first through Jsonp.
+ */
+if (process.env.NODE_ENV !== 'development') {
+  buildImport = configs => {
+    const source = `
+      var MODULENAME = (options) => {
+        const chunkId = docifyChunksMapping[DOCIFY_CHUNK_PREFIX + '/context-chunk'];
+
+        return new Promise((resolve, reject) => {
+          __webpack_require__.e(chunkId).then(() => {
+            ${buildImportBody(configs)}
+          })
+        })
+      }
+    `;
+
+    return template(source);
+  };
+}
 
 /**
  * 'next-docify/site!all?postmeta&manifest' => {
