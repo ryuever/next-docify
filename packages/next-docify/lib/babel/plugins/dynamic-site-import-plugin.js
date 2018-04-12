@@ -5,10 +5,12 @@
 const template = require('babel-template');
 const syntax = require('babel-plugin-syntax-dynamic-import');
 const siteConfig = require('../../siteConfig');
-const { relative, sep, normalize } = require('path');
+const { relative, sep, normalize, parse } = require('path');
 const toSlug = require('../../utils/toSlug').default;
-const { context } = siteConfig.resolveGlobalConfig();
+const { context, outputPath } = siteConfig.resolveGlobalConfig();
 const accessPathToDocMapping = siteConfig.resolveAccesPathToDocMapping();
+
+let filename = '';
 
 const normalizeChunkNameAndSourcePath = source => {
   const relativePath = relative(context, source);
@@ -35,6 +37,12 @@ const normalizeChunkNameAndSourcePath = source => {
   };
 };
 
+const resolveRelativePath = docPath => {
+  const dir = parse(filename).dir;
+  const relativePath = relative(dir, docPath);
+  return relativePath;
+};
+
 const CONTEXT_VARIABLE = 'DC';
 
 const resolveContextDefinition = configs => {
@@ -42,10 +50,10 @@ const resolveContextDefinition = configs => {
 
   const variableDefinitions = configs.reduce((accum, config, key) => {
     const { docPath, includeSubdirs, filter } = config;
-    const relativePath = relative(context, docPath);
+    const relativePath = resolveRelativePath(docPath);
     const variable = `${CONTEXT_VARIABLE}${key}`;
     variables.push(variable);
-    const cur = `var ${variable} = require.context('../${relativePath}', ${includeSubdirs}, ${filter});`;
+    const cur = `var ${variable} = require.context('${relativePath}', ${includeSubdirs}, ${filter});`;
     return accum ? `${accum}\n${cur}` : cur;
   }, '');
 
@@ -62,10 +70,11 @@ const resolveMetaFileImport = configs => {
 
   const variableDefinitions = configs.reduce((accum, config, key) => {
     const { docBaseName } = config;
+    const relativePath = resolveRelativePath(outputPath);
     const filter = /\/postmeta|manifest\.js$/;
     const variable = `${META_CONTEXT_VARIABLE}${key}`;
     variables.push(variable);
-    const cur = `var ${variable} = require.context('../.docify/${docBaseName}', false, ${filter});`;
+    const cur = `var ${variable} = require.context('${relativePath}/${docBaseName}', false, ${filter});`;
     return accum ? `${accum}\n${cur}` : cur;
   }, '');
 
@@ -291,6 +300,7 @@ module.exports = ({ types: t }) => ({
   inherits: syntax,
   visitor: {
     ImportDeclaration(path, state) {
+      filename = state.file.opts.filename;
       const { node } = path;
       if (!node) return;
       const { value } = node.source;
