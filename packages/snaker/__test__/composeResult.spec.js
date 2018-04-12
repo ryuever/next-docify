@@ -1,4 +1,4 @@
-import reduce from '../utils/reduce';
+import reduce from '../src/utils/reduce';
 import { composeResult } from '../src';
 
 test('basic works', () => {

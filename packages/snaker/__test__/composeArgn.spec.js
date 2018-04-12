@@ -1,4 +1,4 @@
-import reduce from '../utils/reduce';
+import reduce from '../src/utils/reduce';
 import { composeArgn } from '../src';
 
 test('Simulate `composeArgn1` function', () => {

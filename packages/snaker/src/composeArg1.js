@@ -3,7 +3,7 @@
  * args[1] will remain the same and passed the next function's arguments.
  */
 
-import reduce from '../utils/reduce';
+import reduce from './utils/reduce';
 import composeArgn from './composeArgn';
 
 export default (...funcs) => composeArgn(1, ...funcs);

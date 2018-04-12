@@ -1,4 +1,4 @@
-import reduce from '../utils/reduce';
+import reduce from '../src/utils/reduce';
 import { compose } from '../src';
 
 test('Has no function, it should itself', () => {

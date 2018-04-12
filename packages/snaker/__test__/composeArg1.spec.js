@@ -1,4 +1,4 @@
-import reduce from '../utils/reduce';
+import reduce from '../src/utils/reduce';
 import { composeArg1 } from '../src';
 
 test('calculate the sum of multiple `Elementary arithmetic`', () => {

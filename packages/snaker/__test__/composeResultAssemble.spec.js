@@ -1,4 +1,4 @@
-import reduce from '../utils/reduce';
+import reduce from '../src/utils/reduce';
 import { composeResultAssemble } from '../src';
 
 test('Function result will be joined with dash', () => {

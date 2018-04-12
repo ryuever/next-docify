@@ -1,6 +1,6 @@
 // It basically a copy of redux `compose` function. However, its run order here is left to right.
 
-import reduce from '../utils/reduce';
+import reduce from './utils/reduce';
 
 export default (...funcs) => {
   if (funcs.length === 0) {

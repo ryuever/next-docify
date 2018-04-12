@@ -1,4 +1,4 @@
-import reduce from '../utils/reduce';
+import reduce from './utils/reduce';
 
 export default (...funcs) => {
   return (...args) => {
