@@ -1,6 +1,6 @@
 {
   "name": "snaker",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "function compose utility",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -8,7 +8,7 @@
     "test": "jest --coverage",
     "build": "./scripts/build.js"
   },
-  "file": [
+  "files": [
     "es/*",
     "lib/*"
   ],
