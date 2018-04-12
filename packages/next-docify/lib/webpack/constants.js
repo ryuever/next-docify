@@ -1,1 +1,1 @@
-exports.DOCIFY_CHUNK_PREFIX = 'webpack/docify-chunks';
+exports.DOCIFY_CHUNK_PREFIX = 'docify-chunks';

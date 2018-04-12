@@ -3,7 +3,7 @@ import rimraf from 'rimraf';
 import glob from 'glob';
 import chokidar from 'chokidar';
 import { copySync, statSync } from 'fs-extra';
-import fs, { isMemoryFs } from './fs';
+import fs, { isMemoryFs } from './utils/fs';
 import mkdirp from 'mkdirp';
 import siteConfig from './siteConfig';
 import notWithSuffix from './regs/notWithSuffix';

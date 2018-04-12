@@ -9,7 +9,7 @@ module.exports = [
   {
     site: 'next-docify template',
     component: './pages/help/qa',
-    accessPath: '/help/qa',
+    accessPath: '/docs/qa',
     docDirName: 'docs',
     docBaseName: 'tutorial',
   },

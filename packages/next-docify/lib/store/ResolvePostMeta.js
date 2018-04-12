@@ -1,6 +1,6 @@
 import PostMeta from './PostMeta';
 import Resolver from '../markdown-loader/Resolver';
-import fs from '../fs';
+import fs from '../utils/fs';
 
 class ResolvePostMeta {
   static parse(opts) {
@@ -8,11 +8,12 @@ class ResolvePostMeta {
     const source = fs.readFileSync(cwd, 'utf8');
     const { meta, content } = Resolver.parse(source);
 
-    return new PostMeta({
-      ...opts,
-      content: content,
-      meta,
-    });
+    return new PostMeta(
+      Object.assign({}, opts, {
+        content,
+        meta,
+      })
+    );
   }
 }
 

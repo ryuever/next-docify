@@ -1,4 +1,4 @@
-import fs from '../fs';
+import fs from '../utils/fs';
 
 export default cwd => {
   let data = fs.readFileSync(cwd, 'utf-8');

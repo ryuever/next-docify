@@ -1,5 +1,5 @@
 import mkdirp from 'mkdirp';
-import fs from '../fs';
+import fs from '../utils/fs';
 import { join } from 'path';
 
 let singleton = null;

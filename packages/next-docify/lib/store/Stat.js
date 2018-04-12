@@ -1,6 +1,6 @@
 import path from 'path';
 import Meta from './Meta';
-import fs from '../fs';
+import fs from '../utils/fs';
 
 import toSlug from '../utils/toSlug';
 
