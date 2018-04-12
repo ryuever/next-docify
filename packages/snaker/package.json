@@ -1,0 +1,21 @@
+{
+  "name": "snaker",
+  "version": "1.0.0",
+  "description": "function compose utility",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "build": "./scripts/build.js"
+  },
+  "file": [
+    "es/*",
+    "lib/*"
+  ],
+  "repository": "https://github.com/ryuever/next-docify",
+  "author": "youchao.liu",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^22.4.3"
+  }
+}
