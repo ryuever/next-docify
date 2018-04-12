@@ -1,6 +1,6 @@
 {
   "name": "snaker",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "description": "function compose utility",
   "main": "lib/index.js",
   "module": "es/index.js",
