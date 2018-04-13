@@ -4,10 +4,11 @@ const { existsSync, readFileSync, copySync } = require('fs-extra');
 const { join, resolve, relative } = require('path');
 const program = require('commander');
 const mkdirp = require('mkdirp');
-const cp = require('recursive-copy')
+const cp = require('recursive-copy');
 const rimraf = require('rimraf');
 const exportApp = require('next/dist/server/export').default;
 const siteConfig = require('../lib/siteConfig');
+const interpolateManifestScript = require('../lib/fs-messer/interpolateManifestScript');
 
 program
   .description('export standalone static assets')
@@ -27,7 +28,7 @@ const dir = resolve('.');
 const options = {
   silent: program.silent,
   outdir: program.outdir ? resolve(program.outdir) : resolve(dir, 'out')
-}
+};
 
 rimraf.sync(resolve('.', 'out'));
 const nextDestDir = join(process.cwd(), '.next');
@@ -51,6 +52,8 @@ exportApp(dir, options).then(() => {
     join(nextDestDir, 'manifest.js'),
     join(nextOutputDir, '_next', buildId, 'manifest.js')
   );
+
+  interpolateManifestScript(nextOutputDir);
 
 }).catch((err) => {
   console.error(err);
