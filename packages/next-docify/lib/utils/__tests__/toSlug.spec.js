@@ -42,8 +42,8 @@ test('Set `connector` as slash', () => {
   expect(result).toBe('users/ryu/kai-fa-wen-dang');
 });
 
-test.only('Set `connector` as slash', () => {
+test('With custom dot', () => {
   const str = 'docify-chunks/.docify/tutorial/postmeta';
   const result = toSlug(str, { connector: '/' });
-  expect(result).toBe('users/ryu/kai-fa-wen-dang');
+  expect(result).toBe('docify-chunks/.docify/tutorial/postmeta');
 });

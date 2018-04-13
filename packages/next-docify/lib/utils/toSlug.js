@@ -12,7 +12,7 @@ export default (str, opts = {}) => {
   const parts = str.split(seperator);
 
   const sluggedParts = parts.reduce((accum, cur) => {
-    const options = {};
+    const options = { custom: { '.': '.' } };
     if (/[\u4e00-\u9fa5]+/.test(cur)) {
       options.tone = false;
     }
