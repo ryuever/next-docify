@@ -40,7 +40,6 @@ class Output {
   }
 
   // descript file stat
-  // toSlug(cwd) as key
   outputStats(docBaseName, content) {
     const destDir = join(this.outputPath, docBaseName);
     mkdirp.sync(destDir);

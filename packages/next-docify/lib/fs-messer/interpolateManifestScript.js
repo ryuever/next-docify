@@ -27,7 +27,6 @@ module.exports = path => {
       )
       .pipe(fs.createWriteStream(tempPath))
       .on('finish', () => {
-        console.log('trigger');
         fs.unlinkSync(filePath);
         fs.renameSync(tempPath, filePath);
       });

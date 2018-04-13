@@ -8,7 +8,8 @@
   "scripts": {
     "build": "taskr",
     "analyze": "cross-env ANALYZE=1 next build",
-    "lint": "eslint --ext .js pages components"
+    "lint": "eslint --ext .js pages components",
+    "test": "jest"
   },
   "bin": {
     "next-docify": "./dist/bin/next-docify"
@@ -53,6 +54,10 @@
     "eslint-loader": "^2.0.0",
     "jest": "^22.4.3",
     "taskr": "^1.1.0"
+  },
+  "jest": {
+    "roots": ["<rootDir>/lib/"],
+    "testMatch": ["**/__tests__/**/*.js?(x)"]
   },
   "files": [
     "dist/*",

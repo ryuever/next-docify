@@ -2,6 +2,7 @@ const ConcatSource = require('webpack-sources').ConcatSource;
 const flattenArray = require('../../utils/flattenArray');
 const { DOCIFY_CHUNK_PREFIX } = require('../constants');
 const siteConfig = require('../../siteConfig');
+const toSlug = require('../../utils/toSlug').default;
 
 const { outputPathShort } = siteConfig.resolveGlobalConfig();
 const docifyChunksMapping = new Map();
@@ -58,8 +59,9 @@ class PrependChunkMap {
         chunks.forEach(chunk => {
           if (RegExp(`${DOCIFY_CHUNK_PREFIX}/`).test(chunk.name)) {
             const affectedChunks = this.getAffectedChunk(chunk);
+            const key = toSlug(chunk.name, { connector: '/' });
             this.updateAffectedChunkLocals(affectedChunks, {
-              [chunk.name]: chunk.id,
+              [key]: chunk.id,
             });
           }
         });

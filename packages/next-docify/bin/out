@@ -46,15 +46,18 @@ exportApp(dir, options).then(() => {
     });
   }
 
-  const buildId = readFileSync(join(nextDestDir, 'BUILD_ID'), 'utf8');
+  try {
+    const buildId = readFileSync(join(nextDestDir, 'BUILD_ID'), 'utf8');
 
-  copySync(
-    join(nextDestDir, 'manifest.js'),
-    join(nextOutputDir, '_next', buildId, 'manifest.js')
-  );
+    copySync(
+      join(nextDestDir, 'manifest.js'),
+      join(nextOutputDir, '_next', buildId, 'manifest.js')
+    );
+  } catch(err) {
+    // ...
+  }
 
   interpolateManifestScript(nextOutputDir);
-
 }).catch((err) => {
   console.error(err);
 });

@@ -88,10 +88,14 @@ class ResolveCategory {
         // let nextPermalink = `/${permalink}`;
         let nextPermalink = `/${docDirName}/${docBaseName}/${permalink}`;
         nextPermalink = nextPermalink.replace(/\/$/, '');
-        cur.permalink = nextPermalink
-          .split('/')
-          .map(part => (part ? toSlug(part) : ''))
-          .join('/');
+        cur.permalink = toSlug(nextPermalink, {
+          connector: '/',
+          trimLeadingConnector: false,
+        });
+        // cur.permalink = nextPermalink
+        //   .split('/')
+        //   .map(part => (part ? toSlug(part) : ''))
+        //   .join('/');
 
         if (!prevDepth || prevDepth === depth) {
           nextMerge.push(cur);

@@ -37,6 +37,25 @@ const normalizeChunkNameAndSourcePath = source => {
   };
 };
 
+/**
+ * `accessPath` is used to fetch the its relative `docBaseName`; In `site.config.js`, `accessPath` is the primary key.
+ * Each `accessPath` should has a `doc` folder to provide the data source.
+ *
+ * For my processing, every injected page will has a `pathToDoc` variable to maintain this mapping. `accessPath` as key,
+ * In order to matched exactly, `normalizeAccessPath` will ensure your `accessPath` is start with `/`, or cause an error.
+ *
+ * var pathToDoc = {
+ *   "/docs/tutorial": 'tutorial'
+ * }
+ */
+const normalizeAccessPath = accessPath => {
+  if (/^\//.test(accessPath)) return accessPath;
+
+  throw new Error(
+    '`accessPath` should start with `/`, make sure its value is exactly match in `site.config.js`'
+  );
+};
+
 const resolveRelativePath = docPath => {
   const dir = parse(filename).dir;
   const relativePath = relative(dir, docPath);
@@ -128,7 +147,8 @@ const buildResolveDocChunkId = `
 
 const buildResolveMetaChunkIds = `
   (accessPath) => {
-    const nextPath = DOCIFY_CHUNK_PREFIX + '/' + DOCIFY_OUTPUTPATH + '/' + pathToDoc['/' + accessPath];
+    const docBaseName = pathToDoc[normalizeAccessPath(accessPath)];
+    const nextPath = DOCIFY_CHUNK_PREFIX + '/' + DOCIFY_OUTPUTPATH + '/' + docBaseName;
     const postmetaKey = nextPath + '/' + 'postmeta';
     const manifestKey = nextPath + '/' + 'manifest';
     const keys = [{
@@ -167,7 +187,8 @@ const resolveMetaModule = `
   (accessPath) => {
     var len = contextMetaVariables.length;
     for (var i = 0; i < len; i++) {
-      const path = DOCIFY_OUTPUTPATH + '/' + pathToDoc['/' + accessPath];
+      const docBaseName = pathToDoc[normalizeAccessPath(accessPath)];
+      const path = DOCIFY_OUTPUTPATH + '/' + docBaseName;
       const postmetaPath = path + '/' + 'postmeta';
       const manifestPath = path + '/' + 'manifest';
 
@@ -184,33 +205,43 @@ const resolveMetaModule = `
 
 const buildImportBody = configs => `
   const pathToDoc = ${JSON.stringify(accessPathToDocMapping)};
+  const normalizeAccessPath = ${normalizeAccessPath};
   ${resolveContextDefinition(configs)}
   ${resolveMetaFileImport(configs)}
   const resolveDataSourceModule = ${resolveDataSourceModule};
   const resolveMetaModule = ${resolveMetaModule};
   const shortenPath = ${buildRemoveLeadingSlashBlock};
   const { path, accessPath } = options;
-  const shortPath = shortenPath(path);
-  const shortAccessPath = shortenPath(accessPath);
+  const shortPath = path ? shortenPath(path) : '';
 
   const jobs = [];
 
-  const resolveDocChunkId = ${buildResolveDocChunkId};
-  jobs.push(__webpack_require__.e(resolveDocChunkId(shortPath)));
-  const resolveMetaChunkIds = ${buildResolveMetaChunkIds};
-  const pendingMetas = resolveMetaChunkIds(shortAccessPath);
+  if (path) {
+    const resolveDocChunkId = ${buildResolveDocChunkId};
+    jobs.push(__webpack_require__.e(resolveDocChunkId(shortPath)));
+  }
 
-  const len = pendingMetas.length;
-  for (var i = 0; i < len; i++) {
-    jobs.push(__webpack_require__.e(pendingMetas[i].id));
+  if (accessPath) {
+    const resolveMetaChunkIds = ${buildResolveMetaChunkIds};
+    const pendingMetas = resolveMetaChunkIds(accessPath);
+    const len = pendingMetas.length;
+    for (var i = 0; i < len; i++) {
+      jobs.push(__webpack_require__.e(pendingMetas[i].id));
+    }
   }
 
   Promise.all(jobs).then(() => {
-    const data = Object.assign(
-      {},
-      resolveDataSourceModule(shortPath),
-      resolveMetaModule(shortAccessPath),
-    );
+    let postmeta = [];
+    let manifest = [];
+    const data = {};
+
+    if (path) data.dataSource = resolveDataSourceModule(shortPath);
+    if (accessPath) {
+      const result = resolveMetaModule(accessPath);
+      data.postmeta = result.postmeta;
+      data.manifest = result.manifest;
+    }
+
     resolve(data);
   })
 `;
