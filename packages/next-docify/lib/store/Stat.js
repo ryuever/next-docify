@@ -1,6 +1,6 @@
 import path from 'path';
 import Meta from './Meta';
-import fs from '../fs';
+import fs from '../utils/fs';
 
 import toSlug from '../utils/toSlug';
 
@@ -33,14 +33,15 @@ class Stat extends Meta {
     return path.parse(file).name;
   }
 
-  static getParts(file) {
-    return file.split('/');
-  }
+  // static getParts(file) {
+  //   return file.split('/');
+  // }
 
   initSlugs() {
-    const parts = Stat.getParts(this.cwd);
-    parts.pop();
-    this.parentSlug = parts.reduce((prev, cur) => `${prev}/${toSlug(cur)}`, '');
+    this.parentSlug = toSlug(this.cwd);
+    // const parts = Stat.getParts(this.cwd);
+    // parts.pop();
+    // this.parentSlug = parts.reduce((prev, cur) => `${prev}/${toSlug(cur)}`, '');
   }
 
   initParentSlugWithoutRootCategory() {

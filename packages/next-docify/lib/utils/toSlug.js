@@ -1,24 +1,39 @@
 import limax from 'limax';
-import { sep } from 'path';
+import { sep, parse, join } from 'path';
 
-const slug = (str, separator = '-') => {
-  const strWithoutSuffix = str => str.replace(/\.[^/]+$/, '');
-  const strWithoutPrefix = str => str.replace(/^([^/]*\/)/, '');
+export default (str, opts = {}) => {
+  const {
+    seperator = sep,
+    trimLeadingConnector = true,
+    trimTrailingConnector = true,
+    connector = '-',
+  } = opts;
 
-  const next = [strWithoutSuffix, strWithoutPrefix].reduce((str, cur) => {
-    return cur(str);
-  }, str);
-  const parts = next.split(sep);
+  var trimExtension = str => {
+    const reg = RegExp(`\\.[^.${sep}]*$`);
+    return str.replace(reg, '');
+  };
 
-  return parts
-    .reduce((prev, cur) => {
-      const options = {};
-      if (/[\u4e00-\u9fa5]+/.test(cur)) {
-        options.tone = false;
-      }
-      return prev.concat(limax(cur, options));
-    }, [])
-    .join(separator);
+  const assemble = trimExtension(str);
+  const parts = assemble.split(seperator);
+
+  const sluggedParts = parts.reduce((accum, cur) => {
+    const options = { custom: { '.': '.' } };
+    if (/[\u4e00-\u9fa5]+/.test(cur)) {
+      options.tone = false;
+    }
+    return accum.concat(limax(cur, options));
+  }, []);
+
+  let nextStr = sluggedParts.join(connector);
+
+  if (trimLeadingConnector) {
+    nextStr = nextStr.replace(RegExp(`^${connector}`), '');
+  }
+
+  if (trimTrailingConnector) {
+    nextStr = nextStr.replace(RegExp(`${connector}$`), '');
+  }
+
+  return nextStr;
 };
-
-export default slug;

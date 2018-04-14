@@ -4,7 +4,6 @@
  * `./a.png` => `/static/docs/a.png`
  */
 
-'use strict';
 const { join, relative } = require('path');
 
 const linkTransfromerPlugin = function({ context, root, publishPath }) {
@@ -29,12 +28,10 @@ const linkTransfromerPlugin = function({ context, root, publishPath }) {
       }
 
       const nextToken = [
-        {
-          ...tokens[0],
+        Object.assign({}, tokens[0], {
           src: nextSrc,
-        },
+        }),
       ];
-
       const ret = origin(nextToken, idx, options, env);
 
       return ret;

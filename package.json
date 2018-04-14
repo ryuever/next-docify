@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "scripts": {
-    "publish": "scripts/publish.sh"
+    "test": "lerna run test --stream"
   },
   "devDependencies": {
     "husky": "^0.15.0-rc.13",

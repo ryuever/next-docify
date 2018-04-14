@@ -1,5 +1,5 @@
 import mkdirp from 'mkdirp';
-import fs from '../fs';
+import fs from '../utils/fs';
 import { join } from 'path';
 
 let singleton = null;
@@ -40,7 +40,6 @@ class Output {
   }
 
   // descript file stat
-  // toSlug(cwd) as key
   outputStats(docBaseName, content) {
     const destDir = join(this.outputPath, docBaseName);
     mkdirp.sync(destDir);

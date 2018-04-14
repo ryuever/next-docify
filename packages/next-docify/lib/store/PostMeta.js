@@ -10,10 +10,9 @@ class PostMeta extends Meta {
       cwd: opts.cwd,
     });
 
-    this.meta = {
-      ...opts.meta,
+    this.meta = Object.assign({}, opts.meta, {
       title: opts.meta.title || removeSuffix(this.filename),
-    };
+    });
     this.author = opts.author || '';
     this._createdAt = opts.createdAt || '';
     this._updatedAt = opts.updatedAt || '';
@@ -21,21 +20,32 @@ class PostMeta extends Meta {
     this.premalink = this.resolvePermalink(opts.cwd);
   }
 
-  set _createdAt(value) {
-    if (!value) this.createdAt = new Date().toLocaleString();
+  get createdAt() {
+    return this._createdAt;
   }
 
-  set _updatedAt(value) {
-    if (!value) this.updatedAt = new Date().toLocaleDateString();
+  set createdAt(value) {
+    if (!value) this._createdAt = new Date().toLocaleString();
+  }
+
+  get updatedAt() {
+    return this._updatedAt;
+  }
+
+  set updatedAt(value) {
+    if (!value) this._updatedAt = new Date().toLocaleDateString();
   }
 
   resolvePermalink(cwd) {
     const siteGlobalConfig = siteConfig.resolveGlobalConfig();
     const { context } = siteGlobalConfig;
     const relativePath = relative(context, cwd);
-    const parts = relativePath.split(sep);
-    let permalink = parts.map(part => (part ? toSlug(part) : '')).join('/');
-    return permalink.replace(/^([^/])/, '/$1');
+    let permalink = toSlug(relativePath, {
+      connector: '/',
+      trimLeadingConnector: false,
+    });
+    return permalink;
+    // return permalink.replace(/^([^/])/, '/$1');
   }
 }
 

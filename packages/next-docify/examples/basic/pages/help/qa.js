@@ -1,7 +1,7 @@
 import React from 'react';
 import site from 'next-docify/site';
 
-export default class App extends React.Component {
+export default class qa extends React.Component {
   constructor(props) {
     super(props);
 

@@ -1,0 +1,25 @@
+{
+  "name": "snaker",
+  "version": "1.2.1",
+  "description": "function compose utility",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "build": "rollup --config ./scripts/rollup.config.js"
+  },
+  "files": [
+    "es/*",
+    "lib/*"
+  ],
+  "repository": "https://github.com/ryuever/next-docify",
+  "author": "youchao.liu",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^22.4.3",
+    "rollup": "^0.57.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "babel-plugin-external-helpers": "^6.22.0"
+  }
+}

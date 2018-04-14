@@ -1,16 +1,40 @@
+const composeArg1 = require('snaker/lib/composeArg1');
+const composeResultAssemble = require('snaker/lib/composeResultAssemble');
 const nextDocifyConfig = require('../next-docify.config');
-const compose = require('./utils/compose');
+const siteConfig = require('./siteConfig');
+const routeGateWay = siteConfig.resolveGatewayRoutes();
+
+const createGatewayExportMap = () => {
+  const routing = {};
+  for (var [key, value] of routeGateWay.entries()) {
+    routing[key] = { page: value };
+  }
+  return routing;
+};
 
 module.exports = (nextConfig = {}) => {
   let docifyWebpackConfig = nextDocifyConfig.webpack;
-  const { webpack: nextWebpackConfig, ...rest } = nextConfig;
+  const { webpack: nextWebpackConfig, exportPathMap, ...rest } = nextConfig;
 
-  if (nextConfig.webpack) {
-    docifyWebpackConfig = compose(nextWebpackConfig, docifyWebpackConfig);
+  let nextPathMap = exportPathMap || (() => ({}));
+  if (routeGateWay.size > 0) {
+    nextPathMap = composeResultAssemble(
+      nextPathMap,
+      createGatewayExportMap,
+      results => Object.assign({}, ...results)
+    );
   }
 
-  return {
-    webpack: docifyWebpackConfig,
-    ...rest,
-  };
+  if (nextConfig.webpack) {
+    docifyWebpackConfig = composeArg1(nextWebpackConfig, docifyWebpackConfig);
+  }
+
+  return Object.assign(
+    {},
+    {
+      webpack: docifyWebpackConfig,
+      exportPathMap: nextPathMap,
+    },
+    rest
+  );
 };

@@ -7,6 +7,9 @@ const defaultGlobalConfig = {
 
 const defaultConfig = {
   origin: 'default',
+  extension: 'js',
+  includeSubdirs: true,
+  filter: /\.md$/,
 };
 
 module.exports = siteConfig => {
@@ -19,12 +22,15 @@ module.exports = siteConfig => {
       ...config,
     };
     const { context } = defaultGlobalConfig;
-    const { docDirName, docBaseName, component } = preCached;
+    const { docDirName, docBaseName, component, extension } = preCached;
 
+    const appendSuffixIfNecessary = str =>
+      RegExp(`\\.${extension}$`).test(str) ? str : `${str}.js`;
     return {
       ...preCached,
       origin: 'site.config.js',
       docPath: join(context, docDirName, docBaseName),
+      fullComponent: appendSuffixIfNecessary(join(context, component)),
       component: join(context, component),
     };
   });
@@ -33,6 +39,7 @@ module.exports = siteConfig => {
   merged.siteGlobalConfig = {
     ...defaultGlobalConfig,
     outputPath: join(context, outputPath),
+    outputPathShort: outputPath,
   };
 
   return merged;

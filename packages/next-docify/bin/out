@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
-const { existsSync } = require('fs-extra');
+const { existsSync, readFileSync, copySync } = require('fs-extra');
 const { join, resolve, relative } = require('path');
 const program = require('commander');
 const mkdirp = require('mkdirp');
-const cp = require('recursive-copy')
+const cp = require('recursive-copy');
 const rimraf = require('rimraf');
 const exportApp = require('next/dist/server/export').default;
 const siteConfig = require('../lib/siteConfig');
+const interpolateManifestScript = require('../lib/fs-messer/interpolateManifestScript');
 
 program
   .description('export standalone static assets')
@@ -27,42 +28,36 @@ const dir = resolve('.');
 const options = {
   silent: program.silent,
   outdir: program.outdir ? resolve(program.outdir) : resolve(dir, 'out')
-}
+};
 
 rimraf.sync(resolve('.', 'out'));
+const nextDestDir = join(process.cwd(), '.next');
+const nextOutputDir = join(process.cwd(), 'out');
 
 exportApp(dir, options).then(() => {
-  if (existsSync(join(process.cwd(), '.next', 'chunk'))) {
-    mkdirp(join(process.cwd(), 'out', '_next', 'webpack'), () => {
+  if (existsSync(join(nextDestDir, 'docify-chunks'))) {
+    mkdirp(join(nextOutputDir, '_next', 'webpack'), () => {
      cp (
-        join(process.cwd(), '.next', 'chunk'),
-        join(process.cwd(), 'out', '_next', 'webpack', 'chunk'), (err) => {
+        join(nextDestDir, 'docify-chunks'),
+        join(nextOutputDir, '_next', 'webpack', 'docify-chunks'), (err) => {
           if (err) console.error('err : ', err);
         }
       );
     });
   }
 
-  const transferIndexFile = (config) => {
-    const { accessPath, component } = config;
-    const relativePath = relative(resolve('.', 'pages'), resolve('.', component));
+  try {
+    const buildId = readFileSync(join(nextDestDir, 'BUILD_ID'), 'utf8');
 
-    const sourceIndexDir = join(process.cwd(), 'out', relativePath);
-    const targetIndexDir = join(process.cwd(), 'out', accessPath);
-    const sourceIndexFile = join(sourceIndexDir, 'index.html');
-    const targetIndexFile = join(targetIndexDir, 'index.html');
+    copySync(
+      join(nextDestDir, 'manifest.js'),
+      join(nextOutputDir, '_next', buildId, 'manifest.js')
+    );
+  } catch(err) {
+    // ...
+  }
 
-
-    if (!existsSync(targetIndexFile)) {
-      mkdirp.sync(targetIndexDir);
-      cp(sourceIndexFile, targetIndexFile, (err) => {
-        if (err) console.error('err: ', err);
-      });
-    }
-  };
-
-  const configs = siteConfig.resolveSiteConfig();
-  configs.forEach(config => transferIndexFile(config));
+  interpolateManifestScript(nextOutputDir);
 }).catch((err) => {
   console.error(err);
 });
