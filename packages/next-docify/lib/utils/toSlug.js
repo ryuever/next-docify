@@ -1,5 +1,5 @@
 import limax from 'limax';
-import { sep } from 'path';
+import { sep, parse, join } from 'path';
 
 export default (str, opts = {}) => {
   const {
@@ -9,7 +9,13 @@ export default (str, opts = {}) => {
     connector = '-',
   } = opts;
 
-  const parts = str.split(seperator);
+  const withoutExtension = str => {
+    const { dir, name } = parse(str);
+    return join(dir, name);
+  };
+
+  const assemble = withoutExtension(str);
+  const parts = assemble.split(seperator);
 
   const sluggedParts = parts.reduce((accum, cur) => {
     const options = { custom: { '.': '.' } };

@@ -2,9 +2,15 @@ const RawSource = require('webpack-sources').RawSource;
 const { join, relative } = require('path');
 const siteConfig = require('../../siteConfig');
 const { DOCIFY_CHUNK_PREFIX } = require('../constants');
-
+const escapeStringRegexp = require('escape-string-regexp');
+const toSlug = require('../../utils/toSlug').default;
 const globalConfig = siteConfig.resolveGlobalConfig();
-const { context: appContext } = globalConfig;
+const { context: appContext, outputPathShort } = globalConfig;
+
+const isMetaFiles = str =>
+  RegExp(`${escapeStringRegexp(outputPathShort)}/.*/postmeta$|manifest$`).test(
+    str
+  );
 
 class NormalizeContextMapKeyTemplate {
   apply(moduleTemplate) {
@@ -34,7 +40,13 @@ class NormalizeContextMapKeyTemplate {
             const path = join(context, key);
             let relativePath = relative(appContext, path);
             relativePath = relativePath.replace(/\.[^.]*$/, '');
-            nextRawSource = nextRawSource.replace(key, relativePath);
+            // const nextValue = isMetaFiles(relativePath) ? relativePath : toSlug(relativePath, {
+            //   connector: '/',
+            // });
+            const nextValue = toSlug(relativePath, {
+              connector: '/',
+            });
+            nextRawSource = nextRawSource.replace(key, nextValue);
           });
           return new RawSource(nextRawSource);
         }

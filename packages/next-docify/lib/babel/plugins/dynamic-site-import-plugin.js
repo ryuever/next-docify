@@ -12,6 +12,21 @@ const accessPathToDocMapping = siteConfig.resolveAccesPathToDocMapping();
 
 let filename = '';
 
+/**
+ *
+ * @param {*} mapping
+ *
+ * In order to support chinese charactor directory name.
+ */
+const slugifyDocMapping = mapping => {
+  const result = {};
+  for (let key in mapping) {
+    result[key] = toSlug(mapping[key]);
+  }
+
+  return result;
+};
+
 const normalizeChunkNameAndSourcePath = source => {
   const relativePath = relative(context, source);
 
@@ -174,10 +189,16 @@ const resolveDataSourceModule = `
   (path) => {
     var len = contextVariables.length;
     for (var i = 0; i < len; i++) {
-      const mod = contextVariables[i](path);
+      let mod;
+
+      try {
+        mod = contextVariables[i](path);
+      } catch(err) {
+        // ...
+      }
 
       if (mod) {
-        return { dataSource: mod };
+        return mod;
       }
     }
   }
@@ -191,10 +212,17 @@ const resolveMetaModule = `
       const path = DOCIFY_OUTPUTPATH + '/' + docBaseName;
       const postmetaPath = path + '/' + 'postmeta';
       const manifestPath = path + '/' + 'manifest';
+      let postmeta;
+      let manifest;
 
       const modMap = contextMetaVariables[i];
-      const postmeta = modMap(postmetaPath);
-      const manifest = modMap(manifestPath);
+
+      try {
+        postmeta = modMap(postmetaPath);
+        manifest = modMap(manifestPath);
+      } catch (err) {
+        // ...
+      }
 
       if (postmeta && manifest) {
         return { postmeta, manifest };
@@ -204,7 +232,9 @@ const resolveMetaModule = `
 `;
 
 const buildImportBody = configs => `
-  const pathToDoc = ${JSON.stringify(accessPathToDocMapping)};
+  const pathToDoc = ${JSON.stringify(
+    slugifyDocMapping(accessPathToDocMapping)
+  )};
   const normalizeAccessPath = ${normalizeAccessPath};
   ${resolveContextDefinition(configs)}
   ${resolveMetaFileImport(configs)}

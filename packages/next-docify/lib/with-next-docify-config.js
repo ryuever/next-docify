@@ -1,4 +1,4 @@
-const compose = require('snaker/lib/compose');
+const composeArg1 = require('snaker/lib/composeArg1');
 const composeResultAssemble = require('snaker/lib/composeResultAssemble');
 const nextDocifyConfig = require('../next-docify.config');
 const siteConfig = require('./siteConfig');
@@ -26,7 +26,7 @@ module.exports = (nextConfig = {}) => {
   }
 
   if (nextConfig.webpack) {
-    docifyWebpackConfig = compose(nextWebpackConfig, docifyWebpackConfig);
+    docifyWebpackConfig = composeArg1(nextWebpackConfig, docifyWebpackConfig);
   }
 
   return Object.assign(
