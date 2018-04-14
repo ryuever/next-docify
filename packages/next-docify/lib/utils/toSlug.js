@@ -9,12 +9,12 @@ export default (str, opts = {}) => {
     connector = '-',
   } = opts;
 
-  const withoutExtension = str => {
-    const { dir, name } = parse(str);
-    return join(dir, name);
+  var trimExtension = str => {
+    const reg = RegExp(`\\.[^.${sep}]*$`);
+    return str.replace(reg, '');
   };
 
-  const assemble = withoutExtension(str);
+  const assemble = trimExtension(str);
   const parts = assemble.split(seperator);
 
   const sluggedParts = parts.reduce((accum, cur) => {
