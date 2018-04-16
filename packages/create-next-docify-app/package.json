@@ -1,6 +1,6 @@
 {
   "name": "create-next-docify-app",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "cli for next-docify ",
   "main": "index.js",
   "bin": {
@@ -32,7 +32,6 @@
     "doc": "docs",
     "lib": "lib"
   },
-  "devDependencies": {},
   "keywords": [
     "cli",
     "create-next-docify-app",
