@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { TransitionMotion, Motion, spring } from 'react-motion';
+import SidebarContentBody from './SidebarContentBody';
 
 export default class Sidebar extends Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class Sidebar extends Component {
       this.setState({
         onShow: true,
         maskerStyles: this.resolveMaskerStyles(true),
+        navBarStyles: this.resolveSidebarContentStyles(true),
       });
       return;
     }
@@ -35,6 +37,7 @@ export default class Sidebar extends Component {
       this.setState({
         onShow: false,
         maskerStyles: this.resolveMaskerStyles(false),
+        navBarStyles: this.resolveSidebarContentStyles(false),
       });
     }
   }
@@ -146,24 +149,28 @@ export default class Sidebar extends Component {
       <TransitionMotion
         willLeave={this.willMaskerLeave}
         willEnter={this.willMaskerEnter}
-        styles={this.state.maskerStyles}
+        styles={this.state.navBarStyles}
       >
         {styles => {
           if (styles.length === 0) return null;
 
-          const style = styles[0].style;
+          const { width, key } = styles[0].style;
 
           const nextStyle = {
-            width: `calc(${style.width}% - 128px)`,
+            transform: `translateX(${width - 100}%)`,
           };
 
           return (
             <div
-              key={style.key}
-              className="sidebar-content"
+              key={key}
+              className={`sidebar-content${!width ? '' : ' active'}`}
               style={nextStyle}
               onClick={this.toggleShowNav.bind(this)}
             >
+              <SidebarContentBody
+                manifest={this.props.manifest}
+                postmeta={this.props.postmeta}
+              />
               <style jsx>
                 {`
                   .sidebar-content {
@@ -171,8 +178,11 @@ export default class Sidebar extends Component {
                     top: 0;
                     background: #fff;
                     height: 100%;
+                    width: calc(100% - 128px);
                     z-index: 10012;
-                    pointer-events: none;
+                  }
+
+                  .sidebar-content.active {
                     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
                   }
                 `}
@@ -189,6 +199,20 @@ export default class Sidebar extends Component {
       <div className="nav-responsive-wrapper" id="nav-responsive-wrapper">
         {this.renderMasker()}
         {this.renderSidebarContent()}
+
+        <style jsx>
+          {`
+            #nav-responsive-wrapper {
+               {
+                /* position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0; */
+              }
+            }
+          `}
+        </style>
       </div>
     );
   }
