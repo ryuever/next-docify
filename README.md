@@ -1,9 +1,7 @@
 # next-docify
 
-`next-docify` is a monorepo, which mainly consists of following package :
+`next-docify`是一些仓库的集合，其中主要包含下面几部分
 
-- `next-docify` : A static site generator intergrated with [next.js](https://github.com/zeit/next.js/) seamlessly. `next.js` is an amazing React `ssr` resolution and support page render HMR. It almost satisfy any requirement to create a single page. So for the question, what does this project settle down. In short it provides an abstraction of `markdown` files data, and let you can import these `meta` data and `source content` data. So make it clear, it only acts as an data provider, the `UI` elements is not its business. If you perfer with `theme/template` supplement, like [jekyll](https://jekyllrb.com/), you can continue to reading and would find a reasonable answer.
+- [next-docify](packages/next-docify/README.zh_CN.md): 是基于[next.js](https://github.com/zeit/next.js/)的静态网站的构建工具。
 
-- `create-next-docify-app`: It highly inspired by [create-react-app](https://github.com/facebook/create-react-app) and [create-next-app](https://github.com/segmentio/create-next-app). As the name means, it give you a method to create your own `doc site` quickly. Through, the commnd line, you can choose the prefer `template` to install and you can also create your own `template` under very little constraints.
-
-[中文README](README-zh_CN.md)
+- [create-next-docify-app](packages/create-next-docify-app/README.zh_CN.md): 它是一个类似[create-react-app](https://github.com/facebook/create-react-app)和[create-next-app](https://github.com/segmentio/create-next-app)的脚手架，方便引入`next-docify`模块并且指定使用的模版。
