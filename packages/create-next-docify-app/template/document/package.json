@@ -1,0 +1,13 @@
+{
+  "name": "create-next-docify-example",
+  "scripts": {
+    "dev": "../../../next-docify/dist/bin/next-docify dev",
+    "build": "../../../next-docify/dist/bin/next-docify build",
+    "out": "../../../next-docify/dist/bin/next-docify out"
+  },
+  "dependencies": {
+    "next": "^5.1.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1"
+  }
+}
