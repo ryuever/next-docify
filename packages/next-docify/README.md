@@ -7,6 +7,7 @@
 `next-docify`在设计上主要是参考了[Docusaurus](https://github.com/facebook/docusaurus), [gitbook](https://github.com/GitbookIO/gitbook)
 
 - 易用性：基于`Next.js`的封装，是一个单独的功能模块，只需更改脚本启动语法糖就可以享受`markdown`数据的便捷引入
+- 灵活性：可以对文档指定不同的渲染模版
 - 定制化：本身模块提供的是数据层的抽象，没有`View`的引入；如果使用基于`Next.js`搭建起来的服务，渲染的文档数据只需在需要展示时通过`import`来引入。
 - 按需加载：数据层面都是通过`chunk`模块来动态引入
 
@@ -147,7 +148,7 @@ module.exports = [{
 ```
 
 - `site`(optional): 设置当前渲染页面的`name`
-- `component`(required): 设置当前文档对应应该渲染到的页面组件；
+- `component`(required): 设置当前文档对应应该渲染到的页面组件，从而实现对不同的文档指定不同的渲染模版
 - `accessPath`(required): 设置文档页面的访问路径
 - `docDirName`(required): 文档根目录
 - `docBaseName`(required): 文档相对目录
