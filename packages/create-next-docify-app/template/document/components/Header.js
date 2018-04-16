@@ -1,15 +1,20 @@
 import React from 'react';
 import { mediaQueryContext } from '../context/mediaQueryContext';
 
-export default () => {
+export default props => {
+  const handleToggle = () => {
+    props.toggleNav();
+  };
+
   const renderExpandNav = () => (
-    <button key="render-expand-nav">
+    <button onClick={handleToggle} key="render-expand-nav">
       <i className="fas fa-bars" />
       <style jsx>
         {`
           .fa-bars {
             font-size: 24px;
             line-height: 48px;
+            color: #fff;
           }
 
           button {
@@ -17,6 +22,7 @@ export default () => {
             margin: 0;
             border: 0;
             background: transparent;
+            margin-right: 16px;
           }
 
           button:focus {
@@ -27,10 +33,33 @@ export default () => {
     </button>
   );
 
+  const renderTitle = () => {
+    return (
+      <div className="render-title" key="render-title">
+        <a href="#">Document</a>
+
+        <style jsx>
+          {`
+            .render-title {
+              line-height: 48px;
+              font-size: 20px;
+            }
+
+            a {
+              text-decoration: none;
+              color: #fff;
+            }
+          `}
+        </style>
+      </div>
+    );
+  };
+
   const renderResponsive = queryMatches => {
     const items = [];
     if (queryMatches.mobile || queryMatches.tablet) {
       items.push(renderExpandNav());
+      items.push(renderTitle());
     }
 
     return items;
@@ -51,15 +80,19 @@ export default () => {
 
       <style jsx>
         {`
-          .top-section-main {
-            height: 100%;
+          .top-section {
+            height: 48px;
+            background: #ef6c00;
           }
 
-          @media screen and (max-width: 720px) {
+          .top-section-main {
+            height: 100%;
+            display: flex;
+          }
+
+          @media screen and (max-width: 960px) {
             .top-section {
               padding: 0 16px;
-              height: 48px;
-              background: #ef6c00;
             }
           }
         `}

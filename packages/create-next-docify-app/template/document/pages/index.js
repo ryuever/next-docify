@@ -6,6 +6,7 @@ import {
   defaultMatches,
 } from '../context/mediaQueryContext';
 import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
 
 export default class IndexPage extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ export default class IndexPage extends Component {
 
     this.state = {
       queryMatches,
+      showNav: false,
     };
 
     this.handleMediaChange = this.handleMediaChange.bind(this);
@@ -26,6 +28,12 @@ export default class IndexPage extends Component {
   handleMediaChange(mql) {
     this.setState({
       queryMatches: resolveMatches(),
+    });
+  }
+
+  toggleNav() {
+    this.setState({
+      showNav: !this.state.showNav,
     });
   }
 
@@ -52,7 +60,11 @@ export default class IndexPage extends Component {
     return (
       <mediaQueryContext.Provider value={mediaValues}>
         <section>
-          <Header />
+          <Header toggleNav={this.toggleNav.bind(this)} />
+          <Sidebar
+            toggleNav={this.toggleNav.bind(this)}
+            showNav={this.state.showNav}
+          />
         </section>
       </mediaQueryContext.Provider>
     );
