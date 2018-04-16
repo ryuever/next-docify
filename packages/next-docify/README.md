@@ -94,10 +94,10 @@ module.exports = [{
 
 ## 快速入门
 
-- [引入`markdown`数据](#引入`markdown`数据)
-- [配置`site.config.js`](#配置`site.config.js`)
-- [`docs`的结构控制](#`docs`的结构控制)
-- [FAQ](#FAQ)
+- [引入`markdown`数据](#引入markdown数据)
+- [配置`site.config.js`](#配置siteconfigjs)
+- [`docs`的结构控制](#docs的结构控制)
+- [FAQ](#faq)
 
 ### 引入`markdown`数据
 
