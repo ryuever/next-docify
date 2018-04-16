@@ -1,6 +1,6 @@
 {
   "name": "create-next-docify-app",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "description": "cli for next-docify ",
   "main": "index.js",
   "bin": {
@@ -20,5 +20,24 @@
     "fs-extra": "^5.0.0",
     "ora": "^2.0.0"
   },
-  "repository": "https://github.com/ryuever/next-docify"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryuever/next-docify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ryuever/next-docify/issues"
+  },
+  "homepage": "https://github.com/ryuever/next-docify#readme",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "keywords": [
+    "cli",
+    "create-next-docify-app",
+    "next.js",
+    "static",
+    "site",
+    "generator"
+  ]
 }

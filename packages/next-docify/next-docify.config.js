@@ -1,6 +1,5 @@
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { resolve } = require('path');
-const DynamicRuntimePlugin = require('./lib/webpack/plugins/dynamic-runtime-plugin');
 const NormalizeContextMapKey = require('./lib/webpack/plugins/NormalizeContextMapKey');
 const PrependChunkMap = require('./lib/webpack/plugins/PrependChunkMap');
 const interpolateCommonsChunks = require('./lib/webpack/utils/interpolateCommonsChunks');
@@ -23,7 +22,6 @@ module.exports = {
       new PrependChunkMap(),
     ];
     if (!isServer) {
-      config.plugins.unshift(new DynamicRuntimePlugin());
       config.plugins = interpolateCommonsChunks(config.plugins, { dev });
     }
 
