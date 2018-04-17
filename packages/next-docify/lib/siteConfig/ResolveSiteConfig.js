@@ -82,10 +82,9 @@ class ResolveSiteConfig {
     const siteConfig = this.resolveSiteConfig();
     return siteConfig.reduce((merged, config) => {
       const { accessPath, docBaseName } = config;
-      return {
-        ...merged,
+      return Object.assign({}, merged, {
         [accessPath]: docBaseName,
-      };
+      });
     }, {});
   }
 }
