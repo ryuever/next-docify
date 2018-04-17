@@ -1,5 +1,6 @@
 import React, { Component, createContext } from 'react';
 import site from 'next-docify/site';
+import Head from 'next/head';
 import {
   mediaQueryContext,
   mediaQueryList,
@@ -8,6 +9,7 @@ import {
 } from '../context/mediaQueryContext';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import parseQuery from '../utils/parseQuery';
 
 export default class IndexPage extends Component {
   constructor(props) {
@@ -23,6 +25,7 @@ export default class IndexPage extends Component {
       showNav: false,
       content: '',
       manifest: [],
+      accessPath: '',
     };
 
     this.handleMediaChange = this.handleMediaChange.bind(this);
@@ -47,9 +50,12 @@ export default class IndexPage extends Component {
     mediaQueryList.forEach(queryList =>
       this.handleMediaChange(queryList.query)
     );
+
+    const path = parseQuery(window.location.search)['title'];
+    const accessPath = window.location.pathname;
     site({
-      accessPath: '/docs',
-      path: '/docs/android-sdk/gai-shu/gai-shu',
+      accessPath,
+      path,
     }).then(data => {
       const { dataSource, manifest, postmeta } = data;
       const { content } = dataSource;
@@ -57,6 +63,7 @@ export default class IndexPage extends Component {
         content,
         manifest,
         postmeta,
+        accessPath: '/docs',
       });
     });
   }
@@ -86,50 +93,34 @@ export default class IndexPage extends Component {
     return (
       <mediaQueryContext.Provider value={mediaValues}>
         <section>
+          <Head>
+            <link
+              rel="stylesheet"
+              href="/static/stylesheets/highlight/monokai.css"
+            />
+          </Head>
+
           <Header toggleNav={this.toggleNav.bind(this)} />
           <Sidebar
             toggleNav={this.toggleNav.bind(this)}
             showNav={this.state.showNav}
             manifest={this.state.manifest}
             postmeta={this.state.postmeta}
+            accessPath={this.state.accessPath}
           />
+          <section className="main-content">
+            {this.renderContent()}
+
+            <style jsx>
+              {`
+                .main-content {
+                  padding: 24px 16px;
+                }
+              `}
+            </style>
+          </section>
         </section>
       </mediaQueryContext.Provider>
     );
   }
 }
-
-// import React from 'react';
-// import site from 'next-docify/site';
-
-// export default class App extends React.Component {
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       content: '',
-//     };
-//   }
-//   componentDidMount() {
-//     site({
-//       path: '/docs/tutorial/quick-start',
-//     }).then(data => {
-//       const { dataSource } = data;
-//       const { content } = dataSource;
-//       this.setState({
-//         content,
-//       });
-//     });
-//   }
-
-//   render() {
-//     const { content } = this.state;
-//     return (
-//       <div
-//         dangerouslySetInnerHTML={{
-//           __html: content,
-//         }}
-//       />
-//     );
-//   }
-// }

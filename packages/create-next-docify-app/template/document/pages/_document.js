@@ -19,7 +19,7 @@ export default class CustomDocument extends Document {
           <NextScript />
         </body>
 
-        <style jsx global>
+        <style jsx>
           {`
             body {
               margin: 0;

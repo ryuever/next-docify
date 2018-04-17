@@ -1,5 +1,6 @@
 import React from 'react';
 import { mediaQueryContext } from '../context/mediaQueryContext';
+import siteConfig from '../site.config.js';
 
 export default props => {
   const handleToggle = () => {
@@ -36,7 +37,7 @@ export default props => {
   const renderTitle = () => {
     return (
       <div className="render-title" key="render-title">
-        <a href="#">Document</a>
+        <a href="#">{siteConfig.site}</a>
 
         <style jsx>
           {`

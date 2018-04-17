@@ -3,12 +3,10 @@
   "scripts": {
     "dev": "../../../next-docify/dist/bin/next-docify dev",
     "build": "../../../next-docify/dist/bin/next-docify build",
+    "analyze": "ANALYZE=1 ../../../next-docify/dist/bin/next-docify build",
     "out": "../../../next-docify/dist/bin/next-docify out"
   },
   "dependencies": {
-    "next": "^5.1.0",
-    "react": "^16.3.1",
-    "react-dom": "^16.3.1",
     "react-motion": "^0.5.2"
   }
 }

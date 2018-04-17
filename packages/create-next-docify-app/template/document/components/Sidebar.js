@@ -135,6 +135,7 @@ export default class Sidebar extends Component {
   willSidebarContentLeave() {
     return {
       width: spring(0),
+      // width: 0,
     };
   }
 
@@ -147,8 +148,8 @@ export default class Sidebar extends Component {
   renderSidebarContent() {
     return (
       <TransitionMotion
-        willLeave={this.willMaskerLeave}
-        willEnter={this.willMaskerEnter}
+        willLeave={this.willSidebarContentLeave}
+        willEnter={this.willSidebarContentEnter}
         styles={this.state.navBarStyles}
       >
         {styles => {
@@ -170,6 +171,7 @@ export default class Sidebar extends Component {
               <SidebarContentBody
                 manifest={this.props.manifest}
                 postmeta={this.props.postmeta}
+                accessPath={this.props.accessPath}
               />
               <style jsx>
                 {`
@@ -199,20 +201,6 @@ export default class Sidebar extends Component {
       <div className="nav-responsive-wrapper" id="nav-responsive-wrapper">
         {this.renderMasker()}
         {this.renderSidebarContent()}
-
-        <style jsx>
-          {`
-            #nav-responsive-wrapper {
-               {
-                /* position: fixed;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0; */
-              }
-            }
-          `}
-        </style>
       </div>
     );
   }
