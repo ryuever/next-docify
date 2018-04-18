@@ -157,7 +157,7 @@ class SidebarContentBody extends Component {
             }
 
             li.active::before {
-              width: 2px;
+              width: 4px;
               display: inline-block;
               content: '';
               height: 100%;
@@ -303,7 +303,7 @@ class SidebarContentBody extends Component {
               }
 
               .level-1.active::before {
-                width: 2px;
+                width: 4px;
                 display: inline-block;
                 content: '';
                 height: 100%;
@@ -359,7 +359,7 @@ class SidebarContentBody extends Component {
             }
 
             .level-2.active::before {
-              width: 2px;
+              width: 4px;
               display: inline-block;
               content: '';
               height: 100%;
@@ -440,7 +440,7 @@ class SidebarContentBody extends Component {
             }
 
             .level-3.active::before {
-              width: 2px;
+              width: 4px;
               display: inline-block;
               content: '';
               height: 100%;

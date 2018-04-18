@@ -51,8 +51,11 @@ export default class IndexPage extends Component {
       this.handleMediaChange(queryList.query)
     );
 
-    const path = parseQuery(window.location.search)['title'];
-    const accessPath = window.location.pathname;
+    const path = parseQuery(window.location.search).title;
+    const accessPath = window.location.pathname
+      .replace(/\/index\.html$/, '')
+      .replace(/\/$/, '');
+
     site({
       accessPath,
       path,

@@ -3,7 +3,6 @@
   "scripts": {
     "dev": "next-docify dev",
     "build": "next-docify build",
-    "analyze": "ANALYZE=1 next-docify build",
     "out": "next-docify out"
   },
   "dependencies": {

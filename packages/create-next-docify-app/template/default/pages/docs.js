@@ -1,5 +1,5 @@
 import React from 'react';
-import site from 'next-docify/site';
+import site from 'next-docify';
 
 export default class App extends React.Component {
   constructor(props) {
