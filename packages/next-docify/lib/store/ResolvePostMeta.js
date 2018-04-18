@@ -8,12 +8,8 @@ class ResolvePostMeta {
     const source = fs.readFileSync(cwd, 'utf8');
     const { meta, content } = Resolver.parse(source);
 
-    return new PostMeta(
-      Object.assign({}, opts, {
-        content,
-        meta,
-      })
-    );
+    const data = Object.assign({}, opts, { content, meta });
+    return new PostMeta(data);
   }
 }
 

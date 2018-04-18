@@ -11,7 +11,7 @@ module.exports = path => {
     fs
       .createReadStream(filePath)
       .pipe(
-        replaceStream(/(<link.*(main.js)[^>]*>)/, function(_, p1) {
+        replaceStream(/(<link[^<]*main\.js[^>]*>)/, function(_, p1) {
           const next = p1.replace('main.js', 'manifest.js');
           return `${next}${p1}`;
         })
