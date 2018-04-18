@@ -80,7 +80,7 @@ class ResolveCategory {
     Output.getInstance().outputManifest(docBaseName, resultWithInfo);
   }
 
-  static withAccessInfo(data, config) {
+  static withAccessInfo(data, config, parent = {}) {
     const { docBaseName, docDirName } = config;
 
     return data.map(item => {
@@ -89,6 +89,8 @@ class ResolveCategory {
         value
       );
       const ret = { value, depth, order };
+      // In order to make key unique, the parent's key should be take into account.
+      ret.key = `${parent.key ? `${parent.key}-` : ''}${depth}-${order}`;
       ret.title = title;
 
       if (relativePath) {
@@ -105,7 +107,9 @@ class ResolveCategory {
       }
 
       if (children.length > 0) {
-        ret.children = ResolveCategory.withAccessInfo(children, config);
+        ret.children = ResolveCategory.withAccessInfo(children, config, {
+          key: ret.key,
+        });
       } else {
         ret.children = children;
       }
