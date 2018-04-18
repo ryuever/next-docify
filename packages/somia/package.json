@@ -1,5 +1,5 @@
 {
-  "name": "summary-parser",
+  "name": "somia",
   "version": "1.0.0",
   "description": "summary.md parser",
   "main": "lib/index.js",
