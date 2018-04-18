@@ -1,14 +1,14 @@
 module.exports = {
-  site: '开发文档',
+  site: 'tutorial',
   docs: [
     {
       component: './pages/docs',
       accessPath: '/docs',
       docDirName: 'docs',
-      docBaseName: 'android-sdk',
+      docBaseName: 'tutorial',
       showOnSidebar: true,
-      title: 'android sdk',
-      indexDocPath: '/docs/android-sdk/gai-shu/gai-shu',
+      title: 'tutorial',
+      indexDocPath: '/docs/tutorial/quick-start',
     },
   ],
 };
