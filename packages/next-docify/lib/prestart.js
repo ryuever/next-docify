@@ -115,3 +115,11 @@ const watchAssetsFile = (path, ignore) => {
 export function copyImageFileToStatic() {
   copyGlobDocAssetsToStatic('**/*.+(png|jpg|jpeg)');
 }
+
+export function clearBabelCache() {
+  const { context } = siteConfig.resolveGlobalConfig();
+  const path = join(context, 'node_modules', '.cache', 'babel-loader');
+  if (fs.existsSync(path)) {
+    rimraf.sync(path);
+  }
+}

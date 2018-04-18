@@ -66,7 +66,7 @@ export default class IndexPage extends Component {
         content,
         manifest,
         postmeta,
-        accessPath: '/docs',
+        accessPath,
       });
     });
   }

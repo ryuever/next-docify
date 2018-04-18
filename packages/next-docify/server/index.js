@@ -2,6 +2,7 @@ import express from 'express';
 import next from 'next';
 import { parse as parseUrl } from 'url';
 import {
+  clearBabelCache,
   preCacheSourceFiles,
   initOutputFolder,
   copyImageFileToStatic,
@@ -15,6 +16,7 @@ export const app = next({
 });
 
 export default port => {
+  clearBabelCache();
   preCacheSourceFiles();
   initOutputFolder();
   copyImageFileToStatic();
