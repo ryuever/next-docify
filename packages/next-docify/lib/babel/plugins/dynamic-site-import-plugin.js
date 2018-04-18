@@ -4,7 +4,7 @@
 
 const template = require('babel-template');
 const syntax = require('babel-plugin-syntax-dynamic-import');
-const siteConfig = require('../../siteConfig');
+const siteConfig = require('../../site-config');
 const { relative, sep, normalize, parse } = require('path');
 const toSlug = require('../../utils/toSlug').default;
 const { context, outputPath } = siteConfig.resolveGlobalConfig();

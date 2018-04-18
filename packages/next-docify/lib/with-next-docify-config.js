@@ -1,7 +1,7 @@
 const composeArg1 = require('snaker/lib/composeArg1');
 const composeResultAssemble = require('snaker/lib/composeResultAssemble');
 const nextDocifyConfig = require('../next-docify.config');
-const siteConfig = require('./siteConfig');
+const siteConfig = require('./site-config');
 const routeGateWay = siteConfig.resolveGatewayRoutes();
 
 const createGatewayExportMap = () => {

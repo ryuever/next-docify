@@ -1,7 +1,7 @@
 import { relative, sep } from 'path';
 import Meta from './Meta';
 import removeSuffix from '../utils/removeSuffix';
-import siteConfig from '../siteConfig';
+import siteConfig from '../site-config';
 import toSlug from '../utils/toSlug';
 
 const globalConfig = siteConfig.resolveGlobalConfig();

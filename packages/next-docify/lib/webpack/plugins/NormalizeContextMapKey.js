@@ -1,16 +1,18 @@
-const RawSource = require('webpack-sources').RawSource;
 const { join, relative } = require('path');
-const siteConfig = require('../../siteConfig');
-const { DOCIFY_CHUNK_PREFIX } = require('../constants');
 const escapeStringRegexp = require('escape-string-regexp');
+const RawSource = require('webpack-sources').RawSource;
+
+const siteConfig = require('../../site-config');
+const { DOCIFY_CHUNK_PREFIX, META_FILES } = require('../constants');
 const toSlug = require('../../utils/toSlug').default;
+
 const globalConfig = siteConfig.resolveGlobalConfig();
 const { context: appContext, outputPathShort } = globalConfig;
 
 const isMetaFiles = str =>
-  RegExp(`${escapeStringRegexp(outputPathShort)}/.*/postmeta$|manifest$`).test(
-    str
-  );
+  RegExp(
+    `${escapeStringRegexp(outputPathShort)}/.*/${META_FILES.join('$|')}$`
+  ).test(str);
 
 class NormalizeContextMapKeyTemplate {
   apply(moduleTemplate) {

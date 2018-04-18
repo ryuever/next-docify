@@ -7,7 +7,7 @@ import {
   copyImageFileToStatic,
 } from '../lib/prestart';
 import StoreProvider from '../lib/store/Provider';
-import siteConfig from '../lib/siteConfig';
+import siteConfig from '../lib/site-config';
 
 const dev = process.env.NODE_ENV !== 'production';
 export const app = next({

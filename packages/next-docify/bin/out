@@ -53,6 +53,11 @@ exportApp(dir, options).then(() => {
       join(nextDestDir, 'manifest.js'),
       join(nextOutputDir, '_next', buildId, 'manifest.js')
     );
+
+    copySync(
+      join(nextDestDir, 'manifest2.js'),
+      join(nextOutputDir, '_next', buildId, 'manifest2.js')
+    );
   } catch(err) {
     // ...
   }

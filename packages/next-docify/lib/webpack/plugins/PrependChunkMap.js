@@ -1,7 +1,7 @@
 const ConcatSource = require('webpack-sources').ConcatSource;
 const flattenArray = require('../../utils/flattenArray');
 const { DOCIFY_CHUNK_PREFIX } = require('../constants');
-const siteConfig = require('../../siteConfig');
+const siteConfig = require('../../site-config');
 const toSlug = require('../../utils/toSlug').default;
 
 const { outputPathShort } = siteConfig.resolveGlobalConfig();
