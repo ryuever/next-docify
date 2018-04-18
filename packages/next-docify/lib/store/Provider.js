@@ -1,6 +1,6 @@
 import glob from 'glob';
 import { resolve } from 'path';
-import siteConfig from '../siteConfig';
+import siteConfig from '../site-config';
 import Output from './Output';
 import ResolveCategory from './ResolveCategory';
 import ResolvePostMeta from './ResolvePostMeta';

@@ -5,7 +5,7 @@ import chokidar from 'chokidar';
 import { copySync, statSync } from 'fs-extra';
 import fs, { isMemoryFs } from './utils/fs';
 import mkdirp from 'mkdirp';
-import siteConfig from './siteConfig';
+import siteConfig from './site-config';
 import notWithSuffix from './regs/notWithSuffix';
 
 // This is only for using `memory-fs`

@@ -30,6 +30,18 @@ create-next-docify-app first-app
 
 ![创建应用](docs/create-next-docify-app.png)
 
+### 选择模版
+
+可以通过设置`-t` option来选择不同的模版，默认情况是`default`；比如通过下面方式使用`document`模版
+
+```bash
+create-next-docify-app first-app -t document
+```
+
+![tutorial-01](docs/tutorial-01.png)
+![tutorial-02](docs/tutorial-02.png)
+![tutorial-03](docs/tutorial-03.png)
+
 ### 应用开发
 
 [next-docify - 基于Next.js的静态网站生成工具](https://github.com/ryuever/next-docify/tree/master/packages/next-docify)

@@ -7,7 +7,7 @@ const mkdirp = require('mkdirp');
 const cp = require('recursive-copy');
 const rimraf = require('rimraf');
 const exportApp = require('next/dist/server/export').default;
-const siteConfig = require('../lib/siteConfig');
+const siteConfig = require('../lib/site-config');
 const interpolateManifestScript = require('../lib/fs-messer/interpolateManifestScript');
 
 program
@@ -52,6 +52,11 @@ exportApp(dir, options).then(() => {
     copySync(
       join(nextDestDir, 'manifest.js'),
       join(nextOutputDir, '_next', buildId, 'manifest.js')
+    );
+
+    copySync(
+      join(nextDestDir, 'manifest2.js'),
+      join(nextOutputDir, '_next', buildId, 'manifest2.js')
     );
   } catch(err) {
     // ...

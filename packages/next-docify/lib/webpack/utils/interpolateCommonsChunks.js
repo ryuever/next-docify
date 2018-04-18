@@ -2,12 +2,11 @@ const { sep, relative, join } = require('path');
 const glob = require('glob');
 const webpack = require('webpack');
 const contextModule = require('webpack/lib/ContextModule');
-const { DOCIFY_CHUNK_PREFIX } = require('../constants');
-const siteConfig = require('../../siteConfig');
+const { DOCIFY_CHUNK_PREFIX, META_FILES } = require('../constants');
+const siteConfig = require('../../site-config');
 
 const { CommonsChunkPlugin } = webpack.optimize;
 const { context, outputPath } = siteConfig.resolveGlobalConfig();
-const metaFiles = ['postmeta', 'manifest'];
 
 const findCommonChunk = (plugins, filenameTemplate) => {
   const len = plugins.length;
@@ -42,7 +41,7 @@ const resolveChunkConstraints = () => {
       }
     });
 
-    metaFiles.forEach(meta => {
+    META_FILES.forEach(meta => {
       const { docBaseName } = config;
       const path = join(outputPath, docBaseName, `${meta}.js`);
       const key = resolveCommonsChunkIdent(path);
@@ -92,7 +91,7 @@ const resolveStandaloneMdChunk = (chunkConstraints, { dev }) => {
             }
 
             const metaFileReg = RegExp(
-              `\\.docify.*${metaFiles.join('|')}\\.js$`
+              `\\.docify.*${META_FILES.join('|')}\\.js$`
             );
 
             if (resource && metaFileReg.test(resource)) {
@@ -143,6 +142,25 @@ const resolveManifestCommonChunk = ({ dev }) =>
     filename: 'manifest.js',
     minChunks(module) {
       // To emit context module as a single chunk
+
+      if (dev) {
+        return true;
+      }
+      return false;
+      // if (!dev && !module.request && module instanceof contextModule) {
+      //   return false;
+      // }
+
+      // return true;
+    },
+  });
+
+const resolveManifestCommonChunk2 = ({ dev }) =>
+  new CommonsChunkPlugin({
+    name: 'manifest2',
+    filename: 'manifest2.js',
+    minChunks(module) {
+      // To emit context module as a single chunk
       if (!dev && !module.request && module instanceof contextModule) {
         return false;
       }
@@ -150,7 +168,6 @@ const resolveManifestCommonChunk = ({ dev }) =>
       return true;
     },
   });
-
 const interpolateCommonsChunks = (plugins, opts) => {
   const chunkConstraints = resolveChunkConstraints();
   if (chunkConstraints.size === 0) return plugins;
@@ -173,14 +190,29 @@ const interpolateCommonsChunks = (plugins, opts) => {
     contextModule = resolveContextChunk(prev, opts);
   }
 
-  const mainCommonChunk = resolveMainCommonChunk();
   const manifestCommonChunk = resolveManifestCommonChunk(opts);
+  const mainCommonChunk = resolveMainCommonChunk();
+  const manifestCommonChunk2 = resolveManifestCommonChunk2(opts);
+
+  if (process.env.NODE_ENV === 'development') {
+    return []
+      .concat(
+        front,
+        merged,
+        contextModule,
+        manifestCommonChunk,
+        mainCommonChunk,
+        end
+      )
+      .filter(val => val);
+  }
 
   return []
     .concat(
       front,
       merged,
       contextModule,
+      manifestCommonChunk2,
       manifestCommonChunk,
       mainCommonChunk,
       end

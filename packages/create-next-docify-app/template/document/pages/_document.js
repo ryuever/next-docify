@@ -14,18 +14,10 @@ export default class CustomDocument extends Document {
           />
         </Head>
 
-        <body>
+        <body style={{ margin: 0 }}>
           <Main />
           <NextScript />
         </body>
-
-        <style jsx>
-          {`
-            body {
-              margin: 0;
-            }
-          `}
-        </style>
       </html>
     );
   }

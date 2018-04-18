@@ -4,7 +4,7 @@
 
 const template = require('babel-template');
 const syntax = require('babel-plugin-syntax-dynamic-import');
-const siteConfig = require('../../siteConfig');
+const siteConfig = require('../../site-config');
 const { relative, sep, normalize, join } = require('path');
 const os = require('os');
 const toSlug = require('../../utils/toSlug').default;

@@ -43,7 +43,7 @@ class Output {
     const destDir = join(this.outputPath, docBaseName);
     mkdirp.sync(destDir);
     fs.writeFileSync(
-      join(destDir, 'postmetaAll.js'),
+      join(destDir, 'postmetaall.js'),
       '/**\n' +
         ' * @generated\n' +
         ' */\n' +
