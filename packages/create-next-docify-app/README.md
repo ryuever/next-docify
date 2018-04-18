@@ -39,8 +39,6 @@ create-next-docify-app first-app -t document
 ```
 
 ![tutorial-01](docs/tutorial-01.png)
-![tutorial-02](docs/tutorial-02.png)
-![tutorial-03](docs/tutorial-03.png)
 
 ### 应用开发
 
