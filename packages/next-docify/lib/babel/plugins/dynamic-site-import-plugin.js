@@ -2,14 +2,14 @@
  * the result chunk name will be `[parentAccessPath]-[accessPath]-[toSlug(filename)]`
  */
 
+const { relative, sep, normalize, parse } = require('path');
 const template = require('babel-template');
 const syntax = require('babel-plugin-syntax-dynamic-import');
 const siteConfig = require('../../site-config');
-const { relative, sep, normalize, parse } = require('path');
 const toSlug = require('../../utils/toSlug').default;
+
 const { context, outputPath } = siteConfig.resolveGlobalConfig();
 const accessPathToDocMapping = siteConfig.resolveAccesPathToDocMapping();
-
 let filename = '';
 
 /**
@@ -53,11 +53,13 @@ const normalizeChunkNameAndSourcePath = source => {
 };
 
 /**
- * `accessPath` is used to fetch the its relative `docBaseName`; In `site.config.js`, `accessPath` is the primary key.
- * Each `accessPath` should has a `doc` folder to provide the data source.
+ * `accessPath` is used to fetch the its relative `docBaseName`; In `site.config.js`,
+ * `accessPath` is the primary key. Each `accessPath` should has a `doc` folder to
+ * provide the data source.
  *
- * For my processing, every injected page will has a `pathToDoc` variable to maintain this mapping. `accessPath` as key,
- * In order to matched exactly, `normalizeAccessPath` will ensure your `accessPath` is start with `/`, or cause an error.
+ * For my processing, every injected page will has a `pathToDoc` variable to maintain
+ * this mapping. `accessPath` as key, In order to matched exactly, `normalizeAccessPath`
+ * will ensure your `accessPath` is start with `/`, or cause an error.
  *
  * var pathToDoc = {
  *   "/docs/tutorial": 'tutorial'
