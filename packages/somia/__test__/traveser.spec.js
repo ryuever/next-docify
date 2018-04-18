@@ -107,3 +107,35 @@ test('retrieve leaf node will return itself', () => {
 
   expect(result).toEqual(simulatedResult);
 });
+
+test('query', () => {
+  const traverser = new Traverser({ data });
+  const result = traverser.query({
+    name: 'first-3',
+  });
+
+  const simulatedResult = [
+    {
+      id: 'first-3',
+      name: 'first-3',
+      children: [
+        {
+          id: 'first-3-1',
+          name: 'first-3-1',
+        },
+        {
+          id: 'first-3-2',
+          name: 'first-3-2',
+          children: [
+            {
+              id: 'first-3-2-1',
+              name: 'first-3-2-1',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  expect(result).toEqual(simulatedResult);
+});

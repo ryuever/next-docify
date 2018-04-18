@@ -1,3 +1,5 @@
+import objectIncludes from './utils/objectIncludes';
+
 export default class Traverser {
   constructor(opts) {
     this.data = opts.data;
@@ -28,6 +30,13 @@ export default class Traverser {
     });
 
     return this.meta;
+  }
+
+  resolveParentKeys(key) {
+    if (!this.meta) this.resolveMeta();
+    const obj = this.meta[key];
+    if (!obj) throw new Error(`Invalid key value : ${key}`);
+    return obj.parent;
   }
 
   // Ancestor
@@ -76,5 +85,25 @@ export default class Traverser {
         }
       }
     }, this.data);
+  }
+
+  query(queries) {
+    if (!this.meta) this.resolveMeta();
+
+    const find = data => {
+      let ret = [];
+      data.forEach(item => {
+        const { children } = item;
+        if (objectIncludes(item, queries)) {
+          ret.push(item);
+        } else if (children && children.length > 0) {
+          ret = ret.concat(find(children));
+        }
+      });
+
+      return ret;
+    };
+
+    return find(this.data);
   }
 }
