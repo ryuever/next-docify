@@ -351,10 +351,7 @@ const parseImportBody = str => {
     }
   });
 
-  return {
-    ...defaultOptions,
-    ...options,
-  };
+  return Object.assign({}, defaultOptions, options);
 };
 
 module.exports = ({ types: t }) => ({

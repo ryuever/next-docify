@@ -1,4 +1,4 @@
-const { join } = require('path');
+const { join, relative } = require('path');
 
 const defaultGlobalConfig = {
   outputPath: '.docify',
@@ -13,7 +13,8 @@ const defaultConfig = {
 };
 
 module.exports = siteConfig => {
-  let nextSiteConfig = siteConfig.docs;
+  const { docs, ...rest } = siteConfig;
+  let nextSiteConfig = docs;
   const merged = {};
 
   merged.siteConfig = nextSiteConfig.map(config => {
@@ -24,16 +25,20 @@ module.exports = siteConfig => {
     const appendSuffixIfNecessary = str =>
       RegExp(`\\.${extension}$`).test(str) ? str : `${str}.js`;
 
+    const docPath = join(context, docDirName, docBaseName);
+
     return Object.assign({}, preCached, {
       origin: 'site.config.js',
-      docPath: join(context, docDirName, docBaseName),
+      docPath,
+      // has no leading slash
+      relativeDocPath: relative(context, docPath),
       fullComponent: appendSuffixIfNecessary(join(context, component)),
       component: join(context, component),
     });
   });
 
   const { context, outputPath } = defaultGlobalConfig;
-  merged.siteGlobalConfig = Object.assign({}, defaultGlobalConfig, {
+  merged.siteGlobalConfig = Object.assign({}, rest, defaultGlobalConfig, {
     outputPath: join(context, outputPath),
     outputPathShort: outputPath,
   });

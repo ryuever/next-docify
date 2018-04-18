@@ -39,11 +39,7 @@ class Provider {
     configs.forEach(config => {
       const { docPath, docBaseName, docDirName } = config;
       if (!docsNeedToParsed.has(docPath)) {
-        docsNeedToParsed.set(docPath, {
-          docPath,
-          docBaseName,
-          docDirName,
-        });
+        docsNeedToParsed.set(docPath, config);
       }
     });
 
@@ -70,27 +66,30 @@ class Provider {
 
         const stat = ResolveStat.parse({
           cwd,
-          docBaseName,
+          config,
         });
-        prev.stats[stat.id] = stat.toJson();
+        prev.stats[stat.id] = stat.toJson(['cwd']);
 
         const postMeta = ResolvePostMeta.parse({
           cwd,
           config,
         });
-        prev.postmeta[postMeta.id] = postMeta.toJson();
+        prev.postmeta[postMeta.id] = postMeta.toJson(['content', 'cwd']);
+        prev.postmetaAll[postMeta.id] = postMeta.toJson(['cwd']);
         return prev;
       },
       {
         stats: {},
         postmeta: {},
+        postmetaAll: {},
       }
     );
 
-    const { stats, postmeta } = content;
+    const { stats, postmeta, postmetaAll } = content;
 
     Output.getInstance().outputStats(docBaseName, stats);
     Output.getInstance().outputPostMeta(docBaseName, postmeta);
+    Output.getInstance().outputPostMetaAll(docBaseName, postmetaAll);
   }
 }
 

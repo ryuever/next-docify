@@ -8,6 +8,7 @@ class Stat extends Meta {
   constructor(opts) {
     super({
       cwd: opts.cwd,
+      config: opts.config,
     });
 
     const { rootDir } = opts;
@@ -20,9 +21,9 @@ class Stat extends Meta {
     this.category = '';
     this.order = null;
 
-    this.initSlugs();
     this.initFileStat();
-    this.initParentSlugWithoutRootCategory();
+    // this.initSlugs();
+    // this.initParentSlugWithoutRootCategory();
   }
 
   static getFileId(fileName) {
@@ -33,15 +34,8 @@ class Stat extends Meta {
     return path.parse(file).name;
   }
 
-  // static getParts(file) {
-  //   return file.split('/');
-  // }
-
   initSlugs() {
     this.parentSlug = toSlug(this.cwd);
-    // const parts = Stat.getParts(this.cwd);
-    // parts.pop();
-    // this.parentSlug = parts.reduce((prev, cur) => `${prev}/${toSlug(cur)}`, '');
   }
 
   initParentSlugWithoutRootCategory() {

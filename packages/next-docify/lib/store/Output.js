@@ -39,6 +39,20 @@ class Output {
     );
   }
 
+  outputPostMetaAll(docBaseName, content) {
+    const destDir = join(this.outputPath, docBaseName);
+    mkdirp.sync(destDir);
+    fs.writeFileSync(
+      join(destDir, 'postmetaAll.js'),
+      '/**\n' +
+        ' * @generated\n' +
+        ' */\n' +
+        'module.exports = ' +
+        Output.formatContentBeforeOutput(content) +
+        ';\n'
+    );
+  }
+
   // descript file stat
   outputStats(docBaseName, content) {
     const destDir = join(this.outputPath, docBaseName);

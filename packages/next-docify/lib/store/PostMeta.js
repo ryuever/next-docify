@@ -1,23 +1,31 @@
 import { relative, sep } from 'path';
 import Meta from './Meta';
-import removeSuffix from './utils/removeSuffix';
+import removeSuffix from '../utils/removeSuffix';
 import siteConfig from '../siteConfig';
 import toSlug from '../utils/toSlug';
+
+const globalConfig = siteConfig.resolveGlobalConfig();
 
 class PostMeta extends Meta {
   constructor(opts = {}) {
     super({
       cwd: opts.cwd,
+      config: opts.config,
     });
 
-    this.meta = Object.assign({}, opts.meta, {
-      title: opts.meta.title || removeSuffix(this.filename),
-    });
-    this.author = opts.author || '';
     this._createdAt = opts.createdAt || '';
     this._updatedAt = opts.updatedAt || '';
-    this.content = opts.content || '';
     this.premalink = this.resolvePermalink(opts.cwd);
+
+    this.meta = Object.assign(
+      {},
+      {
+        title: removeSuffix(this.filename),
+        author: globalConfig.author,
+      },
+      opts.meta
+    );
+    this.content = opts.content || '';
   }
 
   get createdAt() {
@@ -39,13 +47,12 @@ class PostMeta extends Meta {
   resolvePermalink(cwd) {
     const siteGlobalConfig = siteConfig.resolveGlobalConfig();
     const { context } = siteGlobalConfig;
-    const relativePath = relative(context, cwd);
+    const relativePath = `/${relative(context, cwd)}`;
     let permalink = toSlug(relativePath, {
       connector: '/',
       trimLeadingConnector: false,
     });
     return permalink;
-    // return permalink.replace(/^([^/])/, '/$1');
   }
 }
 
