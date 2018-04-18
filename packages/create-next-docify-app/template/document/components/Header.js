@@ -58,10 +58,13 @@ export default props => {
 
   const renderResponsive = queryMatches => {
     const items = [];
-    if (queryMatches.mobile || queryMatches.tablet) {
-      items.push(renderExpandNav());
-      items.push(renderTitle());
-    }
+    // if (queryMatches.mobile || queryMatches.tablet) {
+    //   items.push(renderExpandNav());
+    //   items.push(renderTitle());
+    // }
+
+    items.push(renderExpandNav());
+    items.push(renderTitle());
 
     return items;
   };
@@ -91,10 +94,15 @@ export default props => {
             display: flex;
           }
 
-          @media screen and (max-width: 960px) {
+          .top-section {
+            padding: 0 16px;
+          }
+           {
+            /* @media screen and (max-width: 960px) {
             .top-section {
               padding: 0 16px;
             }
+          } */
           }
         `}
       </style>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { TransitionMotion, Motion, spring } from 'react-motion';
+import { mediaQueryContext } from '../context/mediaQueryContext';
 import SidebarContentBody from './SidebarContentBody';
 
 export default class Sidebar extends Component {
@@ -147,52 +148,72 @@ export default class Sidebar extends Component {
 
   renderSidebarContent() {
     return (
-      <TransitionMotion
-        willLeave={this.willSidebarContentLeave}
-        willEnter={this.willSidebarContentEnter}
-        styles={this.state.navBarStyles}
-      >
-        {styles => {
-          if (styles.length === 0) return null;
-
-          const { width, key } = styles[0].style;
-
-          const nextStyle = {
-            transform: `translateX(${width - 100}%)`,
-          };
-
+      <mediaQueryContext.Consumer>
+        {media => {
           return (
-            <div
-              key={key}
-              className={`sidebar-content${!width ? '' : ' active'}`}
-              style={nextStyle}
-              onClick={this.toggleShowNav.bind(this)}
+            <TransitionMotion
+              willLeave={this.willSidebarContentLeave}
+              willEnter={this.willSidebarContentEnter}
+              styles={this.state.navBarStyles}
             >
-              <SidebarContentBody
-                manifest={this.props.manifest}
-                postmeta={this.props.postmeta}
-                accessPath={this.props.accessPath}
-              />
-              <style jsx>
-                {`
-                  .sidebar-content {
-                    position: fixed;
-                    top: 0;
-                    background: #fff;
-                    height: 100%;
-                    width: calc(100% - 128px);
-                    z-index: 10012;
-                  }
+              {styles => {
+                if (styles.length === 0) return null;
 
-                  .sidebar-content.active {
-                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-                  }
-                `}
-              </style>
-            </div>
+                const { width, key } = styles[0].style;
+
+                const { queryMatches } = media;
+
+                const nextStyle = {
+                  transform: `translateX(${width - 100}%)`,
+                };
+
+                {
+                  /* if (!queryMatches.mobile) {
+                  nextStyle.transform = `translateX(${(width - 100) * 3}px)`
+                } */
+                }
+
+                return (
+                  <div
+                    key={key}
+                    className={`sidebar-content`}
+                    style={nextStyle}
+                    onClick={this.toggleShowNav.bind(this)}
+                  >
+                    <SidebarContentBody
+                      manifest={this.props.manifest}
+                      postmeta={this.props.postmeta}
+                      accessPath={this.props.accessPath}
+                    />
+                    <style jsx>
+                      {`
+                        .sidebar-content {
+                          position: fixed;
+                          top: 0;
+                          background: #fff;
+                          bottom: 0;
+                          width: 300px;
+                          z-index: 10012;
+                        }
+
+                        .sidebar-content.active {
+                          box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                        }
+
+                        @media screen and (max-width: 640px) {
+                          .sidebar-content {
+                            width: calc(100% - 128px);
+                          }
+                        }
+                      `}
+                    </style>
+                  </div>
+                );
+              }}
+            </TransitionMotion>
           );
         }}
-      </TransitionMotion>
+      </mediaQueryContext.Consumer>
     );
   }
 

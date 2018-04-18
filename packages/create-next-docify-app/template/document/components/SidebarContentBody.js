@@ -1,5 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import siteConfig from '../site.config.js';
+import Traverser from 'somia/lib/Traverser';
+import parseQuery from '../utils/parseQuery';
+
+const keyToTagId = key => `docify-${key}`;
 
 class SidebarContentBody extends Component {
   constructor(props) {
@@ -27,6 +31,51 @@ class SidebarContentBody extends Component {
     this.state = {
       nav: this.navStack[this.navStack.length - 1],
     };
+
+    this.activeKey = '';
+  }
+
+  componentDidUpdate() {
+    const { manifest } = this.props;
+    const { title } = parseQuery(window.location.search);
+
+    if (manifest && !this.traverser) {
+      this.traverser = new Traverser({
+        data: manifest,
+        primaryKey: 'key',
+      });
+    }
+
+    if (this.traverser) {
+      const data = this.traverser.query({
+        permalink: title,
+      });
+      if (data && data.length > 0) {
+        const key = data[0].key;
+        const parentKeys = this.traverser.resolveParentKeys(key);
+        const keysToTest = [].concat(parentKeys, key);
+        const len = keysToTest.length;
+
+        for (let i = len - 1; i >= 0; i--) {
+          const k = keysToTest[i];
+          const node = document.querySelector(`#${keyToTagId(k)}`);
+          if (node) {
+            if (!node.classList.contains('active')) {
+              node.classList.add('active');
+            }
+            if (this.activeKey !== k) {
+              const old = document.querySelector(
+                `#${keyToTagId(this.activeKey)}`
+              );
+              old && old.classList.remove('active');
+              node.classList.add('active');
+              this.activeKey = k;
+            }
+            break;
+          }
+        }
+      }
+    }
   }
 
   resolveHomeSidebarValues() {
@@ -38,7 +87,7 @@ class SidebarContentBody extends Component {
     };
     const about = {
       title: '关于',
-      accessPath: '/',
+      accessPath: '/about',
     };
 
     values.push(home);
@@ -52,7 +101,6 @@ class SidebarContentBody extends Component {
         });
       }
     });
-    values.push(about);
     return values;
   }
 
@@ -82,9 +130,17 @@ class SidebarContentBody extends Component {
     const className = `clickable-item${
       isDoc ? ' section-header' : ' section-page'
     }`;
-    const liClassName = `${
-      currentPageAccessPath === accessPath ? 'active-item' : ''
-    }`;
+
+    const shouldItemActive = accessPath => {
+      const pathname = window.location.pathname;
+      const accessPathname = accessPath.split('?')[0];
+
+      if (pathname === accessPathname) return true;
+      return false;
+    };
+
+    const liClassName = shouldItemActive(accessPath) ? 'active' : '';
+
     return (
       <li key={key} className={liClassName}>
         <div
@@ -100,7 +156,7 @@ class SidebarContentBody extends Component {
               position: relative;
             }
 
-            li.active-item::before {
+            li.active::before {
               width: 2px;
               display: inline-block;
               content: '';
@@ -149,9 +205,15 @@ class SidebarContentBody extends Component {
 
         <style jsx>
           {`
+            .home-sidebar {
+              height: calc(100% - 48px);
+            }
+
             ul {
               padding: 0;
               margin: 0;
+              height: 100%;
+              overflow-y: auto;
               list-style-type: none;
             }
           `}
@@ -184,17 +246,20 @@ class SidebarContentBody extends Component {
         <style jsx>
           {`
             .nav-go-back {
-              padding: 12px;
               background: #eceff1;
-              position: relative;
-              height: 24px;
+              height: 48px;
+              position: absolute;
+              top: 0;
+              width: 100%;
             }
 
             i {
               position: absolute;
-              top: 12px;
               font-size: 24px;
+              top: 12px;
+              left: 12px;
               color: #757575;
+              line-height: 24px;
             }
           `}
         </style>
@@ -223,15 +288,29 @@ class SidebarContentBody extends Component {
 
   renderLevel1(child) {
     if (typeof child === 'object') {
-      const { children, title } = child;
+      const { children, title, key } = child;
 
       return (
-        <div className="leve1 sidebar-section-header">
+        <div className="level-1 sidebar-section-header" id={keyToTagId(key)}>
           <h3>{title}</h3>
           {this.renderChildren(children)}
 
           <style jsx>
             {`
+              .level-1 {
+                overflow-y: auto;
+                height: calc(100% - 48px);
+              }
+
+              .level-1.active::before {
+                width: 2px;
+                display: inline-block;
+                content: '';
+                height: 100%;
+                position: absolute;
+                background: rgba(141, 214, 249, 1);
+              }
+
               h3 {
                 margin: 0;
               }
@@ -254,19 +333,40 @@ class SidebarContentBody extends Component {
   }
 
   renderLevel2(child) {
-    const { children, id, title, permalink } = child;
+    const { children, key, title, permalink } = child;
     const { accessPath } = this.props;
     const isPage = children.length === 0;
-    const className = isPage ? ' section-page' : ' section-header';
+
+    let href = '#';
+    let className = isPage ? ' section-page' : ' section-header';
+
+    if (permalink) {
+      href = `${accessPath}?title=${permalink}`;
+    } else {
+      className = `${className} disabled`;
+    }
 
     return (
-      <div className="level-2" key={id}>
-        <a href={`${accessPath}?title=${permalink}`} className={className}>
+      <div className="level-2" key={key} id={keyToTagId(key)}>
+        <a href={href} className={className}>
           {title}
         </a>
         {!isPage ? this.renderChildren(children) : null}
         <style jsx>
           {`
+            .level-2 {
+              position: relative;
+            }
+
+            .level-2.active::before {
+              width: 2px;
+              display: inline-block;
+              content: '';
+              height: 100%;
+              position: absolute;
+              background: rgba(141, 214, 249, 1);
+            }
+
             .section-page {
               display: block;
               padding: 0.5em 17px;
@@ -311,13 +411,13 @@ class SidebarContentBody extends Component {
 
   renderLevel3(child) {
     const { postmeta } = this.props;
-    const { children, id, title } = child;
+    const { children, key, title } = child;
     const isPage = children.length === 0;
 
     const className = isPage ? ' section-page' : ' section-header';
 
     return (
-      <div className="level-3 box" key={id}>
+      <div className="level-3 box" key={key} id={keyToTagId(key)}>
         {isPage && (
           <a href="#" className={className}>
             {title}
@@ -333,37 +433,48 @@ class SidebarContentBody extends Component {
           </div>
         )}
         {children.length > 0 && <i className="fas fa-angle-right" />}
-        <style jsx>{`
-          .level-3 {
-            position: relative;
-          }
+        <style jsx>
+          {`
+            .level-3 {
+              position: relative;
+            }
 
-          .section-page {
-            display: block;
-            padding: 0.5em 17px;
-            text-transform: capitalize;
-            color: #666666;
-          }
+            .level-3.active::before {
+              width: 2px;
+              display: inline-block;
+              content: '';
+              height: 100%;
+              position: absolute;
+              background: rgba(141, 214, 249, 1);
+            }
 
-          .section-header {
-            display: block;
-            padding: 0.5em 17px;
-            text-transform: capitalize;
-            color: #666666;
-          }
+            .section-page {
+              display: block;
+              padding: 0.5em 17px;
+              text-transform: capitalize;
+              color: #666666;
+            }
 
-          i {
-            position: absolute;
-            top: 13px;
-            right: 17px;
-            font-size: 12px;
-            color: #a5a1a1;
-          }
+            .section-header {
+              display: block;
+              padding: 0.5em 17px;
+              text-transform: capitalize;
+              color: #666666;
+            }
 
-          a {
-            text-decoration: none;
-          }
-        `}</style>
+            i {
+              position: absolute;
+              top: 13px;
+              right: 17px;
+              font-size: 12px;
+              color: #a5a1a1;
+            }
+
+            a {
+              text-decoration: none;
+            }
+          `}
+        </style>
       </div>
     );
   }
@@ -389,7 +500,22 @@ class SidebarContentBody extends Component {
   }
 
   render() {
-    return <div>{this.renderContent(this.state.nav)}</div>;
+    return (
+      <div className="sidebar-container">
+        {this.renderContent(this.state.nav)}
+
+        <style jsx>
+          {`
+            .sidebar-container {
+              padding-top: 48px;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+            }
+          `}
+        </style>
+      </div>
+    );
   }
 }
 

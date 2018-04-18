@@ -115,6 +115,9 @@ export default class IndexPage extends Component {
               {`
                 .main-content {
                   padding: 24px 16px;
+                  max-width: 750px;
+                  margin-left: auto;
+                  margin-right: auto;
                 }
               `}
             </style>
