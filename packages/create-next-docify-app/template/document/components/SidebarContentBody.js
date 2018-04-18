@@ -410,8 +410,8 @@ class SidebarContentBody extends Component {
   }
 
   renderLevel3(child) {
-    const { postmeta } = this.props;
-    const { children, key, title } = child;
+    const { postmeta, accessPath } = this.props;
+    const { children, key, title, permalink } = child;
     const isPage = children.length === 0;
 
     const className = isPage ? ' section-page' : ' section-header';
@@ -419,7 +419,10 @@ class SidebarContentBody extends Component {
     return (
       <div className="level-3 box" key={key} id={keyToTagId(key)}>
         {isPage && (
-          <a href="#" className={className}>
+          <a
+            href={permalink ? `${accessPath}?title=${permalink}` : '#'}
+            className={className}
+          >
             {title}
           </a>
         )}
