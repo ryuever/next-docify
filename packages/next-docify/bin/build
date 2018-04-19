@@ -2,7 +2,11 @@
 const program = require('commander');
 const { resolve } = require('path');
 const build = require('next/dist/server/build').default;
-const { preCacheSourceFiles, initOutputFolder } = require('../lib/prestart');
+const {
+  preCacheSourceFiles,
+  initOutputFolder,
+  clearBabelCache,
+} = require('../lib/prestart');
 const StoreProvider = require('../lib/store/Provider').default;
 
 program
@@ -18,6 +22,7 @@ program
 program.parse(process.argv);
 process.env.NODE_ENV = 'production';
 
+clearBabelCache();
 preCacheSourceFiles();
 initOutputFolder();
 const storeProvider = new StoreProvider();

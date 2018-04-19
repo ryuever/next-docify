@@ -8,25 +8,24 @@ module.exports = path => {
   files.forEach(file => {
     const filePath = join(path, file);
     const tempPath = `${filePath}.temp`;
+    const linkReg = /(<link.*\/>)(<link[^<]*main\.js[^>]*>)/;
+    const scriptReg = /(<script[^<]*main\.js[^>]*><\/script>)/;
     fs
       .createReadStream(filePath)
       .pipe(
-        replaceStream(/(<link[^<]*main\.js[^>]*>)/, function(_, p1) {
-          const next = p1.replace('main.js', 'manifest.js');
-          const next2 = p1.replace('main.js', 'manifest2.js');
-          const next3 = p1.replace('main.js', 'react-dom.production.min.js');
-          return `${next}${next3}${next2}${p1}`;
+        replaceStream(linkReg, (_, s2, s3) => {
+          const manifest = s3.replace('main.js', 'manifest.js');
+          const reactDOM = s3.replace('main.js', 'react-dom.production.min.js');
+          const manifest2 = s3.replace('main.js', 'manifest2.js');
+          return `${manifest}${reactDOM}${s2}${manifest2}${s3}`;
         })
       )
       .pipe(
-        replaceStream(/(<script[^<]*main\.js[^>]*><\/script>)/, function(
-          _,
-          p1
-        ) {
-          const next = p1.replace('main.js', 'manifest.js');
-          const next2 = p1.replace('main.js', 'manifest2.js');
-          const next3 = p1.replace('main.js', 'react-dom.production.min.js');
-          return `${next}${next3}${next2}${p1}`;
+        replaceStream(scriptReg, (_, s2) => {
+          const manifest = s2.replace('main.js', 'manifest.js');
+          const reactDOM = s2.replace('main.js', 'react-dom.production.min.js');
+          const manifest2 = s2.replace('main.js', 'manifest2.js');
+          return `${manifest}${reactDOM}${manifest2}${s2}`;
         })
       )
       .pipe(fs.createWriteStream(tempPath))
