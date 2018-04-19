@@ -12,6 +12,14 @@ export default class CustomDocument extends Document {
             rel="stylesheet"
             href="/static/stylesheets/font-awesome/fontawesome-all.min.css"
           />
+          <link
+            rel="stylesheet"
+            href="/static/stylesheets/highlight/github.css"
+          />
+          <link
+            rel="stylesheet"
+            href="/static/stylesheets/github-markdown.css"
+          />
         </Head>
 
         <body style={{ margin: 0 }}>

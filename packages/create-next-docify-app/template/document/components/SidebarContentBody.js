@@ -62,6 +62,7 @@ class SidebarContentBody extends Component {
           if (node) {
             if (!node.classList.contains('active')) {
               node.classList.add('active');
+              node.scrollIntoView();
             }
             if (this.activeKey !== k) {
               const old = document.querySelector(
@@ -69,6 +70,7 @@ class SidebarContentBody extends Component {
               );
               old && old.classList.remove('active');
               node.classList.add('active');
+              node.scrollIntoView();
               this.activeKey = k;
             }
             break;
@@ -214,6 +216,7 @@ class SidebarContentBody extends Component {
               margin: 0;
               height: 100%;
               overflow-y: auto;
+              -webkit-overflow-scrolling: touch;
               list-style-type: none;
             }
           `}
@@ -299,6 +302,7 @@ class SidebarContentBody extends Component {
             {`
               .level-1 {
                 overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
                 height: calc(100% - 48px);
               }
 

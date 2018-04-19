@@ -96,12 +96,12 @@ export default class IndexPage extends Component {
     return (
       <mediaQueryContext.Provider value={mediaValues}>
         <section>
-          <Head>
+          {/* <Head>
             <link
               rel="stylesheet"
               href="/static/stylesheets/highlight/monokai.css"
             />
-          </Head>
+          </Head> */}
 
           <Header toggleNav={this.toggleNav.bind(this)} />
           <Sidebar
