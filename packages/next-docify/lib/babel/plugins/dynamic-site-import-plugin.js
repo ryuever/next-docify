@@ -107,7 +107,7 @@ const resolveMetaFileImport = configs => {
   const variableDefinitions = configs.reduce((accum, config, key) => {
     const { docBaseName } = config;
     const relativePath = resolveRelativePath(outputPath);
-    const filter = /\/postmeta|manifest\.js$/;
+    const filter = /\/postmeta|manifest|postmetaall\.js$/;
     const variable = `${META_CONTEXT_VARIABLE}${key}`;
     variables.push(variable);
     const cur = `var ${variable} = require.context('${relativePath}/${docBaseName}', false, ${filter});`;
@@ -167,8 +167,12 @@ const buildResolveMetaChunkIds = `
     const docBaseName = pathToDoc[normalizeAccessPath(accessPath)];
     const nextPath = DOCIFY_CHUNK_PREFIX + '/' + DOCIFY_OUTPUTPATH + '/' + docBaseName;
     const postmetaKey = nextPath + '/' + 'postmeta';
+    const postmetaAllKey = nextPath + '/' + 'postmetaall';
     const manifestKey = nextPath + '/' + 'manifest';
     const keys = [{
+      chunk: 'postmetaall',
+      key: postmetaAllKey,
+    }, {
       chunk: 'postmeta',
       key: postmetaKey,
     }, {
@@ -213,21 +217,24 @@ const resolveMetaModule = `
       const docBaseName = pathToDoc[normalizeAccessPath(accessPath)];
       const path = DOCIFY_OUTPUTPATH + '/' + docBaseName;
       const postmetaPath = path + '/' + 'postmeta';
+      const postmetaAllPath = path + '/' + 'postmetaall';
       const manifestPath = path + '/' + 'manifest';
       let postmeta;
       let manifest;
+      let postmetaAll;
 
       const modMap = contextMetaVariables[i];
 
       try {
         postmeta = modMap(postmetaPath);
+        postmetaAll = modMap(postmetaAllPath);
         manifest = modMap(manifestPath);
       } catch (err) {
         // ...
       }
 
-      if (postmeta && manifest) {
-        return { postmeta, manifest };
+      if (postmeta && manifest && postmetaAll) {
+        return { postmeta, manifest, postmetaAll };
       }
     }
   }
@@ -263,8 +270,6 @@ const buildImportBody = configs => `
   }
 
   Promise.all(jobs).then(() => {
-    let postmeta = [];
-    let manifest = [];
     const data = {};
 
     if (path) data.dataSource = resolveDataSourceModule(shortPath);
@@ -272,6 +277,7 @@ const buildImportBody = configs => `
       const result = resolveMetaModule(accessPath);
       data.postmeta = result.postmeta;
       data.manifest = result.manifest;
+      data.postmetaAll = result.postmetaAll;
     }
 
     resolve(data);
