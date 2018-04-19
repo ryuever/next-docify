@@ -1,0 +1,13 @@
+{
+  "name": "create-next-docify-example",
+  "scripts": {
+    "dev": "../../dist/bin/next-docify dev",
+    "analyze": "ANALYZE=1 ../../dist/bin/next-docify build",
+    "build": "../../dist/bin/next-docify build",
+    "out": "../../dist/bin/next-docify out"
+  },
+  "dependencies": {
+    "react-motion": "^0.5.2",
+    "somia": "^1.2.0"
+  }
+}
