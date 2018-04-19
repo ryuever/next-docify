@@ -9,7 +9,7 @@ module.exports = path => {
     const filePath = join(path, file);
     const tempPath = `${filePath}.temp`;
     const linkReg = /(<link.*\/>)(<link[^<]*main\.js[^>]*>)/;
-    const scriptReg = /(<script[^<]*main\.js[^>]*><\/script>)/;
+    const scriptReg = /(<script[^<]*main\.js[^>]*(async=[^> ]*)><\/script>)/;
     fs
       .createReadStream(filePath)
       .pipe(
@@ -21,11 +21,15 @@ module.exports = path => {
         })
       )
       .pipe(
-        replaceStream(scriptReg, (_, s2) => {
-          const manifest = s2.replace('main.js', 'manifest.js');
-          const reactDOM = s2.replace('main.js', 'react-dom.production.min.js');
-          const manifest2 = s2.replace('main.js', 'manifest2.js');
-          return `${manifest}${reactDOM}${manifest2}${s2}`;
+        replaceStream(scriptReg, (_, s2, s3) => {
+          const main = s2.replace(s3, 'defer');
+          const reactDOM = main.replace(
+            'main.js',
+            'react-dom.production.min.js'
+          );
+          const manifest = main.replace('main.js', 'manifest.js');
+          const manifest2 = main.replace('main.js', 'manifest2.js');
+          return `${manifest}${reactDOM}${manifest2}${main}`;
         })
       )
       .pipe(fs.createWriteStream(tempPath))
