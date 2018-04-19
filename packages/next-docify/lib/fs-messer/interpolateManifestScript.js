@@ -14,7 +14,8 @@ module.exports = path => {
         replaceStream(/(<link[^<]*main\.js[^>]*>)/, function(_, p1) {
           const next = p1.replace('main.js', 'manifest.js');
           const next2 = p1.replace('main.js', 'manifest2.js');
-          return `${next}${next2}${p1}`;
+          const next3 = p1.replace('main.js', 'react-dom.production.min.js');
+          return `${next}${next3}${next2}${p1}`;
         })
       )
       .pipe(
@@ -24,7 +25,8 @@ module.exports = path => {
         ) {
           const next = p1.replace('main.js', 'manifest.js');
           const next2 = p1.replace('main.js', 'manifest2.js');
-          return `${next}${next2}${p1}`;
+          const next3 = p1.replace('main.js', 'react-dom.production.min.js');
+          return `${next}${next3}${next2}${p1}`;
         })
       )
       .pipe(fs.createWriteStream(tempPath))

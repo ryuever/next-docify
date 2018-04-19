@@ -58,6 +58,11 @@ exportApp(dir, options).then(() => {
       join(nextDestDir, 'manifest2.js'),
       join(nextOutputDir, '_next', buildId, 'manifest2.js')
     );
+
+    copySync(
+      join(nextDestDir, 'react-dom.production.min.js'),
+      join(nextOutputDir, '_next', buildId, 'react-dom.production.min.js')
+    );
   } catch(err) {
     // ...
   }

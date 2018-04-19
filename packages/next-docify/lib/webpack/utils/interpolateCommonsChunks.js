@@ -147,11 +147,6 @@ const resolveManifestCommonChunk = ({ dev }) =>
         return true;
       }
       return false;
-      // if (!dev && !module.request && module instanceof contextModule) {
-      //   return false;
-      // }
-
-      // return true;
     },
   });
 
@@ -168,6 +163,19 @@ const resolveManifestCommonChunk2 = ({ dev }) =>
       return true;
     },
   });
+
+const resolveReactDOMCommonChunk = () =>
+  new CommonsChunkPlugin({
+    name: 'react-dom',
+    filename: 'react-dom.production.min.js',
+    minChunks(module) {
+      const reg = RegExp(`${sep}react${sep}`);
+      if (reg.test(module.resource)) return false;
+
+      return true;
+    },
+  });
+
 const interpolateCommonsChunks = (plugins, opts) => {
   const chunkConstraints = resolveChunkConstraints();
   if (chunkConstraints.size === 0) return plugins;
@@ -193,6 +201,7 @@ const interpolateCommonsChunks = (plugins, opts) => {
   const manifestCommonChunk = resolveManifestCommonChunk(opts);
   const mainCommonChunk = resolveMainCommonChunk();
   const manifestCommonChunk2 = resolveManifestCommonChunk2(opts);
+  const reactDOMCommonChunk = resolveReactDOMCommonChunk(opts);
 
   if (process.env.NODE_ENV === 'development') {
     return []
@@ -213,6 +222,7 @@ const interpolateCommonsChunks = (plugins, opts) => {
       merged,
       contextModule,
       manifestCommonChunk2,
+      reactDOMCommonChunk,
       manifestCommonChunk,
       mainCommonChunk,
       end
