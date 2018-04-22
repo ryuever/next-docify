@@ -28,7 +28,7 @@ create-next-docify-app --help
 create-next-docify-app first-app
 ```
 
-![创建应用](docs/create-next-docify-app.png)
+<img width="600" alt="创建应用" src="docs/create-next-docify-app.png" />
 
 ### 选择模版
 
@@ -38,7 +38,7 @@ create-next-docify-app first-app
 create-next-docify-app first-app -t document
 ```
 
-![tutorial-01](docs/tutorial-01-1.png)
+<img width="375" alt="tutorial-01" src="docs/tutorial-01-1.png" />
 
 ### 应用开发
 
