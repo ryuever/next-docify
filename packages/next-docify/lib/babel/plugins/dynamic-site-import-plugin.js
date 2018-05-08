@@ -21,7 +21,9 @@ let filename = '';
 const slugifyDocMapping = mapping => {
   const result = {};
   for (let key in mapping) {
-    result[key] = toSlug(mapping[key]);
+    result[key] = toSlug(mapping[key], {
+      connector: '/',
+    });
   }
 
   return result;
