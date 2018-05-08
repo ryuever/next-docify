@@ -10,5 +10,14 @@ module.exports = {
       title: 'tutorial',
       indexDocPath: '/docs/tutorial/quick-start',
     },
+    {
+      component: './pages/docs',
+      accessPath: '/docs/packages',
+      docDirName: 'docs',
+      docBaseName: 'packages/tutorial',
+      showOnSidebar: true,
+      title: 'package-tutorial',
+      indexDocPath: '/docs/packages/tutorial/quick-start',
+    },
   ],
 };
